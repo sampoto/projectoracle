@@ -1,0 +1,26 @@
+{
+  "name": "ProjectOracle",
+  "description": "",
+  "private": true,
+  "repository": {
+	"type": "git",
+	"url": "https://github.com/sampoto/projectoracle"
+  },
+  "contributors": [ 
+    "Sampo Tolvanen",
+	"Atte Perämäki",
+	"Jouni Mikkola",
+	"Eliisa Väkevä",
+	"Jingui Li"
+  ],
+  "dependencies" : {
+    "express" : "4.9.0",
+	"body-parser" : "1.8.1",
+	"ejs" : "1.0.0"
+  },
+  "engines": {
+    "node": ">=0.10.10",
+	"npm": ">=1.1.2"
+  },
+  "scripts" : { "start" : "node server.js" }
+}
