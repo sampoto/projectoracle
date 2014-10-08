@@ -66,7 +66,7 @@ module.exports = function() {
 		  extended: true
 		}))
 
-		app.get('/', routes.index);
+		routes(app);
 	}
 	
 	/**

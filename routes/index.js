@@ -1,7 +1,15 @@
 /*
- * GET home page.
+ * Project Oracle
+ * TIE-13106 Project Work on Pervasive Systems
  */
 
-exports.index = function(req, res){
+var index = function(req, res){
     res.render('index', {});
 };
+
+/**
+ * @param app Express app instance
+ */
+module.exports = function(app) {
+	app.get('/', index);
+}
