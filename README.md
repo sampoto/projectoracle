@@ -7,7 +7,7 @@ Installation
 ------------
 1. Clone the repository
 2. Install Node.js
-3. Create *config.js* to root of the Git repository and add SSL options
+3. Create *config.js* to root *Config* folder
 For example:
 
         var fs = require('fs');
