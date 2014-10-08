@@ -1,13 +1,13 @@
 Project Oracle
 ============
 
-Project Oracle aims at a mash-up application which integrates together other applications such as Flowdocks, Google spreadsheets and Pivotal Tracker.
+Project Oracle aims at a mash-up application which integrates together other applications such as Flowdock, Google spreadsheets and Pivotal Tracker.
 
 Installation
 ------------
 1. Clone the repository
 2. Install Node.js
-3. Create *config.js* to root *Config* folder
+3. Create *config.js* to *Config* folder
 For example:
 
         var fs = require('fs');
@@ -15,7 +15,10 @@ For example:
 			sslOptions: {
 				key: fs.readFileSync('./ssl/server.key'),
 				cert: fs.readFileSync('./ssl/server.crt')
-			}
+			},
+			dbOptions: {dbname:'database', username:'user', 
+		    password:'psw', options:{dialect: '<dialect>', logging: false}
+		    }
         }
 SSL can be turned off with config option *useSSL*.
 4. Install and run locally by issuing commands
