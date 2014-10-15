@@ -1,6 +1,6 @@
 /**
  * Project Oracle
- * TIE-13106 (TIE-13100) Project Work on Pervasive Systems
+ * TIE-13106 Project Work on Pervasive Systems
  */
 
 var express = require('./node_modules/express');
@@ -9,19 +9,24 @@ var http = require('http');
 var https = require('https');
 var path = require('path');
 var bodyParser = require('body-parser');
+var database = require('./libs/db');
 
 /**
  * Creates server instance
  */
 module.exports = function() {
 	var app = express();
+	var db = null;
 
 	/**
 	 * Runs the server
 	 * @param config
 	 */
 	function run(config) {
-
+	    
+	    // Connect to database
+	    db = new database(config.dbOptions);
+	
 		http.createServer(app).listen(config.port, function(){
 			console.log('Express http server listening on port ' + config.port);
 		});
@@ -74,6 +79,7 @@ module.exports = function() {
 	 */
 	function close() {
 		app.close();
+		db.close();
 	}
 
 	return {app: app, 
