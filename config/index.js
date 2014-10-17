@@ -1,18 +1,26 @@
 var fs = require('fs');
 
-module.exports = (function() {
+/**
+ * @param filename Optional parameter for selecting a custom config file
+ */
+module.exports = (function(filename) {
+
+	var config = require('./default.js');
 
 	// Load user config if exists
-	var config = {};
-	var configFile = 'config.js';
-	if (fs.existsSync('./config/' + configFile)) {
-		config = require('./' + configFile);
+	// Config values override the default values
+	var environment = process.env.NODE_ENV || "development";
+	var configFile = filename || 'config.'+environment+'.js';
+	if (fs.existsSync(__dirname + "/" + configFile)) {
+		var conf = require('./' + configFile);
+		extend(config, conf);
 	}
-
-	config.useSSL = typeof config.useSSL != "undefined" ? config.useSSL : true;
-	config.forcedSSL = typeof config.forcedSSL != "undefined" ? config.forcedSSL : true;
-	config.port = (config.port || process.env.PORT || 5000);
-	config.sslport = (config.sslport || process.env.SSLPORT || 5001);
 
 	return config;
 }());
+
+function extend(target, object) {
+	for (var prop in object) {
+		target[prop] = object[prop];
+	}
+}
