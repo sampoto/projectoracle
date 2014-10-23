@@ -26,6 +26,10 @@ If NODE_ENV is not issued, the file is *config/config.development.js*.
 				googleAuth: {
 					clientID: '<ClientID>',
 					clientSecret: '<ClientSecret>'
+				},
+				flowdockAuth: {
+					clientID: '<ClientID>',
+					clientSecret: '<ClientSecret>'
 				}
 			}
         }

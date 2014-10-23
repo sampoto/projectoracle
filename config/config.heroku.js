@@ -8,6 +8,10 @@ module.exports = {
 		googleAuth: {
 			clientID: process.env.googleClientID,
 			clientSecret: process.env.googleClientSecret
+		},
+		flowdockAuth: {
+			clientID: process.env.flowdockClientID,
+			clientSecret: process.env.flowdockClientSecret
 		}
 	}
 }
