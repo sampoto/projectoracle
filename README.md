@@ -5,10 +5,12 @@ Project Oracle aims at a mash-up application which integrates together other app
 
 Installation
 ------------
-1. Clone the repository
-2. Install Node.js
-3. Create *config.js* to *Config* folder
-For example:
+1. Clone/download the project
+2. Configure the application using config file.
+The used configuration file is determined by NODE_ENV environment variable. The configuration file path pattern is *config/config.[NODE_ENV].js*.
+If NODE_ENV is not issued, the file is *config/config.development.js*.
+
+ Configuration file example:
 
         var fs = require('fs');
         module.exports = {
@@ -16,12 +18,11 @@ For example:
 				key: fs.readFileSync('./ssl/server.key'),
 				cert: fs.readFileSync('./ssl/server.crt')
 			},
-			dbOptions: {dbname:'database', username:'user', 
-		    password:'psw', options:{dialect: '<dialect>', logging: false}
+			dbOptions: {dbname:'database', username:'<username>', 
+		    password:'<password>', options:{dialect: '<dialect>', logging: false}
 		    }
         }
-SSL can be turned off with config option *useSSL*.
-4. Install and run locally by issuing commands
+3. To install and run locally, issue commands
 
         npm install
         npm start
