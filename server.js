@@ -4,12 +4,15 @@
  */
 
 var express = require('./node_modules/express');
+var session = require('express-session');
 var routes = require('./routes');
 var http = require('http');
 var https = require('https');
 var path = require('path');
+var passport = require('passport');
 var bodyParser = require('body-parser');
 var database = require('./libs/db');
+var auth = require('./libs/Auth');
 
 /**
  * Creates server instance
@@ -70,8 +73,12 @@ module.exports = function() {
 		app.use(bodyParser.urlencoded({
 		  extended: true
 		}))
+		app.use(session({ resave: true, saveUninitialized: true, secret: config.sessionSecret }));
+		app.use(passport.initialize());
+		app.use(passport.session());
 
-		routes(app);
+		routes(app, passport);
+		auth(passport, config.auth);
 	}
 	
 	/**

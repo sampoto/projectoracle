@@ -20,7 +20,14 @@ If NODE_ENV is not issued, the file is *config/config.development.js*.
 			},
 			dbOptions: {dbname:'database', username:'<username>', 
 		    password:'<password>', options:{dialect: '<dialect>', logging: false}
-		    }
+		    },
+			sessionSecret: '<SessionSecret>',
+			auth: {
+				googleAuth: {
+					clientID: '<ClientID>',
+					clientSecret: '<ClientSecret>'
+				}
+			}
         }
 3. To install and run locally, issue commands
 
@@ -28,6 +35,6 @@ If NODE_ENV is not issued, the file is *config/config.development.js*.
         npm start
 Alternatively you can deploy the application elsewhere.
 
-Set NODE_ENV environment variable to "heroku" to deploy to Heroku.
+Set NODE_ENV environment variable to "heroku" and configure the rest of the environment variables to deploy to Heroku.
 
 [ ![Codeship Status for sampoto/projectoracle](https://www.codeship.io/projects/fc206f70-1ee3-0132-e461-5e9ca203bed1/status)](https://www.codeship.io/projects/35583)

@@ -2,7 +2,14 @@ module.exports = {
 	useSSL: true,
 	forcedSSL: true,
 	port: process.env.PORT,
-	dbOptions: getHerokuDBOptions()
+	dbOptions: getHerokuDBOptions(),
+	sessionSecret: process.env.SESSIONSECRET,
+	auth: {
+		googleAuth: {
+			clientID: process.env.googleClientID,
+			clientSecret: process.env.googleClientSecret
+		}
+	}
 }
 
 function getHerokuDBOptions(){

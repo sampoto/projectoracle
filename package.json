@@ -3,28 +3,31 @@
   "description": "",
   "private": true,
   "repository": {
-	"type": "git",
-	"url": "https://github.com/sampoto/projectoracle"
+    "type": "git",
+    "url": "https://github.com/sampoto/projectoracle"
   },
-  "contributors": [ 
+  "contributors": [
     "Sampo Tolvanen",
-	"Atte Perämäki",
-	"Jouni Mikkola",
-	"Eliisa Väkevä",
-	"Jingui Li"
+    "Atte Perämäki",
+    "Jouni Mikkola",
+    "Eliisa Väkevä",
+    "Jingui Li"
   ],
-  "dependencies" : {
-    "express" : "4.9.0",
-	"body-parser" : "1.8.1",
-	"ejs" : "1.0.0",
-      "sequelize" : "2.0.0-rc1",
-	"pg" : "3.5.0"
+  "dependencies": {
+    "body-parser": "1.8.1",
+    "ejs": "1.0.0",
+    "express": "4.9.0",
+    "express-session": "1.9.0",
+    "passport": "0.2.1",
+    "passport-google-oauth": "0.1.5",
+    "pg": "3.5.0",
+    "sequelize": "2.0.0-rc1"
   },
   "engines": {
     "node": ">=0.10.10",
-	"npm": ">=1.1.2"
+    "npm": ">=1.1.2"
   },
-  "scripts" : {
-	"start" : "node index.js"
+  "scripts": {
+    "start": "node index.js"
   }
 }

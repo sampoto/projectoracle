@@ -9,7 +9,12 @@ var index = function(req, res){
 
 /**
  * @param app Express app instance
+ * @param passport Passport instance
  */
-module.exports = function(app) {
+module.exports = function(app, passport) {
 	app.get('/', index);
+	
+	var auth = require('./authRoutes.js')(passport);
+	app.get('/auth/google', auth.googleAuth);
+	app.get('/auth/google/callback', auth.googleAuthCallback);
 }
