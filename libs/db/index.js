@@ -5,6 +5,8 @@
  */
 
 var sequelize = require('sequelize');
+var usermodel = require('./models/user.js');
+var accountmodel = require('./models/account.js');
 
 
 /**
@@ -25,5 +27,19 @@ module.exports = function(config) {
 			throw new Error('Unable to connect to the database: ' + err);
 	    }
 	});
+	
+	// Define the database model
+	var user = this.sequelize.define('User', usermodel);
+	var account = this.sequelize.define('Account', accountmodel);
+	
+	account.belongsTo(user);
+	user.hasMany(account);
+	
+	this.sequelize.sync({force: true })
+	    .complete(function(err) {
+	        if(!!err) {
+	            throw new Error('Cannot synchronise the database schema: ' + err);
+            }
+        });
 }
 
