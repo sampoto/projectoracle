@@ -18,7 +18,11 @@ module.exports = function(passport, authConfig) {
         done(null, id);
     });
 
-	configureGoogleAuth(passport, authConfig);
+	if (authConfig) {
+		configureGoogleAuth(passport, authConfig);
+	} else {
+		throw new Error("Authentication options are not defined.");
+	}
 };
 
 function configureGoogleAuth(passport, authConfig) {
