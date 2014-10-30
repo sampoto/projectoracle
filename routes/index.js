@@ -5,7 +5,8 @@
 
 var express = require('express');
 var path = require('path');
- 
+var dapi = require('../api/dapi');
+
 var index = function(req, res){
     res.render('index.html', {});
 };
@@ -29,6 +30,8 @@ module.exports = function(app, passport) {
 
 	app.get('/', index);
 	app.get('/partials/:name', partials);
+
+	app.use('/api/dapi', dapi);
 
 	var auth = require('./authRoutes.js')(passport);
 	app.get('/auth/google', auth.googleAuth);

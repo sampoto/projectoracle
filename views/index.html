@@ -20,15 +20,17 @@
             </div>
             <div class="navbar-collapse collapse navbar-right navbar-header">
                 <div class="btn-group nav navbar-nav">
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        {{projectId}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-repeat="project in projects" ng-click="selectProject(project)"><a href="#">{{project.name}}</a></li>
+                    </ul>
                 </div>
 
                 <ul ng-show="authenticated" class="nav navbar-nav">
 					<li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                 </ul>
-            </div>
-        </div>
-        <div class="container-fluid tab-container" style="background-color:#AAA">
-            <div>
             </div>
         </div>
     </div>
