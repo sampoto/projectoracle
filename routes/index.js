@@ -12,7 +12,7 @@ var index = function(req, res){
 
 var partials = function (req, res) {
 	var name = req.params.name;
-	res.render('partials/' + name + '.html');
+	res.render('partials/' + name);
 }
 
 /**
@@ -22,13 +22,19 @@ var partials = function (req, res) {
 module.exports = function(app, passport) {
 	
 	app.use("/", express.static(path.join(__dirname + "/../", 'public')));
-	
+	app.use(function(req, res, next) {
+		res.cookie('XSRF-TOKEN', req.session._csrf);
+		next();
+	});
+
 	app.get('/', index);
 	app.get('/partials/:name', partials);
 
 	var auth = require('./authRoutes.js')(passport);
 	app.get('/auth/google', auth.googleAuth);
 	app.get('/auth/google/callback', auth.googleAuthCallback);
+	app.get('/loggedin', auth.loggedIn);
+	app.post('/logout', auth.logout);
 
 	app.get('*', index);
 }

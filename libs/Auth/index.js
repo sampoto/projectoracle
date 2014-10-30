@@ -40,6 +40,6 @@ function configureGoogleAuth(passport, authConfig) {
         callbackURL     : googleCallbackURL,
     },
     function(token, refreshToken, profile, done) {
-		return done(null, profile.emails[0].value);
+		return done(null, {username: profile.emails[0].value});
     }));
 }
