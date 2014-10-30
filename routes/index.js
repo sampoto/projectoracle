@@ -7,8 +7,13 @@ var express = require('express');
 var path = require('path');
  
 var index = function(req, res){
-    res.render('index', {});
+    res.render('index.html', {});
 };
+
+var partials = function (req, res) {
+	var name = req.params.name;
+	res.render('partials/' + name + '.html');
+}
 
 /**
  * @param app Express app instance
@@ -19,6 +24,7 @@ module.exports = function(app, passport) {
 	app.use("/", express.static(path.join(__dirname + "/../", 'public')));
 	
 	app.get('/', index);
+	app.get('/partials/:name', partials);
 
 	var auth = require('./authRoutes.js')(passport);
 	app.get('/auth/google', auth.googleAuth);
