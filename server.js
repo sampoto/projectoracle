@@ -11,6 +11,7 @@ var https = require('https');
 var path = require('path');
 var passport = require('passport');
 var bodyParser = require('body-parser');
+var csrf = require('csurf');
 var database = require('./libs/db');
 var auth = require('./libs/Auth');
 
@@ -77,6 +78,7 @@ module.exports = function() {
 		app.use(session({ resave: true, saveUninitialized: true, secret: config.sessionSecret }));
 		app.use(passport.initialize());
 		app.use(passport.session());
+		app.use(csrf({value: csrfValue}));
 
 		routes(app, passport);
 		auth(passport, config.auth);
@@ -93,4 +95,16 @@ module.exports = function() {
 	return {app: app, 
 			run: run,
 			close: close};
+}
+
+function csrfValue(req) {
+	var token;
+	if (req.body) {
+		token = req.body._csrf;
+	} else if (req.query) {
+		token = req.query._csrf;
+	} else {
+		token = req.headers['x-csrf-token'] || req.headers['x-xsrf-token'];
+	}
+	return token;
 }
