@@ -1,0 +1,8 @@
+<div class="container-fluid tab-container" style="background-color:#AAA">
+	<ul class="nav nav-tabs nav-justified"  role="tablist">
+		<li ng-repeat="page in projectNavigation" ng-class="{active: isSelected(page)}">
+			<a ui-sref="project.{{page.state}}" role="tab">{{page.name}}</a>
+		</li>
+	</ul>
+</div>
+<div ui-view></div>
