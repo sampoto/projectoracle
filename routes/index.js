@@ -33,6 +33,9 @@ module.exports = function(app, passport) {
 	var auth = require('./authRoutes.js')(passport);
 	app.get('/auth/google', auth.googleAuth);
 	app.get('/auth/google/callback', auth.googleAuthCallback);
+	app.get('/auth/flowdock', auth.flowdockAuth);
+	app.get('/auth/flowdock/callback', auth.flowdockAuthCallback, function(req, res) { res.redirect('/'); });
+
 	app.get('/loggedin', auth.loggedIn);
 	app.post('/logout', auth.logout);
 

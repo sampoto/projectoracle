@@ -21,7 +21,11 @@
 				});
 			})(req, res, next);
 		},
-		
+
+		flowdockAuth: passport.authorize('flowdock', { successRedirect : '/', failureRedirect: '/' }),
+
+		flowdockAuthCallback: passport.authorize('flowdock', { failureRedirect: '/' }),
+
 		loggedIn: function(req, res, next) {
 			res.send(req.isAuthenticated() ? req.user : '');
 		},
