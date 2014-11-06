@@ -23,7 +23,7 @@ module.exports = function(app, passport) {
 	
 	app.use("/", express.static(path.join(__dirname + "/../", 'public')));
 	app.use(function(req, res, next) {
-		res.cookie('XSRF-TOKEN', req.session._csrf);
+		res.cookie('XSRF-TOKEN', req.csrfToken());
 		next();
 	});
 

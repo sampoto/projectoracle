@@ -99,9 +99,9 @@ module.exports = function() {
 
 function csrfValue(req) {
 	var token;
-	if (req.body) {
+	if (req.body && req.body._csrf) {
 		token = req.body._csrf;
-	} else if (req.query) {
+	} else if (req.query && req.query._csrf) {
 		token = req.query._csrf;
 	} else {
 		token = req.headers['x-csrf-token'] || req.headers['x-xsrf-token'];
