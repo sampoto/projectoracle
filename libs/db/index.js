@@ -4,9 +4,9 @@
  * Module for configuring database
  */
 
+
 var sequelize = require('sequelize');
-var usermodel = require('./models/user.js');
-var accountmodel = require('./models/account.js');
+var db = {};
 
 
 /**
@@ -29,11 +29,16 @@ module.exports = function(config) {
 	});
 	
 	// Define the database model
-	var user = this.sequelize.define('User', usermodel);
-	var account = this.sequelize.define('Account', accountmodel);
+    db.user = this.sequelize.import(__dirname + '/models/user');
+    db.account = this.sequelize.import(__dirname + '/models/account');
+	db.project = this.sequelize.import(__dirname + '/models/project');
+	db.googledoc = this.sequelize.import(__dirname + '/models/googledoc');
 	
-	account.belongsTo(user);
-	user.hasMany(account);
+	Object.keys(db).forEach(function(modelName) {
+        if ("associate" in db[modelName]) {
+            db[modelName].associate(db);
+        }
+    });
 	
 	this.sequelize.sync({force: true })
 	    .complete(function(err) {
@@ -41,5 +46,7 @@ module.exports = function(config) {
 	            throw new Error('Cannot synchronise the database schema: ' + err);
             }
         });
+     
+    return db;
 }
 

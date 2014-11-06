@@ -5,11 +5,18 @@
  */
 
 
-var sequelize = require('sequelize');
-
-module.exports = {
-    account: sequelize.STRING,
-    token: sequelize.STRING,
-    refresh_token: sequelize.STRING
-
+module.exports = function(sequelize, dataTypes) {
+    var account = sequelize.define( "Account", {
+        account_name: dataTypes.STRING,
+        access_token: dataTypes.STRING,
+        refresh_token: dataTypes.STRING
+    }, {
+        classMethods: {
+            associate: function(models) {
+                account.belongsTo(models.user)
+            }
+        }
+    })
+    return account;
 };
+
