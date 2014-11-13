@@ -7,7 +7,7 @@
 
 var sequelize = require('sequelize');
 var db = {};
-
+var utils = require('./utils.js');
 
 /**
  * @param config database config
@@ -46,7 +46,9 @@ module.exports = function(config) {
 	            throw new Error('Cannot synchronise the database schema: ' + err);
             }
         });
-     
+		
+	db.utils = utils(db, config);
+	
     return db;
 }
 

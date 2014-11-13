@@ -19,7 +19,8 @@ If NODE_ENV is not issued, the file is *config/config.development.js*.
 				cert: fs.readFileSync('./ssl/server.crt')
 			},
 			dbOptions: {dbname:'database', username:'<username>', 
-		    password:'<password>', options:{dialect: '<dialect>', logging: false}
+		    password:'<password>', options:{dialect: '<dialect>', logging: false},
+			encryptKey:'<encryptkey>'
 		    },
 			sessionSecret: '<SessionSecret>',
 			auth: {
