@@ -5,5 +5,8 @@ module.exports = {
 	encryptKey: '',
 	sslport: 5001,
 	sslOptions: null,
-	dbOptions: null
+	dbOptions: null,
+	auth: {
+		allowRegistration: false
+	}
 }
