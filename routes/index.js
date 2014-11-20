@@ -19,8 +19,9 @@ var partials = function (req, res) {
 /**
  * @param app Express app instance
  * @param passport Passport instance
+ * @param db database instance
  */
-module.exports = function(app, passport) {
+module.exports = function(app, passport, db) {
 	
 	app.use("/", express.static(path.join(__dirname + "/../", 'public')));
 	app.use(function(req, res, next) {
