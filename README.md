@@ -23,6 +23,7 @@ If NODE_ENV is not issued, the file is *config/config.development.js*.
 			encryptKey:'<encryptkey>'
 		    },
 			sessionSecret: '<SessionSecret>',
+			debug: true,
 			auth: {
 				googleAuth: {
 					clientID: '<ClientID>',

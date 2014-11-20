@@ -18,15 +18,26 @@ var partials = function (req, res) {
 
 /**
  * @param app Express app instance
+ * @param config Application config
  * @param passport Passport instance
  * @param db database instance
  */
-module.exports = function(app, passport, db) {
+module.exports = function(app, config, passport, db) {
 	
 	app.use("/", express.static(path.join(__dirname + "/../", 'public')));
 	app.use(function(req, res, next) {
 		res.cookie('XSRF-TOKEN', req.csrfToken());
 		next();
+	});
+
+	// Handler for errors that are displayed after redirects
+	app.use(function(req, res, next) {
+		if (req.session.errors && req.session.errors.length > 0) {
+			res.render('error.html', {errors: req.session.errors});
+			req.session.errors = [];
+		} else {
+			next();
+		}
 	});
 
 	app.get('/', index);
@@ -43,5 +54,13 @@ module.exports = function(app, passport, db) {
 	app.get('/loggedin', auth.loggedIn);
 	app.post('/logout', auth.logout);
 
+	app.use(function(err, req, res, next) {
+		if (config.debug) {
+			console.error(err.stack);
+		}
+		res.status(500);
+		res.send('Internal server error');
+	});
+	
 	app.get('*', index);
 }
