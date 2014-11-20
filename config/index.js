@@ -20,7 +20,18 @@ module.exports = (function(filename) {
 }());
 
 function extend(target, object) {
+	if (typeof object != 'object') return;
 	for (var prop in object) {
-		target[prop] = object[prop];
+		if (typeof object[prop] != "undefined") {
+			if (object[prop] === target) continue;
+			if (target[prop] != null && typeof target[prop] == 'object' &&
+				object[prop] != null && typeof object[prop] == 'object') {
+				extend(target[prop], object[prop]);
+			} else if (Array.isArray(target[prop]) && Array.isArray(object[prop])) {
+				target[prop].concat(object[prop]);
+			} else {
+				target[prop] = object[prop];
+			}
+		}
 	}
 }

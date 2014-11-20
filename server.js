@@ -81,7 +81,7 @@ module.exports = function() {
 		app.use(csrf({value: csrfValue}));
 
 		routes(app, passport, db);
-		auth(passport, config.auth);
+		auth(passport, config.auth, db);
 	}
 	
 	/**

@@ -4,7 +4,9 @@ module.exports = {
 	port: process.env.PORT,
 	dbOptions: getHerokuDBOptions(),
 	sessionSecret: process.env.SESSIONSECRET,
+	encryptKey: process.env.ENCRYPTKEY,
 	auth: {
+		allowRegistration: process.env.ALLOWREGISTRATION,
 		googleAuth: {
 			clientID: process.env.googleClientID,
 			clientSecret: process.env.googleClientSecret

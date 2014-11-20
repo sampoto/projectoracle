@@ -11,8 +11,9 @@ var OAuth2Strategy = require('passport-oauth2');
  * @param authConfig Object containing auth options for different providers
  * @param authConfig.googleAuth Google auth options
  * @param authConfig.flowdockAuth Flowdock auth options
+ * @param db Database instance
  */
-module.exports = function(passport, authConfig) {
+module.exports = function(passport, authConfig, db) {
     passport.serializeUser(function(id, done) {
         done(null, id);
     });
@@ -21,14 +22,14 @@ module.exports = function(passport, authConfig) {
     });
 
 	if (authConfig) {
-		configureGoogleAuth(passport, authConfig);
+		configureGoogleAuth(passport, db, authConfig);
 		configureFlowdockAuth(passport, authConfig);
 	} else {
 		throw new Error("Authentication options are not defined.");
 	}
 };
 
-function configureGoogleAuth(passport, authConfig) {
+function configureGoogleAuth(passport, db, authConfig) {
 	// Configure google authentication
 	var googleClientID = authConfig.googleAuth ? authConfig.googleAuth.clientID : null;
 	var googleClientSecret = authConfig.googleAuth ? authConfig.googleAuth.clientSecret : null;
@@ -43,7 +44,22 @@ function configureGoogleAuth(passport, authConfig) {
         callbackURL     : googleCallbackURL,
     },
     function(token, refreshToken, profile, done) {
-		return done(null, {username: profile.emails[0].value});
+		db.utils.getUser(profile.emails[0].value, function(err, user) {
+			if (!err) {
+				return done(null, {username: user.email});
+			} else if (authConfig.allowRegistration) {
+				// Create account automatically if registration is allowed
+				db.utils.createUser(profile.emails[0].value, function(err, user) {
+					if (!err) {
+						return done(null, {username: user.email});
+					} else {
+						return done(new Error('Account creation failed'), null);
+					}
+				});
+			} else {
+				return done(new Error("Account doesn't exist"), null);
+			}
+		});
     }));
 }
 
