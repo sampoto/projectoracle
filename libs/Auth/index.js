@@ -57,7 +57,7 @@ function configureGoogleAuth(passport, db, authConfig) {
 					}
 				});
 			} else {
-				return done(new Error("Account doesn't exist"), null);
+				return done(new Error("No account exists for given email"), null);
 			}
 		});
     }));

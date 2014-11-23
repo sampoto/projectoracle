@@ -6,6 +6,7 @@ module.exports = {
 	sslport: 5001,
 	sslOptions: null,
 	dbOptions: null,
+	debug: false,
 	auth: {
 		allowRegistration: false
 	}

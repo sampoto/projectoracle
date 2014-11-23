@@ -12,7 +12,13 @@
 
 		googleAuthCallback: function(req, res, next) {
 			passport.authenticate('google', function(err, user) {
-				if (err) { return next(err); }
+				if (err) {
+					if (typeof req.session.errors == "undefined") {
+						req.session.errors = [];
+					}
+					req.session.errors.push(err.message);
+					return res.redirect('/');
+				}
 				req.logIn(user, function(err) {
 					if (!err) {
 						res.cookie('user', user.username);
