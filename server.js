@@ -30,6 +30,7 @@ module.exports = function() {
 	    
 	    // Connect to database
 	    db = new database(config.dbOptions);
+		db.init();
 	
 		http.createServer(app).listen(config.port, function(){
 			console.log('Express http server listening on port ' + config.port);

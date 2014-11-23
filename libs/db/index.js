@@ -6,7 +6,6 @@
 
 
 var sequelize = require('sequelize');
-var db = {};
 var utils = require('./utils.js');
 
 /**
@@ -14,40 +13,58 @@ var utils = require('./utils.js');
  */
 module.exports = function(config) {
 
-	if (config) {
-		this.sequelize = new sequelize(config.dbname, config.username, 
-		config.password, config.options);
-	} else {
-	    throw new Error('No database config defined');
-	}
+	var db = {};
+	var self = this;
 
-	this.sequelize.authenticate()
-	.complete(function(err) {
-		if (!!err) {
-			throw new Error('Unable to connect to the database: ' + err);
-	    }
-	});
+	db.init = function(callback) {
+		callback = callback || function() {};
+
+		if (config) {
+			self.sequelize = new sequelize(config.dbname, config.username, 
+			config.password, config.options);
+		} else {
+			return callback(new Error('No database config defined'));
+		}
+
+		self.sequelize.authenticate()
+		.complete(function(err) {
+			if (!!err) {
+				return callback(new Error('Unable to connect to the database: ' + err));
+			} else {
+				setup(config, callback);
+			}
+		});
+	}
 	
-	// Define the database model
-    db.user = this.sequelize.import(__dirname + '/models/user');
-    db.account = this.sequelize.import(__dirname + '/models/account');
-	db.project = this.sequelize.import(__dirname + '/models/project');
-	db.googledoc = this.sequelize.import(__dirname + '/models/googledoc');
-	
-	Object.keys(db).forEach(function(modelName) {
-        if ("associate" in db[modelName]) {
-            db[modelName].associate(db);
-        }
-    });
-	
-	this.sequelize.sync({force: true })
-	    .complete(function(err) {
-	        if(!!err) {
-	            throw new Error('Cannot synchronise the database schema: ' + err);
-            }
-        });
+	function setup(config, callback) {
+		// Define the database model
+		db.models = {};
+		db.models.user = self.sequelize.import(__dirname + '/models/user');
+		db.models.account = self.sequelize.import(__dirname + '/models/account');
+		db.models.project = self.sequelize.import(__dirname + '/models/project');
+		db.models.googledoc = self.sequelize.import(__dirname + '/models/googledoc');
 		
-	db.utils = utils(db, config);
+		Object.keys(db.models).forEach(function(modelName) {
+			if ("associate" in db.models[modelName]) {
+				db.models[modelName].associate(db.models);
+			}
+		});
+		
+		db.utils = utils(db, config);
+
+		sync(callback);
+	}
+	
+	function sync(callback) {
+		self.sequelize.sync({force: true })
+		.complete(function(err) {
+			if(!!err) {
+				return callback(new Error('Cannot synchronise the database schema: ' + err));
+			} else {
+				return callback(null);
+			}
+		});
+	}
 	
     return db;
 }

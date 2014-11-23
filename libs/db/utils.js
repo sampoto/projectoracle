@@ -16,7 +16,7 @@ module.exports = function(db, config) {
 	 * @param callback (err, user)
 	 */
 	utils.createUser = function(email, callback) {
-		db.user.findOrCreate({where: {email: email}, defaults:{}}).then(function(user) {
+		db.models.user.findOrCreate({where: {email: email}, defaults:{}}).then(function(user) {
 			if (callback)
 				callback(null, user);
 		})
@@ -32,7 +32,7 @@ module.exports = function(db, config) {
 	 * @param callback (error, user)
 	 */
 	utils.getUser = function(email, callback) {
-		db.user.find({email: email}).then(function(user) {
+		db.models.user.find({email: email}).then(function(user) {
 			callback(null, user);
 		})
 		.catch(function(err) {
@@ -51,7 +51,7 @@ module.exports = function(db, config) {
 	 */
 	utils.linkAccount = function(user, accountInfo, callback) {
 
-		db.account.create({account_name: accountInfo.account_name,
+		db.models.account.create({account_name: accountInfo.account_name,
 		access_token: encrypt(config.encryptKey, user.email, accountInfo.access_token),
         refresh_token: encrypt(config.encryptKey, user.email, accountInfo.refresh_token)})
 		.then(function(account) {
