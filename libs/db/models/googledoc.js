@@ -12,7 +12,7 @@ module.exports = function(sequelize, dataTypes) {
     }, {
         classMethods: {
             associate: function(models) {
-                googledoc.belongsTo(models.project)
+                googledoc.belongsTo(models.project);
             }
         }
     })

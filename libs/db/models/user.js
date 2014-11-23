@@ -11,8 +11,8 @@ module.exports = function(sequelize, dataTypes) {
     }, {
         classMethods: {
             associate: function(models) {
-                user.hasMany(models.project),
-                user.hasMany(models.account)
+                user.hasMany(models.project);
+                user.hasMany(models.account);
             }
         }
     });
