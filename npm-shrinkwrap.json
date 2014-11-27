@@ -1,6 +1,10 @@
 {
   "name": "ProjectOracle",
   "dependencies": {
+    "async": {
+      "version": "0.9.0",
+      "from": "async@"
+    },
     "body-parser": {
       "version": "1.8.1",
       "from": "body-parser@*",
@@ -563,22 +567,22 @@
     },
     "passport-oauth2": {
       "version": "1.1.2",
-      "from": "passport-oauth2@",
+      "from": "https://registry.npmjs.org/passport-oauth2/-/passport-oauth2-1.1.2.tgz",
       "resolved": "https://registry.npmjs.org/passport-oauth2/-/passport-oauth2-1.1.2.tgz",
       "dependencies": {
         "passport-strategy": {
           "version": "1.0.0",
-          "from": "passport-strategy@1.x.x",
+          "from": "https://registry.npmjs.org/passport-strategy/-/passport-strategy-1.0.0.tgz",
           "resolved": "https://registry.npmjs.org/passport-strategy/-/passport-strategy-1.0.0.tgz"
         },
         "oauth": {
           "version": "0.9.12",
-          "from": "oauth@0.9.x",
+          "from": "https://registry.npmjs.org/oauth/-/oauth-0.9.12.tgz",
           "resolved": "https://registry.npmjs.org/oauth/-/oauth-0.9.12.tgz"
         },
         "uid2": {
           "version": "0.0.3",
-          "from": "uid2@0.0.x"
+          "from": "uid2@0.0.3"
         }
       }
     },
@@ -642,20 +646,24 @@
       }
     },
     "sequelize": {
-      "version": "2.0.0-rc1",
-      "from": "sequelize@",
+      "version": "2.0.0-rc2",
+      "from": "sequelize@2.0.0-rc2",
+      "resolved": "https://registry.npmjs.org/sequelize/-/sequelize-2.0.0-rc2.tgz",
       "dependencies": {
         "dottie": {
           "version": "0.2.4",
-          "from": "dottie@0.2.4"
+          "from": "dottie@0.2.4",
+          "resolved": "https://registry.npmjs.org/dottie/-/dottie-0.2.4.tgz"
         },
         "generic-pool": {
           "version": "2.1.1",
-          "from": "generic-pool@2.1.1"
+          "from": "generic-pool@2.1.1",
+          "resolved": "https://registry.npmjs.org/generic-pool/-/generic-pool-2.1.1.tgz"
         },
         "inflection": {
           "version": "1.4.2",
-          "from": "inflection@1.4.2"
+          "from": "inflection@1.4.2",
+          "resolved": "https://registry.npmjs.org/inflection/-/inflection-1.4.2.tgz"
         },
         "lodash": {
           "version": "2.4.1",
@@ -669,10 +677,10 @@
           "version": "1.4.1",
           "from": "node-uuid@~1.4.1"
         },
-        "sequelize-bluebird": {
-          "version": "2.1.0",
-          "from": "sequelize-bluebird@git://github.com/sequelize/bluebird.git#9df139af53c5d346ffd38df30fc9dc60c62a9c98",
-          "resolved": "git://github.com/sequelize/bluebird.git#9df139af53c5d346ffd38df30fc9dc60c62a9c98"
+        "bluebird": {
+          "version": "2.3.2",
+          "from": "bluebird@2.3.2",
+          "resolved": "https://registry.npmjs.org/bluebird/-/bluebird-2.3.2.tgz"
         },
         "sql": {
           "version": "0.39.0",

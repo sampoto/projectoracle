@@ -3,10 +3,10 @@ module.exports = {
 	forcedSSL: true,
 	port: process.env.PORT,
 	dbOptions: {
-		dbname: "test",
-		username: process.env.PG_USER,
-		password: process.env.PQ_PASSWORD,
 		options: {
+			database: "test",
+			username: process.env.PG_USER,
+			password: process.env.PQ_PASSWORD,
 			dialect:  'postgres',
 			protocol: 'postgres',
 			logging: false

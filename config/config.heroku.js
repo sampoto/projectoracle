@@ -19,15 +19,16 @@ module.exports = {
 
 function getHerokuDBOptions(){
 	var match = process.env.DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
-	return {dbname: match[5],
-			username: match[1],
-			password: match[2],
-			options: {
+	return {options: {
+				database: match[5],
+				username: match[1],
+				password: match[2],
 				dialect:  'postgres',
 				protocol: 'postgres',
 				port:     match[4],
 				host:     match[3],
 				logging:  false
 			},
-			encryptKey: process.env.ENCRYPTKEY};
+			encryptKey: process.env.ENCRYPTKEY
+			};
 }
