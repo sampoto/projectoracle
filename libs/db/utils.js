@@ -5,11 +5,14 @@
  */
  
 var crypto = require('crypto');
+var projects = require('./utils.projects.js');
 var algorithm = 'aes-256-cbc';
 
 module.exports = function(db, config) {
 	var utils = {};
 
+	utils.projects = projects(db);
+	
 	/**
 	 * Creates account with given email address
 	 * @param email
