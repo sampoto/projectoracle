@@ -30,7 +30,12 @@ module.exports = function() {
 	    
 	    // Connect to database
 	    db = new database(config.dbOptions);
-		db.init();
+		db.init(function(err) {
+			if (err instanceof db.fatalError) {
+				throw err;
+			}
+			if (err) console.error("Couldn't initialize the database: " + err);
+		});
 	
 		http.createServer(app).listen(config.port, function(){
 			console.log('Express http server listening on port ' + config.port);
