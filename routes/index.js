@@ -33,8 +33,9 @@ module.exports = function(app, config, passport, db) {
 	// Handler for errors that are displayed after redirects
 	app.use(function(req, res, next) {
 		if (req.session.errors && req.session.errors.length > 0) {
-			res.render('error.html', {errors: req.session.errors});
-			req.session.errors = [];
+			var data = {errors: req.session.errors};
+			delete req.session.errors;
+			res.render('error.html', data);
 		} else {
 			next();
 		}
