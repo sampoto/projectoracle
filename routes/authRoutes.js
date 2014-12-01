@@ -20,9 +20,6 @@
 					return res.redirect('/');
 				}
 				req.logIn(user, function(err) {
-					if (!err) {
-						res.cookie('user', user.username);
-					}
 					return res.redirect('/');
 				});
 			})(req, res, next);
@@ -37,7 +34,12 @@
 		},
 		
 		logout: function(req, res, next) {
-			res.logout();
+			if (req.isAuthenticated()) {
+				req.logout();
+				res.send("true");
+			} else {
+				res.send("false");
+			}
 		}
 	}
  };

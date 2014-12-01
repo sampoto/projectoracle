@@ -18,6 +18,13 @@ angular.module('ProjectOracle')
 		return authService.isLoggedIn;
 	}
 
+	authService.logout = function() {
+		$http.post('/logout').
+        success(function(data){
+            authService.setLoginState(false);
+        });
+	}
+
 	return authService;
 
 })

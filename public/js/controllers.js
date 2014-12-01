@@ -5,11 +5,7 @@ angular.module('ProjectOracle')
 		});
 
 		$scope.logout = function() {
-			$http.get('/logout').
-				success(function(data) {
-					AuthService.setLoginState(false);
-					$state.go("login");
-				});
+			AuthService.logout();
 		}
 
 		// Get list of projects on initial page load
