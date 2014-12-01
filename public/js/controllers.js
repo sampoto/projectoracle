@@ -70,4 +70,16 @@ angular.module('ProjectOracle')
 	.controller('errorController', ['$scope', '$state', function($scope, $state) {
 		$scope.title = $state.params.title;
 		$scope.reason = $state.params.reason;
+	}])
+	.controller('docsController', ['$scope', '$state', '$http', '$sce', function($scope, $state, $http, $sce) {
+		$scope.trustSrc = function(src) {
+			return $sce.trustAsResourceUrl(src);
+		};
+		//$rootScope.projectId = $routeParams.projectId;
+		$scope.projectId = $state.params.projectId;
+		$http.get('/api/dapi/docs').
+			success(function(data){
+				$scope.docs = data;
+				$scope.defaultURL=data.docs[0].url;
+			});
 	}]);
