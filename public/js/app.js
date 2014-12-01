@@ -28,6 +28,7 @@ config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
 		templateUrl: '/partials/pivotal.html'
 	}).state('project.docs', {
 		url: '/docs',
+		controller: 'docsController',
 		templateUrl: '/partials/docs.html'
 	}).state('error', {
 		templateUrl: '/partials/error.html',
