@@ -1,0 +1,34 @@
+.main {
+    position: fixed;
+    height: calc(100% - 90px);
+    padding: 0px;
+    border:hidden;
+}
+
+.doc_name {
+    width:100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding:10px;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.google_icon {
+    float: left;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.doc_icon{
+    background-image:url('/img/docs-16.png');
+}
+
+.spreadsheet_icon{
+    background-image:url('/img/spreadsheets-16.png');
+}
