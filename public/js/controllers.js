@@ -1,3 +1,72 @@
+function pivotal($scope, $state, $http) {
+	$scope.projectId = $state.params.projectId;
+	$http.get('/api/dapi/pivotal/project').
+		success(function(data){
+			$scope.pivotalProject = data;
+		});
+
+	// Get all the icebox stories (current_state: 'unscheduled')
+	$http.get('/api/dapi/pivotal/stories/unscheduled').
+		success(function(data){
+			$scope.iceboxStories = data;
+		});
+
+	// Current iterations
+	$http.get('/api/dapi/pivotal/iterations/current').
+		success(function(data){
+			// Calculate total estimates for all iterations
+			for(var iterationKey in data) {
+				var totalPoints = 0;
+				var donePoints = 0;
+				var iteration = data[iterationKey];
+				for(var storyKey in iteration.stories) {
+					var story = iteration.stories[storyKey];
+					totalPoints += story.estimate ? story.estimate : 0;
+					console.log("Story '" + story.name + "' has state " + story.current_state);
+
+					if(story.current_state == 'accepted') {
+						donePoints += story.estimate ? story.estimate : 0;
+					}
+
+				}
+
+				data[iterationKey].totalPoints = totalPoints;
+				data[iterationKey].donePoints = donePoints;
+			}
+			$scope.currentIterations = data;
+		});
+
+	// Backlog iterations
+	$http.get('/api/dapi/pivotal/iterations/backlog').
+		success(function(data){
+			for(var iterationKey in data) {
+				var totalPoints = 0;
+				var iteration = data[iterationKey];
+				for(var storyKey in iteration.stories) {
+					var story = iteration.stories[storyKey];
+					totalPoints += story.estimate ? story.estimate : 0;
+				}
+				data[iterationKey].totalPoints = totalPoints;
+			}
+			$scope.backlogIterations = data;
+		});
+
+	// Get memberships for owner information
+	$http.get('/api/dapi/pivotal/memberships').
+		success(function(data){
+			// We don't need actual membership data, only the person resources inside
+			var persons = [];
+			for (var membershipKey in data) {
+				var membership = data[membershipKey];
+				var person = membership.person;
+
+				persons[person.id] = person;
+			}
+
+			$scope.persons = persons;
+		});
+}
+
 angular.module('ProjectOracle')
     .controller('headerCtrl', ['$scope', '$http', '$state', 'AuthService', 'DataFactory', function($scope, $http, $state, AuthService, DataFactory) {
         $scope.$watch(AuthService.isAuthenticated, function(loggedIn) {
@@ -77,4 +146,7 @@ angular.module('ProjectOracle')
 				$scope.docs = data;
 				$scope.defaultURL = data.docs[0].url;
 			});
+	}])
+	.controller('pivotalController', ['$scope', '$state', '$http', function($scope, $state, $http) {
+		pivotal($scope, $state, $http);
 	}]);

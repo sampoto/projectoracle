@@ -1,0 +1,279 @@
+<link rel="stylesheet" href="/css/pivotal.css" type="text/css"/>
+<script src="/js/pivotal.js"/>
+
+<div class="container">
+    <div class="row pivotal-panel-row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    CURRENT
+                </div>
+                <div class="pivotal-panel-container">
+                    <div ng-repeat="iteration in currentIterations" class="pivotal-panel-element">
+                        <div class="panel-body pivotal-panel-chunk">
+                            <div class="pivotal-panel-left">
+                                <i class="fa fa-circle pivotal-dot-icon pivotal-chunk-icon">
+                                </i>
+                                {{iteration.number}} |
+                                <a href="#">
+                                    {{iteration.start | date:'d MMM'}}
+                                    - Current
+                                </a>
+                            </div>
+                            <div class="pivotal-panel-right">
+                                Pts: {{iteration.donePoints}} of {{iteration.totalPoints}}
+                            </div>
+                        </div>
+
+                        <div class="pivotal-chunk-content" ng-repeat="story in iteration.stories" dynamic="story-popover-directive">
+                            <!-- ACCEPTED STORY BEGIN -->
+                            <div class="panel-body pivotal-panel-story story-accepted" ng-if="story.current_state == 'accepted'">
+                                <div class="pivotal-panel-left">
+                                    <!-- Stories don't have carets for now -->
+                                    <!--i class="fa fa-caret-right pivotal-caret-icon pivotal-story-icon">
+                                    </i-->
+
+                                    <!-- This icon depends on the story type -->
+                                    <i class="fa fa-star pivotal-feature-icon pivotal-story-icon" ng-if="story.story_type == 'feature'">
+                                    </i>
+                                    <i class="fa fa-bug pivotal-bug-icon pivotal-story-icon" ng-if="story.story_type == 'bug'">
+                                    </i>
+                                    <i class="fa fa-cog pivotal-chore-icon pivotal-story-icon" ng-if="story.story_type == 'chore'">
+                                    </i>
+                                    <i class="fa fa-flag-checkered pivotal-release-icon pivotal-story-icon" ng-if="story.story_type == 'release'">
+                                    </i>
+
+                                    <!-- Points icon -->
+                                    <i class="pivotal-story-icon pivotal-points-icon one-points" ng-if="story.estimate == 1">
+                                        &nbsp;
+                                    </i>
+                                    <i class="pivotal-story-icon pivotal-points-icon two-points" ng-if="story.estimate == 2">
+                                        &nbsp;
+                                    </i>
+                                    <i class="pivotal-story-icon pivotal-points-icon three-points" ng-if="story.estimate == 3">
+                                        &nbsp;
+                                    </i>
+                                    <i class="pivotal-story-icon pivotal-points-icon" ng-if="!story.estimate">
+                                        &nbsp;
+                                    </i>
+
+                                    <!-- Description icon -->
+                                    <i class="fa fa-comment pivotal-comment-icon pivotal-story-icon" ng-if="story.description">
+                                    </i>
+                                    <i class="pivotal-comment-icon pivotal-story-icon" ng-if="!story.description">
+                                    </i>
+
+                                    {{story.name}}
+                                    <span ng-if="story.owned_by_id">
+                                         (<a class="pivotal-story-owner-link" title="{{persons[story.owned_by_id].name}}">{{persons[story.owned_by_id].initials}}</a>)
+                                    </span>
+                                </div>
+                                <div class="pivotal-panel-right">
+                                </div>
+
+                            </div>
+                            <!-- ACCEPTED STORY END -->
+                            <!-- CURRENT STORY BEGIN -->
+                            <div class="panel-body pivotal-panel-story story-current" ng-if="story.current_state != 'accepted'">
+                                <div class="pivotal-panel-left">
+                                    <!-- Stories don't have carets for now -->
+                                    <!--i class="fa fa-caret-right pivotal-caret-icon pivotal-story-icon">
+                                    </i-->
+
+                                    <!-- This icon depends on the story type -->
+                                    <i class="fa fa-star pivotal-feature-icon pivotal-story-icon" ng-if="story.story_type == 'feature'">
+                                    </i>
+                                    <i class="fa fa-bug pivotal-bug-icon pivotal-story-icon" ng-if="story.story_type == 'bug'">
+                                    </i>
+                                    <i class="fa fa-cog pivotal-chore-icon pivotal-story-icon" ng-if="story.story_type == 'chore'">
+                                    </i>
+                                    <i class="fa fa-flag-checkered pivotal-release-icon pivotal-story-icon" ng-if="story.story_type == 'release'">
+                                    </i>
+
+                                    <!-- Points icon -->
+                                    <i class="pivotal-story-icon pivotal-points-icon one-points" ng-if="story.estimate == 1">
+                                        &nbsp;
+                                    </i>
+                                    <i class="pivotal-story-icon pivotal-points-icon two-points" ng-if="story.estimate == 2">
+                                        &nbsp;
+                                    </i>
+                                    <i class="pivotal-story-icon pivotal-points-icon three-points" ng-if="story.estimate == 3">
+                                        &nbsp;
+                                    </i>
+                                    <i class="pivotal-story-icon pivotal-points-icon" ng-if="!story.estimate">
+                                        &nbsp;
+                                    </i>
+
+                                    <!-- Description icon -->
+                                    <i class="fa fa-comment pivotal-comment-icon pivotal-story-icon" ng-if="story.description">
+                                    </i>
+                                    <i class="pivotal-comment-icon pivotal-story-icon" ng-if="!story.description">
+                                    </i>
+
+                                    {{story.name}}
+                                    <span ng-if="story.owned_by_id">
+                                         (<a class="pivotal-story-owner-link" title="{{persons[story.owned_by_id].name}}">{{persons[story.owned_by_id].initials}}</a>)
+                                    </span>
+                                </div>
+                                <div class="pivotal-panel-right">
+                                </div>
+                            </div>
+                            <!-- CURRENT STORY END -->
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="panel-footer">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    BACKLOG
+                </div>
+                <div class="pivotal-panel-container">
+                    <div ng-repeat="iteration in backlogIterations" class="pivotal-panel-element">
+                        <div class="panel-body pivotal-panel-chunk">
+                            <div class="pivotal-panel-left">
+                                <i class="fa fa-caret-down pivotal-chunk-icon pivotal-dropdown-icon" data-chunkid="{{iteration.number}}" ng-if="iteration.stories.length > 0">
+                                </i>
+                                <i class="pivotal-chunk-icon" ng-if="iteration.stories.length == 0">
+                                </i>
+                                {{iteration.number}} |
+                                <a href="#">
+                                    {{iteration.start | date:'d MMM'}}
+                                </a>
+                            </div>
+                            <div class="pivotal-panel-right">
+                                Pts: {{iteration.totalPoints}}
+                            </div>
+                        </div>
+
+                        <div class="pivotal-chunk-content"  data-chunkid="{{iteration.number}}" ng-repeat="story in iteration.stories" story-popover-directive>
+                            <!-- STORY BEGIN -->
+                            <div class="panel-body pivotal-panel-story story-backlog">
+                                <div class="pivotal-panel-left">
+                                    <!-- Stories don't have carets for now -->
+                                    <!--i class="fa fa-caret-right pivotal-caret-icon pivotal-story-icon">
+                                    </i-->
+                                    <!-- This icon depends on the story type -->
+                                    <i class="fa fa-star pivotal-feature-icon pivotal-story-icon" ng-if="story.story_type == 'feature'">
+                                    </i>
+                                    <i class="fa fa-bug pivotal-bug-icon pivotal-story-icon" ng-if="story.story_type == 'bug'">
+                                    </i>
+                                    <i class="fa fa-cog pivotal-chore-icon pivotal-story-icon" ng-if="story.story_type == 'chore'">
+                                    </i>
+                                    <i class="fa fa-flag-checkered pivotal-release-icon pivotal-story-icon" ng-if="story.story_type == 'release'">
+                                    </i>
+
+                                    <!-- Points icon -->
+                                    <i class="pivotal-story-icon pivotal-points-icon one-points" ng-if="story.estimate == 1">
+                                        &nbsp;
+                                    </i>
+                                    <i class="pivotal-story-icon pivotal-points-icon two-points" ng-if="story.estimate == 2">
+                                        &nbsp;
+                                    </i>
+                                    <i class="pivotal-story-icon pivotal-points-icon three-points" ng-if="story.estimate == 3">
+                                        &nbsp;
+                                    </i>
+                                    <i class="pivotal-story-icon pivotal-points-icon zero-points" ng-if="!story.estimate">
+                                        &nbsp;
+                                    </i>
+
+                                    <!-- Description icon -->
+                                    <i class="fa fa-comment pivotal-comment-icon pivotal-story-icon" ng-if="story.description">
+                                    </i>
+                                    <i class="pivotal-comment-icon pivotal-story-icon" ng-if="!story.description">
+                                    </i>
+
+                                    <!-- Use italics if story points aren't estimated -->
+                                    <i ng-if="!story.estimate">
+                                        {{story.name}}
+                                        <span ng-if="story.owned_by_id">
+                                         (<a class="pivotal-story-owner-link" title="{{persons[story.owned_by_id].name}}">{{persons[story.owned_by_id].initials}}</a>)
+                                        </span>
+                                    </i>
+                                    <span ng-if="story.estimate">
+                                        {{story.name}}
+                                        <span ng-if="story.owned_by_id">
+                                         (<a class="pivotal-story-owner-link" title="{{persons[story.owned_by_id].name}}">{{persons[story.owned_by_id].initials}}</a>)
+                                        </span>
+                                    </span>
+
+
+                                </div>
+                                <div class="pivotal-panel-right">
+                                </div>
+                            </div>
+                            <!-- STORY END -->
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="panel-footer">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    ICEBOX
+                </div>
+                <div class="pivotal-panel-container">
+                    <div class="panel-body pivotal-panel-story story-icebox" ng-repeat="story in iceboxStories" story-popover-directive>
+                        <div class="pivotal-panel-left">
+                            <!-- Stories don't have carets for now -->
+                            <!--i class="fa fa-caret-right pivotal-caret-icon pivotal-story-icon">
+                            </i-->
+
+                            <!-- This icon depends on the story type -->
+                            <i class="fa fa-star pivotal-feature-icon pivotal-story-icon" ng-if="story.story_type == 'feature'">
+                            </i>
+                            <i class="fa fa-bug pivotal-bug-icon pivotal-story-icon" ng-if="story.story_type == 'bug'">
+                            </i>
+                            <i class="fa fa-cog pivotal-chore-icon pivotal-story-icon" ng-if="story.story_type == 'chore'">
+                            </i>
+                            <i class="fa fa-flag-checkered pivotal-release-icon pivotal-story-icon" ng-if="story.story_type == 'release'">
+                            </i>
+
+                            <i class="pivotal-story-icon pivotal-points-icon one-points" ng-if="story.estimate == 1">
+                                &nbsp;
+                            </i>
+                            <i class="pivotal-story-icon pivotal-points-icon two-points" ng-if="story.estimate == 2">
+                                &nbsp;
+                            </i>
+                            <i class="pivotal-story-icon pivotal-points-icon three-points" ng-if="story.estimate == 3">
+                                &nbsp;
+                            </i>
+                            <i class="pivotal-story-icon pivotal-points-icon zero-points" ng-if="!story.estimate">
+                                &nbsp;
+                            </i>
+
+                            <i class="fa fa-comment pivotal-comment-icon pivotal-story-icon" ng-if="story.description">
+                            </i>
+                            <i class="pivotal-comment-icon pivotal-story-icon" ng-if="!story.description">
+                            </i>
+
+                            <!-- Use italics if story points aren't estimated -->
+                            <i ng-if="!story.estimate">
+                                {{story.name}}
+                            </i>
+                            <span ng-if="story.estimate">
+                                {{story.name}}
+                            </span>
+                        </div>
+                        <div class="pivotal-panel-right">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="panel-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

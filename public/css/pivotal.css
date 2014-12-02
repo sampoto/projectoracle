@@ -1,0 +1,356 @@
+html, body,
+.container,
+.pivotal-panel-row,
+.pivotal-panel-row .col-md-4 {
+    height: 100%;
+}
+
+.pivotal-panel-row {
+    padding-top: 10px;
+}
+
+.pivotal-panel-row .panel {
+    border-radius: 10px;
+    height: 85%;
+}
+
+.pivotal-panel-row .panel-heading {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 10px;
+    border: none;
+
+    background-color: #333333;
+    color: #FFF;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 5px;
+    padding-left: 10px;
+    margin: 0px;
+}
+
+.pivotal-panel-element {
+    display: table-cell;
+    width: 100%;
+}
+
+.pivotal-panel-chunk {
+    padding: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: #FFF;
+    text-shadow: 1px 1px 3px #000;
+    font-size: 11px;
+
+    border-top: 1px solid #fff;
+
+    /* Gradient background */
+    background: #b5bfbf; /* Old browsers */
+    background: -moz-linear-gradient(top,  #b5bfbf 0%, #7b8590 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#b5bfbf), color-stop(100%,#7b8590)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #b5bfbf 0%,#7b8590 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #b5bfbf 0%,#7b8590 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #b5bfbf 0%,#7b8590 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #b5bfbf 0%,#7b8590 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b5bfbf', endColorstr='#7b8590',GradientType=0 ); /* IE6-9 */
+}
+
+.pivotal-panel-chunk a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.pivotal-panel-chunk a:hover {
+    text-decoration: underline;
+}
+
+.pivotal-panel-left {
+    float: left;
+}
+
+.pivotal-panel-right {
+    float: right;
+}
+
+.pivotal-panel-container {
+    display: table;
+    width: 100%;
+    /* FIXME: For now, these have fixed size because 100% doesn't seem to work */
+    height: 600px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    background-color: #AEB6B9;
+    border: none;
+}
+
+.pivotal-panel-chunk, .pivotal-panel-story {
+    -webkit-box-shadow: 0px 10px 30px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    0px 10px 30px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         0px 10px 30px 0px rgba(50, 50, 50, 0.75);
+}
+
+.pivotal-panel-background {
+    height: 100%;
+    background-color: #AEB6B9;
+    /* Drop shadow on top only */
+    -webkit-box-shadow: inset 0 20px 20px -20px rgba(0,0,0,0.8);
+    -moz-box-shadow: inset 0 20px 20px -20px rgba(0,0,0,0.8);
+    box-shadow: inset 0 20px 40px -20px rgba(0,0,0,0.8);
+    /*box-shadow: 1px 10px 30px -6px #000 inset;*/
+
+    /*border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;*/
+    border: none;
+
+}
+
+.pivotal-panel-row .panel-footer {
+    width: 100%;
+    height: 10px;
+    background-color: #AEB6B9;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border: none;
+}
+
+.pivotal-chunk-icon,
+.pivotal-story-icon {
+    padding-top: 2px;
+    /* Icon width can be adjusted if a smaller dot/circle icon is found */
+    width: 12px;
+    float: left;
+    text-shadow: none;
+}
+
+/* Style for all story panels */
+.pivotal-panel-story {
+    padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: #000;
+    font-size: 13px;
+
+    border-top: 1px solid #fff;
+}
+
+/* Story background colors */
+.story-current {
+    background-color: #F3F3D1;
+    border-bottom: 1px solid #DBDB80;
+}
+
+.story-current:hover {
+    background-color: #F0F0C6;
+}
+
+.story-accepted {
+    background-color: #DAEBCF;
+    border-top: 1px solid #EEFCE2;
+    border-bottom: 1px solid #C3D5B4;
+}
+
+.story-accepted:hover {
+    background-color: #C6D9B7;
+}
+
+.story-backlog {
+    background-color: #F4F4F4;
+    border-bottom: 1px solid #DDDDDD;
+}
+
+.story-backlog:hover {
+    background-color: #E6E6E6;
+}
+
+.story-icebox {
+    background-color: #E4EFF7;
+    border-bottom: 1px solid #DDDDDD;
+}
+
+.story-icebox:hover {
+    background-color: #D1E0ED;
+}
+
+.pivotal-feature-icon {
+    color: #EBC83E;
+}
+
+.pivotal-bug-icon {
+    color: #F55;
+}
+
+.pivotal-chore-icon {
+    color: #AAA;
+}
+
+.pivotal-release-icon {
+    color: #000;
+}
+
+.pivotal-comment-icon {
+    font-size: 12px;
+    width: 18px;
+
+    color: #F5F5FF;
+    /*-webkit-text-stroke: 1px #AAF;*/
+
+    text-shadow:
+    1px 1px 0 #AAF,
+        /* Simulated effect for Firefox and Opera
+           and nice enhancement for WebKit */
+    -1px -1px 0 #AAF,
+    1px -1px 0 #AAF,
+    -1px  1px 0 #AAF,
+    1px  1px 0 #AAF;
+}
+
+.pivotal-caret-icon {
+    color: #AAAAAA;
+    text-shadow: 0 0 2px #000 inset;
+}
+
+.pivotal-points-icon {
+    vertical-align: bottom;
+    margin-left: 4px;
+    margin-right: 8px;
+    width: 11px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.zero-points {
+    background-image: url('/img/0pts.png');
+}
+
+.one-points {
+    background-image: url('/img/1pts.png');
+}
+
+.two-points {
+    background-image: url('/img/2pts.png');
+}
+
+.three-points {
+    background-image: url('/img/3pts.png');
+}
+
+.pivotal-dot-icon {
+    padding-top: 5px;
+    font-size: 5px;
+    color: #fff;
+}
+
+.pivotal-story-owner-link {
+    color: #0957A6;
+    text-decoration: none;
+}
+
+.pivotal-story-owner-link:hover {
+    text-decoration: none;
+}
+
+/* STORY POPOVER STYLES */
+.popover {
+    width: 400px;
+    max-width: none;
+}
+
+.popover-title {
+    background-color: #000;
+    color: #FFF;
+    margin-bottom: 0;
+}
+
+.popover-row {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 0;
+    border-bottom: 1px solid #ddd;
+
+}
+
+.popover-story-current {
+    background-color: #F3F3D1;
+}
+
+.popover-story-accepted {
+    background-color: #DAEBCF;
+}
+
+.popover-story-backlog {
+    background-color: #F4F4F4;
+}
+
+.popover-story-icebox {
+    background-color: #E4EFF7;
+}
+
+.popover-content {
+    margin: 0;
+    padding: 0;
+}
+
+.popover-content p {
+    padding-left: 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.popover-description-title {
+    color: #888;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.popover-description {
+    color: #000;
+    font-size: 12px;
+}
+
+/* Status text spans */
+.popover-status-text {
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.popover-status-color-accepted {
+    color: #5a840b;
+}
+
+.popover-status-color-delivered {
+    margin-left: 10px;
+    color: #EBC83E;
+}
+
+/* All other current_states have dark grey text */
+.popover-status-color-default {
+    color: #333;
+}
+
+.popover-footer {
+    margin: 0;
+    padding: 8px 14px;
+    line-height: 18px;
+    background-color: #DDD;
+    border-bottom: 1px solid #EBEBEB;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    font-style: italic;
+    color: #555;
+    font-size: 11px;
+    font-family: Helvetica, sans-serif;
+}
+
+.popover-footer-left {
+    height: 18px;
+    float: left;
+}
+
+.popover-footer-right {
+    height: 18px;
+    float: right;
+}
