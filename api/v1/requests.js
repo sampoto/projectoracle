@@ -3,7 +3,8 @@
  * TIE-13106 Project Work on Pervasive Systems
  * Request implementations for API v1
  */
- 
+var utils = require('../../utils.js');
+
 module.exports = function(db) {
 
 	var requests = {};
@@ -38,6 +39,30 @@ module.exports = function(db) {
 				} else {
 					res.status(404).send("Project doesn't exist");
 				}
+			} else {
+				next(err);
+			}
+		});
+	}
+	
+	requests.getFlowMessages = function(req, res, next) {
+		db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
+			if (!err) {
+				db.utils.projects.getFlowdockAppInfo(req.user, project, function(err, flowdockResource) {
+					if (!err) {
+						var token = flowdockResource.account.access_token;
+						var path = '/flows/' + flowdockResource.organization + '/' + req.params.flowId + '/messages';
+						utils.fetchJSON('api.flowdock.com', path, token, function(err, data) {
+							if (!err) {
+								res.send(data);
+							} else {
+								next(err);
+							}
+						});
+					} else {
+						next(err);
+					}
+				});
 			} else {
 				next(err);
 			}

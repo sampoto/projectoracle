@@ -143,6 +143,25 @@ module.exports = function(db) {
 	}
 	
 	/**
+	 * Convenience method for getting project's flowdock details and user account information
+	 * @param user
+	 * @param project
+	 * @param callback (err, info)
+	 */
+	projects.getFlowdockAppInfo = function(user, project, callback) {
+		projects.getFlowdockApp(project, function(err, info) {
+			db.utils.getAccount(user, "flowdock", function (err, account) {
+				if (!err) {
+					info.account = account;
+					callback(null, info);
+				} else {
+					callback(err, null);
+				}
+			});
+		});
+	}
+	
+	/**
 	 * Sets flowdock reference for given project
 	 * @param project
 	 * @param organization
