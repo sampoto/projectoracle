@@ -30,7 +30,7 @@
 		flowdockAuthCallback: passport.authorize('flowdock', { failureRedirect: '/' }),
 
 		loggedIn: function(req, res, next) {
-			res.send(req.isAuthenticated() ? req.user : '');
+			res.send(req.isAuthenticated() ? req.user.email : '');
 		},
 		
 		logout: function(req, res, next) {

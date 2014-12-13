@@ -14,11 +14,15 @@ var OAuth2Strategy = require('passport-oauth2');
  * @param db Database instance
  */
 module.exports = function(passport, authConfig, db) {
-    passport.serializeUser(function(id, done) {
-        done(null, id);
+    passport.serializeUser(function(user, done) {
+        done(null, user.id);
     });
     passport.deserializeUser(function(id, done) {
-        done(null, id);
+        db.models.user.find(id).then(function(user) {
+			done(null, user);
+		}).catch(function(err) {
+			done(err, null);
+		});
     });
 
 	if (authConfig) {
@@ -45,13 +49,13 @@ function configureGoogleAuth(passport, db, authConfig) {
     },
     function(token, refreshToken, profile, done) {
 		db.utils.getUser(profile.emails[0].value, function(err, user) {
-			if (!err) {
-				return done(null, {username: user.email});
+			if (!err && user != null) {
+				return done(null, user);
 			} else if (authConfig.allowRegistration) {
 				// Create account automatically if registration is allowed
 				db.utils.createUser(profile.emails[0].value, function(err, user) {
 					if (!err) {
-						return done(null, {username: user.email});
+						return done(null, user);
 					} else {
 						return done(new Error('Account creation failed'), null);
 					}
