@@ -106,7 +106,7 @@ module.exports = function(db) {
 	 * @param callback (err)
 	 */
 	projects.setFlowdockApp = function(project, organization, flow, callback) {
-		if (forganization != null && flow != null) {
+		if (organization != null && flow != null) {
 			project.flowdock_ref = organization + "/" + flow;
 		} else {
 			project.flowdock_ref = null;
