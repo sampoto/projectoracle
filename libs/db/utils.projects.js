@@ -116,6 +116,19 @@ module.exports = function(db) {
 	}
 	
 	/**
+	 * Adds user to given project
+	 * @param user
+	 * @param project
+	 * @param callback (err)
+	 */
+	projects.addUserToProject = function(user, project, callback) {
+		user.addProject(project);
+		user.save().complete(function(err) {
+			callback(err);
+		});
+	}
+	
+	/**
 	 * Gets flowdock app information from given project
 	 * @param project
 	 * @param callback (err, values)
