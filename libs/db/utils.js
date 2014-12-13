@@ -19,9 +19,9 @@ module.exports = function(db, config) {
 	 * @param callback (err, user)
 	 */
 	utils.createUser = function(email, callback) {
-		db.models.user.findOrCreate({where: {email: email}, defaults:{}}).then(function(user) {
+		db.models.user.findOrCreate({where: {email: email}, defaults:{}}).then(function(users) {
 			if (callback)
-				callback(null, user);
+				callback(null, users[0]);
 		})
 		.catch(function(err) {
 			if (callback)
