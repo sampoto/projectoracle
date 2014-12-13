@@ -6,6 +6,7 @@
 var express = require('express');
 var path = require('path');
 var dapi = require('../api/dapi');
+var Apiv1 = require('../api/v1');
 
 var index = function(req, res){
     res.render('index.html', {});
@@ -23,6 +24,8 @@ var partials = function (req, res) {
  * @param db database instance
  */
 module.exports = function(app, config, passport, db) {
+	
+	var apiv1 = Apiv1(db);
 	
 	app.use("/", express.static(path.join(__dirname + "/../", 'public')));
 	app.use(function(req, res, next) {
@@ -45,6 +48,7 @@ module.exports = function(app, config, passport, db) {
 	app.get('/partials/:name', partials);
 
 	app.use('/api/dapi', dapi);
+	app.use('/api/v1', apiv1);
 
 	var auth = require('./authRoutes.js')(passport);
 	app.get('/auth/google', auth.googleAuth);
