@@ -43,6 +43,37 @@ module.exports = function(db) {
 	};
 	
 	/**
+	 * Gets all projects of given user
+	 * @param user
+	 * @param callback (err, projects)
+	 */
+	projects.getUserProjects = function(user, callback) {
+		user.getProjects().then(function(projects) {
+			callback(null, projects);
+		}).catch(function(err) {
+			callback(err, null);
+		});
+	}
+
+	/**
+	 * Gets project by id for given user
+	 * @param user
+	 * @param id
+	 * @param callback (err, project)
+	 */
+	projects.getUserProjectById = function(user, id, callback) {
+		user.getProjects({ id: id }).then(function(projects) {
+			if (projects.length > 0) {
+				callback(null, projects[0]);
+			} else {
+				callback(null, null);
+			}
+		}).catch(function(err) {
+			callback(err, null);
+		});
+	}
+
+	/**
 	 * Gets all applications for given project
 	 * Returns applications as strings
 	 * @param project
