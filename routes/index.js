@@ -50,11 +50,11 @@ module.exports = function(app, config, passport, db) {
 	app.use('/api/dapi', dapi);
 	app.use('/api/v1', apiv1);
 
-	var auth = require('./authRoutes.js')(passport);
+	var auth = require('./authRoutes.js')(passport, db);
 	app.get('/auth/google', auth.googleAuth);
 	app.get('/auth/google/callback', auth.googleAuthCallback);
 	app.get('/auth/flowdock', auth.flowdockAuth);
-	app.get('/auth/flowdock/callback', auth.flowdockAuthCallback, function(req, res) { res.redirect('/'); });
+	app.get('/auth/flowdock/callback', auth.flowdockAuthCallback, auth.flowdockAuthLink);
 
 	app.get('/loggedin', auth.loggedIn);
 	app.post('/logout', auth.logout);

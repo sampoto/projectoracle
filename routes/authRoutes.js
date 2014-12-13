@@ -6,7 +6,7 @@
  /**
   * @param passport Passport instance
   */
- module.exports = function(passport) {
+ module.exports = function(passport, db) {
 	return {
 		googleAuth: passport.authenticate('google', { scope : ['profile', 'email'] }),
 
@@ -25,10 +25,29 @@
 			})(req, res, next);
 		},
 
-		flowdockAuth: passport.authorize('flowdock', { successRedirect : '/', failureRedirect: '/' }),
+		flowdockAuth: function(req, res) {
+			if (req.isAuthenticated()) {
+				passport.authorize('flowdock', { successRedirect : '/', failureRedirect: '/' })(req, res);
+			} else {
+				res.status(403).send('Not authenticated');
+			}
+		},
 
 		flowdockAuthCallback: passport.authorize('flowdock', { failureRedirect: '/' }),
 
+		flowdockAuthLink: function(req, res) {
+			if (req.isAuthenticated()) {
+				var account = req.account;
+				var accountInfo = { account_name: 'flowdock',
+									access_token: account.access_token,
+									refresh_token: account.refresh_token };
+				db.utils.linkAccount(req.user, accountInfo, null);
+				res.redirect('/');
+			} else {
+				res.status(403).send('Not authenticated');
+			}
+		},
+		
 		loggedIn: function(req, res, next) {
 			res.send(req.isAuthenticated() ? req.user.email : '');
 		},
