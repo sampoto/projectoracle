@@ -51,6 +51,9 @@ angular.module('ProjectOracle')
 }])
 .factory('ProjectLibrary', ['$state', 'DataFactory', function($state, DataFactory) {
 	var sdo = {
+		getProjects: function() {
+			return DataFactory.getProjects();
+		},
 		getApplications: function() {
 			var projectId = $state.params.projectId;
 			return DataFactory.getApplications(projectId);
