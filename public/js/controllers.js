@@ -95,17 +95,6 @@ angular.module('ProjectOracle')
 				}
 			}
 		});
-
-		// Checks if any project has been selected
-		$scope.projectSelected = function() {
-			if ($state.params.projectId) {
-				for (var project in $scope.projects) {
-					if ($state.params.projectId == $scope.projects[project].name)
-						return true;
-				}
-			}
-			return false;
-		}
 		
 		// Navigates to given project
 		$scope.selectProject = function(project) {
@@ -117,22 +106,31 @@ angular.module('ProjectOracle')
 			DataFactory.getApplications(projectId).success(function(pages) {
 				// Map applications to states and names
 				for (page in pages) {
-					pages[page].state = pages[page].app;
-					pages[page].name = pages[page].app;
+					pages[page].state = pages[page].id;
+					pages[page].name = appName(pages[page].id);
 				}
 				pages = [{state: "dashboard", name: "Dashboard"}].concat(pages);
 				$scope.projectNavigation = pages;
 			});
 		}
 
-		// Check that the project exists
-		if (!projects.data.filter(function(project) {
-			return project.id == $state.params.projectId;
-		}).length == 1) {
+		function appName(appId) {
+			if (appId == "flows") return "Flowdock";
+			if (appId == "pivotal") return "Pivotal tracker";
+			if (appId == "docs") return "Google spreadsheets";
+		}
+
+		var search = projects.data.filter(function(project) {
+			return $state.params.projectId == slugify(project.name);
+		});
+		if (search.length > 0) {
+			// This id is used in API calls
+			$scope.projectId = search[0].id;
+		} else {
 			$state.go('error', {title: 'Error', reason: "Project doesn't exist"});
 		}
 
-		updateProjectNavigation($state.params.projectId);
+		updateProjectNavigation($scope.projectId);
 
 		// Checks if given page is selected
 		$scope.isSelected = function(page) {
@@ -148,7 +146,6 @@ angular.module('ProjectOracle')
 		$scope.trustSrc = function(src) {
 			return $sce.trustAsResourceUrl(src);
 		};
-		$scope.projectId = $state.params.projectId;
 		$http.get('/api/dapi/docs').
 			success(function(data){
 				$scope.docs = data;
@@ -158,3 +155,14 @@ angular.module('ProjectOracle')
 	.controller('pivotalController', ['$scope', '$state', '$http', function($scope, $state, $http) {
 		pivotal($scope, $state, $http);
 	}]);
+	
+// Thanks to Mathew Byrne
+// https://github.com/mathewbyrne
+function slugify(text) {
+	return text.toString().toLowerCase()
+	.replace(/\s+/g, '-') // Replace spaces with -
+	.replace(/[^\w\-]+/g, '') // Remove all non-word chars
+	.replace(/\-\-+/g, '-') // Replace multiple - with single -
+	.replace(/^-+/, '') // Trim - from start of text
+	.replace(/-+$/, ''); // Trim - from end of text
+}

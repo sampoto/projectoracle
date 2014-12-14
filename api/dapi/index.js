@@ -1010,13 +1010,13 @@ module.exports = (function () {
 	});
 	
     router.get('/projects', function (req, res) {
-        res.send([{name: 'test1'}, {name: 'test2'}]);
+        res.send([{id: '1', name: 'test1'}, {id: '2', name: 'test2'}]);
     });
 
     router.get('/projects/:projectId/applications', function (req, res) {
-        res.send([{app: "flows"},
-            {app: "pivotal"},
-            {app: "docs"}]);
+        res.send([{id: "flows"},
+            {id: "pivotal"},
+            {id: "docs"}]);
     });
 
     router.get('/docs', function (req, res) {
