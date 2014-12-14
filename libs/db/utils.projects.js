@@ -52,18 +52,18 @@ module.exports = function(db) {
 	
 		var fetchList = [
 		function(cb) {
-				getFlowdockApp(project, function(err, values) {
-					cb((values != null) ? "flowdock" : null);
+				projects.getFlowdockApp(project, function(err, values) {
+					cb(err, (values != null) ? "flowdock" : null);
 				});
 			},
 			function(cb) {
-				getPivotalApp(project, function(err, projectId) {
-					cb((projectId != null) ? "pivotal" : null);
+				projects.getPivotalApp(project, function(err, projectId) {
+					cb(err, (projectId != null) ? "pivotal" : null);
 				});
 			},
 			function(cb) {
-				getGoogledocs(project, false, function(err, docs) {
-					cb((docs.length > 0) ? "googledocs" : null);
+				projects.getGoogleDocs(project, false, function(err, docs) {
+					cb(err, (docs.length > 0) ? "googledocs" : null);
 				});
 			}
 		];
@@ -128,7 +128,7 @@ module.exports = function(db) {
 	 * @param callback (err, values)
 	 */
 	projects.getPivotalApp = function(project, callback) {
-		if (project.flowdock_ref != null) {
+		if (project.pivotal_ref != null) {
 			callback(null, {projectId: project.pivotal_ref});
 		} else {
 			callback(null, null);
