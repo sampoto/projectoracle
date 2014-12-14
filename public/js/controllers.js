@@ -91,7 +91,7 @@ angular.module('ProjectOracle')
 				}).length == 1) {
 					$scope.projectId = $state.params.projectId;
 				} else {
-					$state.go('error', {title: 'Error', reason: "Project doesn't exist"});
+					$scope.projectId = "";
 				}
 			}
 		});
@@ -112,7 +112,7 @@ angular.module('ProjectOracle')
 			$state.go( "project.index", {projectId: project.name} );
 		}
     }])
-	.controller('projectController', ['$scope', '$state', 'DataFactory', function($scope, $state, DataFactory) {
+	.controller('projectController', ['$scope', '$state', 'DataFactory', 'projects', function($scope, $state, DataFactory, projects) {
 		function updateProjectNavigation(projectId) {
 			DataFactory.getApplications(projectId).success(function(pages) {
 				// Map applications to states and names
@@ -124,6 +124,14 @@ angular.module('ProjectOracle')
 				$scope.projectNavigation = pages;
 			});
 		}
+
+		// Check that the project exists
+		if (!projects.data.filter(function(project) {
+			return project.id == $state.params.projectId;
+		}).length == 1) {
+			$state.go('error', {title: 'Error', reason: "Project doesn't exist"});
+		}
+
 		updateProjectNavigation($state.params.projectId);
 
 		// Checks if given page is selected
