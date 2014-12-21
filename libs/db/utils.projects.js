@@ -25,6 +25,68 @@ module.exports = function(db) {
 				callback(err, null);
 		});
 	};
+	
+	/**
+	 * Creates project with given applications
+	 * The project is created only if it doesn't already exist
+	 * @param data
+	 * @param data.name
+	 * @param data.id (optional)
+	 * @param data.applications
+	 * @param data.users
+	 * @param callback
+	 */
+	projects.createProjectWithData = function(data, callback) {
+		var searchCondition = data.id ? Sequelize.or({project_name: data.name}, {id: data.id}) : {project_name: data.name};
+		var values = data.id ? {id: data.id} : {};
+		db.models.project.findOrCreate({where: searchCondition}, values).then(function(projectResults) {
+			async.parallel([
+			function(cb) {
+				async.each(data.applications, function(app, innerCb) {
+					projects.setApp(projectResults[0], app, innerCb);
+				}, cb);
+			},
+			function(cb) {
+				if (Array.isArray(data.users)) {
+					createProjectUsers(projectResults[0], data.users, cb);
+				} else {
+					cb(null, null);
+				}
+			}],
+			function(err, results) {
+				callback(err, projectResults[0]);
+			});
+		});
+	}
+
+	/**
+	 * Creates projects with given data
+	 * @param projectArr
+	 * @param clearNonExisting If true, deletes existing projects before trying to create projects again
+	 * @param callback (err)
+	 */
+	projects.createProjects = function(projectArr, clearNonExisting, callback) {
+		async.series([
+			function(cb) {
+				if (clearNonExisting) {
+					var projectIds = projectArr.map(function(project) { return project.id });
+					var projectNames = projectArr.map(function(project) { return project.name });
+					db.models.project.destroy({where: { project_name: { not: projectNames }, id: { not: projectIds }}}).complete(function(err) {
+						cb(err);
+					});
+				} else {
+					cb(null);
+				}
+			}, 
+			function(cb) {
+				async.each(projectArr, function(project, innerCb) {
+					projects.createProjectWithData(project, innerCb);
+				}, cb);
+			}
+		], function(err, results) {
+			callback(err);
+		});
+	}
 
 	/**
 	 * Deletes given project
@@ -126,6 +188,26 @@ module.exports = function(db) {
 		user.save().complete(function(err) {
 			callback(err);
 		});
+	}
+	
+	/**
+	 * Sets project app
+	 * @param project
+	 * @param app
+	 * @param callback
+	 */
+	projects.setApp = function(project, app, callback) {
+		if (app.id == "flowdock") projects.setFlowdockApp(project, app.organization, app.flow, callback);
+		if (app.id == "pivotal") projects.setPivotalApp(project, app.projectId, callback);
+		if (app.id == "googledocs") {
+			project.getGoogleDocs().then(function(docs) {
+				project.removeGoogleDocs(docs).then(function() {
+					async.each(app.docs, function(doc, cb) {
+						projects.createGoogleDoc(project, doc.name, doc.url, cb);
+					}, callback);
+				});
+			});
+		}
 	}
 	
 	/**
@@ -251,7 +333,7 @@ module.exports = function(db) {
 	projects.createGoogleDoc = function(project, name, url, callback) {
 		db.models.googledoc.create({doc_name: name, doc_url: url}).then(function(doc) {
 			project.addGoogleDoc(doc).then(function(doc) {
-				callback(err, doc);
+				callback(null, doc);
 			})
 			.catch(function(err) {
 				callback(err, null);
@@ -276,5 +358,23 @@ module.exports = function(db) {
 		});
 	}
 	
+	function createProjectUsers(project, users, callback) {
+		project.getUsers().then(function(projectUsers) {
+			return project.removeUsers(projectUsers);
+		}).then(function() {
+			async.each(users, function(userEmail, cb) {
+				db.utils.createUser(userEmail, function(err, user) {
+					if (!err) {
+						projects.addUserToProject(user, project, function(err) {
+							cb(err);
+						});
+					} else {
+						cb(err);
+					}
+				});
+			}, callback);
+		});
+	}
+
 	return projects;
 }

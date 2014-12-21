@@ -14,31 +14,38 @@ If NODE_ENV is not issued, the file is *config/config.development.js*.
 
         var fs = require('fs');
         module.exports = {
-			sslOptions: {
-				key: fs.readFileSync('./ssl/server.key'),
-				cert: fs.readFileSync('./ssl/server.crt')
-			},
-			dbOptions: {
-				options: {
-					database:'database', username:'<username>', 
-					password:'<password>', dialect: '<dialect>', 
-					logging: false
-				},
-				encryptKey:'<encryptkey>',
-				force: true
-		    },
-			sessionSecret: '<SessionSecret>',
-			debug: true,
-			auth: {
-				googleAuth: {
-					clientID: '<ClientID>',
-					clientSecret: '<ClientSecret>'
-				},
-				flowdockAuth: {
-					clientID: '<ClientID>',
-					clientSecret: '<ClientSecret>'
-				}
-			}
+        	sslOptions: {
+        		key: fs.readFileSync('./ssl/server.key'),
+        		cert: fs.readFileSync('./ssl/server.crt')
+        	},
+        	dbOptions: {
+        		options: {
+        			database:'database', username:'<username>', 
+        			password:'<password>', dialect: '<dialect>', 
+        			logging: false
+        		},
+        		encryptKey:'<encryptkey>',
+        		projects: [ 
+        			{name: "test", 
+        			applications: [ {id: "flowdock", organization: "<organization>", flow: "<flow>"},
+        							{id: "pivotal", projectId: "<projectId>"},
+        							{id: "googledocs", docs: [{name: "<name>", url: "<url>"}]}], 
+        			users: ["test@test.invalid"] }
+        		],
+        		force: true
+        	},
+        	sessionSecret: '<SessionSecret>',
+        	debug: true,
+        	auth: {
+        		googleAuth: {
+        			clientID: '<ClientID>',
+        			clientSecret: '<ClientSecret>'
+        		},
+        		flowdockAuth: {
+        			clientID: '<ClientID>',
+        			clientSecret: '<ClientSecret>'
+        		}
+        	}
         }
 3. To install and run locally, issue commands
 

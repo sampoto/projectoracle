@@ -56,7 +56,14 @@ module.exports = function(config) {
 				if (!!err) {
 					return callback(new Error('Unable to connect to the database: ' + err));
 				} else {
-					db.migrate(migrationOptions, callback);
+					db.migrate(migrationOptions, function(err) {
+						if (!err && config.projects) {
+							var forceProjects = typeof config.forceProjects != "undefined" ? config.forceProjects : false;
+							db.utils.projects.createProjects(config.projects, forceProjects, callback);
+						} else {
+							callback(err);
+						}
+					});
 				}
 		});
 	};
