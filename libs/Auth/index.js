@@ -4,7 +4,9 @@
  * Module for configuring auth
  */
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 var OAuth2Strategy = require('passport-oauth2');
+var Ptracker = require('pivotaltracker');
 
 /**
  * @param passport Passport instance
@@ -28,6 +30,7 @@ module.exports = function(passport, authConfig, db) {
 	if (authConfig) {
 		configureGoogleAuth(passport, db, authConfig);
 		configureFlowdockAuth(passport, authConfig);
+		configurePivotalAuth(passport);
 	} else {
 		throw new Error("Authentication options are not defined.");
 	}
@@ -86,4 +89,18 @@ function configureFlowdockAuth(passport, authConfig) {
 	function(token, refreshToken, profile, done) {
 		return done(null, {access_token: token, refresh_token: refreshToken});
     }));
+}
+
+function configurePivotalAuth(passport) {
+	passport.use('pivotal', new LocalStrategy(
+		function(username, password, done) {
+			Ptracker.getToken(username, password, function(err, token) {
+				if (!err) {
+					done(null, {trackerToken: token});
+				} else {
+					done(err, null);
+				}
+			});
+		})
+	);
 }

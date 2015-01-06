@@ -56,6 +56,9 @@ module.exports = function(app, config, passport, db) {
 	app.get('/auth/google/callback', auth.googleAuthCallback);
 	app.get('/auth/flowdock', auth.flowdockAuth);
 	app.get('/auth/flowdock/callback', auth.flowdockAuthCallback, auth.flowdockAuthLink);
+	
+	//Expect POST: {"username":"foo","password":"bar"}
+	app.post('/auth/pivotal', auth.pivotalAuth, auth.pivotalAuthLink);
 
 	app.get('/loggedin', auth.loggedIn);
 	app.post('/logout', auth.logout);

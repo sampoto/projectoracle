@@ -75,7 +75,7 @@ module.exports = function(db) {
 					if (!err) {
 						var token = flowdockResource.account.access_token;
 						var path = '/flows/' + flowdockResource.organization + '/' + req.params.flowId + '/messages';
-						utils.fetchJSON('api.flowdock.com', path, token, function(err, data) {
+						utils.fetchJSON('api.flowdock.com', path, {Authorization: 'Bearer ' + token}, function(err, data) {
 							if (!err) {
 								res.send(data);
 							} else {

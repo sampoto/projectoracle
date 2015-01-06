@@ -2,11 +2,13 @@
  * Project Oracle
  * TIE-13106 Project Work on Pervasive Systems
  */
- 
+var Ptracker = require('pivotaltracker');
+var utils = require('../utils.js');
+
  /**
   * @param passport Passport instance
   */
- module.exports = function(passport, db) {
+module.exports = function(passport, db) {
 	return {
 		googleAuth: passport.authenticate('google', { scope : ['profile', 'email'] }),
 
@@ -48,6 +50,37 @@
 			}
 		},
 		
+		pivotalAuth: function(req, res, next) {
+			if (req.isAuthenticated()) {
+				if (req.body.trackerToken && typeof req.body.trackerToken === 'string') {
+					var token = req.body.trackerToken;
+					// Test token using /me endpoint
+					utils.fetchJSON("www.pivotaltracker.com", "/services/v5/me", {"X-TrackerToken": token}, function(err, json) {
+						if (err) return next(err);
+						if (!json.error) {
+							var accountInfo = { account_name: 'pivotal',
+												access_token: token };
+							db.utils.linkAccount(req.user, accountInfo, null);
+							res.redirect('/');
+						} else {
+							next(new Error(json.error));
+						}
+					});
+				} else {
+					passport.authorize('pivotal', { successRedirect : '/', failureRedirect: '/' })(req, res, next);
+				}
+			} else {
+				res.status(403).send('Not authenticated');
+			}
+		},
+		
+		pivotalAuthLink: function(req, res) {
+			var accountInfo = { account_name: 'pivotal',
+								access_token: req.account.trackerToken };
+			db.utils.linkAccount(req.user, accountInfo, null);
+			res.redirect('/');
+		},
+		
 		loggedIn: function(req, res, next) {
 			res.send(req.isAuthenticated() ? req.user.email : '');
 		},
@@ -60,6 +93,5 @@
 				res.send("false");
 			}
 		}
-	}
- };
-
+	};
+};

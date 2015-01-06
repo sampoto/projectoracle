@@ -128,7 +128,9 @@ module.exports = function(db) {
 			if (projects.length > 0) {
 				callback(null, projects[0]);
 			} else {
-				callback(null, null);
+				var error = new Error('Project does not exist');
+				error.code = 'nonexistentproject';
+				callback(error, null);
 			}
 		}).catch(function(err) {
 			callback(err, null);
