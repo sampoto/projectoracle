@@ -8,6 +8,29 @@ module.exports = function(db) {
 
 	var requests = {};
 	
+	requests.getAccounts = function(req, res, next) {
+		db.utils.getAccounts(req.user, function(err, accounts) {
+			if (!err) {
+				var accountNames = accounts.map(function(account) {
+					return account.account_name;
+				});
+				res.send(accountNames);
+			} else {
+				next(err);
+			}
+		});
+	}
+
+	requests.deleteAccount = function(req, res, next){
+		db.utils.deleteAccount(req.user, req.params.appId, function(err) {
+			if (!err) {
+				req.status(200).send('Account deleted');
+			} else {
+				next(err);
+			}
+		});
+	}
+	
 	requests.getProjects = function(req, res, next) {
 		db.utils.projects.getUserProjects(req.user, function(err, projects) {
 			if (!err) {

@@ -1005,6 +1005,10 @@ module.exports = (function () {
 
     var router = express.Router();
 
+	router.get('/applications', function(req, res) {
+		res.send(["flowdock", "pivotal"]);
+	});
+	
     router.get('/projects', function (req, res) {
         res.send([{name: 'test1'}, {name: 'test2'}]);
     });

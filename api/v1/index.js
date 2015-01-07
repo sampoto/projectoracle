@@ -17,6 +17,9 @@ module.exports = function(db) {
 
 	router.all('*', requireAuthentication);
 
+	router.get('/accounts', requests.getAccounts);
+	router.delete('/accounts/:appId', requests.deleteAccount);
+
     router.get('/projects', requests.getProjects);
     router.get('/projects/:projectId/applications', requests.getProjectApplications);
 

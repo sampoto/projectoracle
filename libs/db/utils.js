@@ -96,6 +96,39 @@ module.exports = function(db, config) {
 		});
 	}
 	
+	/**
+	 * Gets linked accounts for given user
+	 * @param user
+	 * @param callback
+	 */
+	utils.getAccounts = function(user, callback) {
+		user.getAccounts().then(function(accounts) {
+			callback(null, accounts);
+		}).catch(function(err) {
+			callback(err, null);
+		});
+	}
+	
+	/**
+	 * Deletes given account from user
+	 */
+	utils.deleteAccount = function(user, accountName, callback) {
+		user.getAccounts({where: {account_name: accountName}}).then(function(accounts) {
+			if (accounts.length > 0) {
+				var acc = accounts[0];
+				acc.destroy().then(function() {
+					callback();
+				}).catch(function(err) {
+					callback(err);
+				});
+			} else {
+				callback(new Error('Account not found'));
+			}
+		}).catch(function(err) {
+			callback(err);
+		});
+	}
+	
 	return utils;
 }
 
