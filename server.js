@@ -11,6 +11,7 @@ var https = require('https');
 var path = require('path');
 var passport = require('passport');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var csrf = require('csurf');
 var database = require('./libs/db');
 var auth = require('./libs/Auth');
@@ -81,6 +82,7 @@ module.exports = function() {
 		app.use(bodyParser.urlencoded({
 		  extended: true
 		}))
+		app.use(cookieParser());
 		app.use(session({ resave: true, saveUninitialized: true, secret: config.sessionSecret }));
 		app.use(passport.initialize());
 		app.use(passport.session());
@@ -110,7 +112,7 @@ function csrfValue(req) {
 	} else if (req.query && req.query._csrf) {
 		token = req.query._csrf;
 	} else {
-		token = req.headers['x-csrf-token'] || req.headers['x-xsrf-token'];
+		token = req.headers['x-csrf-token'] || req.headers['x-xsrf-token'] || req.cookies["XSRF-TOKEN"];
 	}
 	return token;
 }
