@@ -25,6 +25,20 @@ module.exports = function(db) {
 
 	router.get('/projects/:projectId/flow/:flowId/messages', requests.getFlowMessages);
 	
+	router.get('/projects/:projectId/pivotal', requests.getPivotalProject); //All data from one project
+	router.get('/projects/:projectId/pivotal/stories', requests.getPivotalStories); //get all stories from project
+	router.get('/projects/:projectId/pivotal/stories/:storyId', requests.getPivotalStory); //get one story by story id
+	router.get('/projects/:projectId/pivotal/iterations', requests.getPivotalIterations);
+	router.get('/projects/:projectId/pivotal/memberships', requests.getPivotalMemberships);
+
+	router.use(function(err, req, res, next) {
+		if (err.code == 'nonexistentproject') {
+			res.status(404).send('Project does not exist');
+		} else {
+			next(err);
+		}
+	});
+	
     router.get('*', function (req, res) {
         res.status(404).send('Not Found');
     });

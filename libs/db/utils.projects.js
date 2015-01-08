@@ -213,7 +213,7 @@ module.exports = function(db) {
 	}
 	
 	/**
-	 * Gets flowdock app information from given project
+	 * Gets Pivotal Tracker app information from given project
 	 * @param project
 	 * @param callback (err, values)
 	 */
@@ -283,7 +283,7 @@ module.exports = function(db) {
 	}
 	
 	/**
-	 * Sets flowdock reference for given project
+	 * Sets Pivotal Tracker reference for given project
 	 * @param project
 	 * @param projectId
 	 * @param callback (err)
@@ -298,6 +298,26 @@ module.exports = function(db) {
 		.catch(function(err) {
 			if (callback)
 				callback(err);
+		});
+	}
+	
+	/**
+	 * Convenience function for getting project, Pivotal tracker client and pivotal tracker project id
+	 * from project ID
+	 * @param user
+	 * @param projectId Project's ID in database
+	 * @param callback (err, project, client, projectId)
+	 */
+	projects.getPivotalResources = function(user, projectId, callback) {
+		db.utils.projects.getUserProjectById(user, projectId, function(err, project) {
+			if (err) return callback(err);
+			db.utils.getPivotalClient(user, function(err, client) {
+				if (err) return callback(err);
+				db.utils.projects.getPivotalApp(project, function(err, pivotalResource) {
+					if (err) return callback(err);
+					callback(null, project, client, pivotalResource.projectId);
+				});
+			});
 		});
 	}
 	

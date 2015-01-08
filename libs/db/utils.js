@@ -6,6 +6,7 @@
  
 var crypto = require('crypto');
 var projects = require('./utils.projects.js');
+var Ptracker = require('pivotaltracker');
 var algorithm = 'aes-256-cbc';
 
 module.exports = function(db, config) {
@@ -97,6 +98,18 @@ module.exports = function(db, config) {
 	}
 	
 	/**
+	 * Convenience function for getting pivotal client with user pivotal account details
+	 * @param user
+	 * @param callback (err, client)
+	 */
+	utils.getPivotalClient = function(user, callback) {
+		db.utils.getAccount(user, "pivotal", function(err, account) {
+			if (err) return callback(err, null);
+			callback(null, new Ptracker.Client({trackerToken: account.access_token}));
+		});
+	}
+	
+	/**
 	 * Gets linked accounts for given user
 	 * @param user
 	 * @param callback
@@ -133,6 +146,7 @@ module.exports = function(db, config) {
 }
 
 function encrypt(key, salt, token) {
+	if (token == null) return null;
 	var cipher = crypto.createCipher(algorithm, key + salt);
 	var encryptedPassword = cipher.update(token, 'utf8', 'base64');
 	encryptedPassword += cipher.final('base64');
@@ -140,6 +154,7 @@ function encrypt(key, salt, token) {
 }
 
 function decrypt(key, salt, token) {
+	if (token == null) return null;
 	var decipher = crypto.createDecipher(algorithm, key + salt);
 	var decryptedPassword = decipher.update(token, 'base64', 'utf8');
 	decryptedPassword += decipher.final('utf8');

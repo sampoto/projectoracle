@@ -92,5 +92,84 @@ module.exports = function(db) {
 		});
 	}
 
+	requests.getPivotalProject = function(req, res, next) {
+		db.utils.projects.getPivotalResources(req.user, req.params.projectId,
+		function(err, project, client, projectId) {
+			if (err) return next(err);
+			client.project(projectId).get(function(error, PivotalProject) {
+				if (error) return next(error);
+				res.send(PivotalProject);
+			});
+		});
+	}
+
+	requests.getPivotalStories = function(req, res, next) {
+		db.utils.projects.getPivotalResources(req.user, req.params.projectId,
+		function(err, project, client, projectId) {
+			if (err) return next(err);
+			client.project(projectId).stories.all(function(error, stories) {
+				if (error) return next(error);
+				if (typeof req.query.with_state == "undefined") {
+					res.send(stories);
+				} else {
+					var state = req.query.with_state; //State: unscheduled etc..
+					var items = [];
+					for ( i=0; i < stories.length; ++i ) {
+						if (stories[i]['currentState'] == state) {
+							items.push(stories[i]);
+						}
+					}
+					res.send(items);
+				}
+			});
+		});
+
+	}
+
+	requests.getPivotalStory = function(req, res, next) {
+		var storyId = req.params.storyId;
+		db.utils.projects.getPivotalResources(req.user, req.params.projectId,
+		function(err, project, client, projectId) {
+			if (err) return next(err);
+			client.project(projectId).story(storyId).get(function(error, story) {
+				if (error) return next(error);
+				res.send(story);
+			});
+		})
+	}
+
+	requests.getPivotalIterations = function(req, res, next) {
+		db.utils.projects.getPivotalResources(req.user, req.params.projectId,
+		function(err, project, client, projectId) {
+			if (err) return next(err);
+			client.project(projectId).iterations.all(function(error, iterations) {
+				if (error) return next(error);
+				if (typeof req.query.scope == "undefined"){
+					res.send(iterations);
+				} else {
+					var scope = req.query.scope; //Scope: current, backlog..
+					var items = [];   
+					for ( i=0; i < iterations.length; ++i) {
+						if (iterations[i]['scope'] == scope) {
+							items.push(iterations[i]);
+						}	
+					}
+					res.send(items);
+				}
+			});
+		});
+	}
+
+	requests.getPivotalMemberships = function(req, res, next) {
+		db.utils.projects.getPivotalResources(req.user, req.params.projectId,
+		function(err, project, client, projectId) {
+			if (err) return next(err);
+			client.project(projectId).memberships.all(function(error, memberships) {
+				if (error) return next(error);
+				res.send(memberships);
+			});
+		});
+	}
+
 	return requests;
 }
