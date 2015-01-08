@@ -84,6 +84,6 @@ function configureFlowdockAuth(passport, authConfig) {
 		callbackURL: flowdockCallbackURL
 	},
 	function(token, refreshToken, profile, done) {
-		return done(null, {});
+		return done(null, {access_token: token, refresh_token: refreshToken});
     }));
 }

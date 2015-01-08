@@ -23,6 +23,8 @@ module.exports = function(db) {
     router.get('/projects', requests.getProjects);
     router.get('/projects/:projectId/applications', requests.getProjectApplications);
 
+	router.get('/projects/:projectId/flow/:flowId/messages', requests.getFlowMessages);
+	
     router.get('*', function (req, res) {
         res.status(404).send('Not Found');
     });
