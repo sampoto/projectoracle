@@ -1,5 +1,7 @@
 var express = require('express');
 
+var dFlows = require('./dFlow.js');
+
 var dummyDocs={
 	"docs": [
 		{
@@ -1042,6 +1044,14 @@ module.exports = (function () {
     router.get('/pivotal/iterations/backlog', function(req, res) {
         res.json(dummyPivotalBacklogIterations2);
     });
+	
+	router.get('/name', dFlows.name);
+
+	router.get('/flows', dFlows.flows);
+
+	router.get('/flow/:id', dFlows.flowById);
+
+	router.get('/flow/:flow/messages', dFlows.listMessages);
 
     router.get('*', function (req, res) {
         res.status(404).send('Not Found');

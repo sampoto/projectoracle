@@ -1,0 +1,121 @@
+<link rel="stylesheet" href="/css/flowdock.css" type="text/css"/>
+
+
+<nav class="navbar navbar-default navbar-static flowheader" role="navigation">
+    <div class="fluid-container">
+
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand">Red-Wedding</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+
+
+                    
+                
+                <li class="navbar-left user-popover">
+                    <img class="img-circle" src="{{user.avatar}}"><span style="display: inline">{{user.nick}}</span>
+                </li>
+
+
+                <li class="navbar-left">
+                    <button class="btn btn-default" data-toggle="modal" data-target="#userList">Online: {{online.length}}/{{flow.users.length}}</button>
+                </li>
+
+                <li id="onlineUsers" class="navbar-left" ng-repeat="onlineUser in online">
+                    <img class="img-circle avatar-small avatar-online" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" title="{{onlineUser.nick}}" src="{{onlineUser.avatar}}"></img>
+                </li>
+
+
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><button class="btn btn-default"><i class="fa fa-search"></i></button></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div>    
+</nav>
+<!--
+<div class="flowheader col-xs-12">
+    <h3 class="flowheader-h">Red Wedding</h3>
+    <span class="flowheader-h" ><img class="img-circle" src="{{dummyUser.avatar}}"><h4 style="display: inline">{{dummyUser.nick}}</h4></img> </span>
+    <h4 class="flowheader-h online-count"><i class="fa fa-users"></i>Online: 2/8</h4>
+</div> -->
+
+<div>
+    <div class="col-xs-12 flow" ng-controller="messages">
+        <!-- Messages -->
+        <span class="chat col-xs-7">
+            <button class="btn btn-default" ng-click="resetFilter()">back</button>
+            <div chat></div>
+            <div msginput></div>  
+        </span>
+        <!-- /Messages -->
+        
+        <!-- News -->
+        <div class="news col-xs-5" news>
+            <img class="col-xs-12" src="https://dl.dropboxusercontent.com/u/65965007/construction.jpg"></img>
+            <h3>Team inbox feature under construction</h3>
+        </div>
+        <!-- /news -->
+        
+    </div>
+</div>
+
+
+<div class="modal fade" id="userList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="userModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Online:</h4>
+            </div>
+            <div class="modal-body row"> <!-- USERS ONLINE -->
+                <div class="col-xs-6" ng-repeat="user in online">
+                    <div class="media">
+                        <img class="avatar-big img-circle pull-left media-object" src="{{user.avatar}}"></img>
+                        <div class="media-body">
+                            <h4 class="media-heading"> {{user.nick}} <span class="text-muted">({{user.name}})</span></h4>
+                            <span>Active: {{user.last_activity | date:'MMM d @ hh:mm'}}</span> <br>
+                            <span><i class="fa fa-envelope-o"></i> Mail</span>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- /USERS ONLINE -->
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Offline:
+                </h4>
+            </div>
+            <div class="modal-body row">
+                <div class="col-xs-6" ng-repeat="user in offline">
+                    <div class="media">
+                        <img class="avatar-big img-circle pull-left media-object" src="{{user.avatar}}"></img>
+                        <div class="media-body">
+                            <h4 class="media-heading"> {{user.nick}} <span class="text-muted">({{user.name}})</span></h4>
+                            <span>Active: {{user.last_activity | date:'MMM d @ hh:mm'}}</span> <br>
+                            <span><i class="fa fa-envelope-o"></i> Mail</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="/js/flowdock.js"></script>

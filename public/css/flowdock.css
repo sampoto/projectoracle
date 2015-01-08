@@ -1,0 +1,140 @@
+.messages {
+    margin-left: 0px;
+    vertical-align: bottom;
+}
+.flowheader {
+    position: fixed;
+    top: 90px;
+    width: 100%;
+    z-index: 1;
+    background-color: #EEE;
+
+}
+.user-info {
+    position: relative;
+    display: inline;
+}
+.user-right {
+    float: right;
+    background-color: #AAA;
+}
+.user-left {
+    float: left;
+    background-color: #555;
+}
+.flowheader-h {
+    display: inline;
+    vertical-align: text-bottom;
+    margin-right: 25px
+}
+.avatar-small{
+    width: 30px;
+    height: 30px;
+}
+.avatar-big{
+    width: 100px;
+    height: 100px;
+}
+.avatar-online{
+    
+}
+.ng-scope {
+    margin: 0px;
+    padding: 0px;
+}
+.flow {
+    position: absolute;
+    padding-top: 0px;
+    margin: 0px;
+    margin-top: 90px;
+    margin-bottom: -20px;
+    padding-bottom: 0;
+    padding-left: 0px;
+    padding-right: 0px;
+    background-color: #EEE;
+    height: calc(100% - 142px);
+}
+.chat {
+		
+		/* background-color:#CCC; */		
+        overflow-y: scroll;
+		position:relative;
+		margin-left:-5px;
+		height: 100%;
+}
+
+.news {
+		height:100%;
+		/* background-color:#CCC; */		
+        overflow-y: scroll;
+		position:relative;
+		margin-left:-5px;
+
+}
+li.message {
+   
+}
+.container {
+    
+}
+
+.main {
+
+    background-color: #AAA; 
+}
+
+div.msglist {
+    clear: left;
+}
+
+.message a{
+    display: inline;
+    color: red;
+}
+
+.message img{
+    display: inline;
+}
+
+.message div{
+    display: inline;
+}
+
+.thread {
+    z-index: 1;
+    height: "48px";
+    width: "5px";
+    color: "#FFF";
+}
+
+.msganim {
+  line-height:40px;
+  list-style:none;
+  box-sizing:border-box;
+}
+
+
+.msganim.ng-enter,
+.msganim.ng-leave {
+  -webkit-transition:all linear 0.4s;
+  transition:all linear 0.4s;
+}
+
+.msganim.ng-leave.ng-leave-active,
+.msganim.ng-move,
+.msganim.ng-enter {
+  opacity:0;
+  left: -75px;
+}
+
+.msganim.ng-leave,
+.msganim.ng-enter.ng-enter-active {
+  opacity:1;
+  left: 0;
+}
+
+.msganim.ng-move.ng-move-active,
+.msganim.ng-move {
+    -webkit-transition:all linear 0.4s;
+    transition:all linear 0.4s;
+}

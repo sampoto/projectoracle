@@ -67,6 +67,50 @@ function pivotal($scope, $state, $http) {
 		});
 }
 
+function flows($scope, $http, $stateParams, $rootScope) {
+    var now = Date.now() +"000";
+    console.log("time now: "+ now);
+    $scope.showModal = false;
+    var online = [];
+    var offline = [];
+    $rootScope.projectId = $stateParams.projectId;
+    console.log($rootScope.projectId);
+    $http.get('/api/dapi/flows').
+        success(function(data){
+            $scope.flows = data;
+        });
+    $http.get('/api/dapi/name').
+        success(function(data){
+            $scope.user = data;
+        });
+    $http.get('/api/dapi/flow/12345').
+        success(function(data){
+            $scope.flow = data;
+            var lookup = {};
+            for (var i = 0, len = $scope.flow.users.length; i < len; i++) {
+                lookup[$scope.flow.users[i].id] = $scope.flow.users[i];
+            }
+            $scope.userLookup = lookup;
+            
+            for(var i = 0; i < data.users.length; i++)
+            {
+                if(data.users[i].last_ping > now )
+                {
+                    online.push(data.users[i]);
+                    console.log("user online: "+ data.users[i].nick +" with timestamp: " + data.users[i].last_ping);
+                }
+                else
+                {
+                    offline.push(data.users[i]);
+                    console.log("user offline: "+ data.users[i].nick +" with timestamp: " + data.users[i].last_ping);
+                }
+            }
+        });
+        $scope.offline = offline;
+        $scope.online = online;
+    
+}
+
 angular.module('ProjectOracle')
     .controller('headerCtrl', ['$scope', '$http', '$state', 'AuthService', 'DataFactory', function($scope, $http, $state, AuthService, DataFactory) {
         $scope.$watch(AuthService.isAuthenticated, function(loggedIn) {
@@ -149,4 +193,7 @@ angular.module('ProjectOracle')
 	}])
 	.controller('pivotalController', ['$scope', '$state', '$http', function($scope, $state, $http) {
 		pivotal($scope, $state, $http);
-	}]);
+	}])
+	.controller('flows', function ($scope, $http, $stateParams, $rootScope) {
+        flows($scope, $http, $stateParams, $rootScope);
+    });

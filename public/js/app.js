@@ -22,6 +22,7 @@ config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
 		templateUrl: '/partials/dashboard.html'
 	}).state('project.flows', {
 		url: '/flows',
+		controller: 'flows',
 		templateUrl: '/partials/flows.html'
 	}).state('project.pivotal', {
 		url: '/pivotal',
