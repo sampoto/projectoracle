@@ -86,7 +86,7 @@ module.exports = function() {
 		app.use(session({ resave: true, saveUninitialized: true, secret: config.sessionSecret }));
 		app.use(passport.initialize());
 		app.use(passport.session());
-		app.use(csrf({value: csrfValue}));
+		app.use(conditionalCSRF);
 
 		routes(app, config, passport, db);
 		auth(passport, config.auth, db);
@@ -105,6 +105,15 @@ module.exports = function() {
 			close: close};
 }
 
+var conditionalCSRF = function (req, res, next) {
+	var nonCSRFClients = ["api"];
+	if (typeof req.headers["client"] == "undefined" || nonCSRFClients.indexOf(req.headers["client"]) == -1) {
+		(csrf({value: csrfValue}))(req, res, next);
+	} else {
+		next();
+	}
+}
+
 function csrfValue(req) {
 	var token;
 	if (req.body && req.body._csrf) {
@@ -112,7 +121,7 @@ function csrfValue(req) {
 	} else if (req.query && req.query._csrf) {
 		token = req.query._csrf;
 	} else {
-		token = req.headers['x-csrf-token'] || req.headers['x-xsrf-token'] || req.cookies["XSRF-TOKEN"];
+		token = req.headers['x-csrf-token'] || req.headers['x-xsrf-token'];
 	}
 	return token;
 }

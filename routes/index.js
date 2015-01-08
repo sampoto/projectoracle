@@ -29,7 +29,8 @@ module.exports = function(app, config, passport, db) {
 	
 	app.use("/", express.static(path.join(__dirname + "/../", 'public')));
 	app.use(function(req, res, next) {
-		res.cookie('XSRF-TOKEN', req.csrfToken());
+		if (typeof req.csrfToken == "function")
+			res.cookie('XSRF-TOKEN', req.csrfToken());
 		next();
 	});
 
@@ -63,8 +64,13 @@ module.exports = function(app, config, passport, db) {
 		if (config.debug) {
 			console.error(err.stack);
 		}
-		res.status(500);
-		res.send('Internal server error');
+		if (typeof err.code != "undefined" && err.code === 'EBADCSRFTOKEN') {
+			res.status(403);
+			res.send('invalid csrf token');
+		} else {
+			res.status(500);
+			res.send('Internal server error');
+		}
 	});
 	
 	app.get('*', index);
