@@ -9,6 +9,8 @@ var sequelize = require('sequelize');
 var util = require('util');
 var async = require('async');
 var utils = require('./utils.js');
+var modelUtils = require('./modelUtils.js');
+var Umzug = require('umzug');
 
 /**
  * @param config database config
@@ -35,17 +37,14 @@ module.exports = function(config) {
 
 		// Define the database model
 		db.models = {};
-		db.models.user = self.sequelize.import(__dirname + '/models/user');
-		db.models.account = self.sequelize.import(__dirname + '/models/account');
-		db.models.project = self.sequelize.import(__dirname + '/models/project');
-		db.models.googledoc = self.sequelize.import(__dirname + '/models/googledoc');
+		db.models.user = self.sequelize.import(__dirname + '/models/user', defineCall(__dirname + '/models/user'));
+		db.models.account = self.sequelize.import(__dirname + '/models/account', defineCall(__dirname + '/models/account'));
+		db.models.project = self.sequelize.import(__dirname + '/models/project', defineCall(__dirname + '/models/project'));
+		db.models.googledoc = self.sequelize.import(__dirname + '/models/googledoc', defineCall(__dirname + '/models/googledoc'));
 
 		Object.keys(db.models).forEach(function(modelName) {
 			if ("associate" in db.models[modelName]) {
 				db.models[modelName].associate(db.models);
-			}
-			if (config.schema) {
-				db.models[modelName].schema(config.schema, '_');
 			}
 		});
 
@@ -74,71 +73,116 @@ module.exports = function(config) {
 		}
 		callback = callback || function(){};
 
-		var migrator = self.sequelize.getMigrator();
-		migrator.options.path = __dirname + "/../../migrations";
-
-		migrator.findOrCreateSequelizeMetaDAO().then(function(SequelizeMeta) {
-			SequelizeMeta.findAll().then(function(meta) {
-				if (meta.length == 0 || (options && options.force)) {
-					syncAndUpdateMigrations(migrator, SequelizeMeta, config, callback);
+		var opt = {
+			storage: 'sequelize',
+			storageOptions: {
+				sequelize: self.sequelize,
+			},
+			migrations: {
+				path: 'migrations',
+				params: [self.sequelize.getQueryInterface(), config.tablePrefix || null]
+			}
+		};
+		if (config.tablePrefix) opt.storageOptions.modelName = config.tablePrefix + "_SequelizeMeta";
+		var umzug = new Umzug(opt);
+		
+		// Check first if sequelize core migrator table is still in use
+		db.oldSequelizeMeta(self.sequelize, function(err, old) {
+			if (err) return callback(err);
+			if (old) {
+				db.migrateSequelizeMeta(self.sequelize, function(err) {
+					if (err) return callback(err);
+					doMigrations(callback);
+				});
+			} else {
+				doMigrations(callback);
+			}
+		});
+		
+		function doMigrations(callback) {
+			umzug.executed().then(function(executed) {
+				if (executed.length == 0 || (options && options.force)) {
+					syncAndUpdateMigrations(function(err) {
+						callback(err);
+					});
 				} else {
-					// One or more migrations have been done. Complete pending migrations
-					migrator.migrate({ method: 'up' })
-					.complete(function(err) {
+					umzug.up().then(function() {
+						callback(null);
+					}).catch(function(err) {
 						callback(err);
 					});
 				}
 			}).catch(function(err) {
 				callback(err);
 			});
-		}).catch(function(err) {
-			callback(err);
-		});
-
-		// Synchronizes and updates migration status
-		function syncAndUpdateMigrations(migrator, SequelizeMeta, config, callback) {
-			async.series([
-				function(cb) {			
-					if (config.schema) {
-						// Do not replace the regular schema table
-						SequelizeMeta.schema(config.schema, "_");
-
-						self.sequelize.createSchema(config.schema).then(function() {
-							sync(config, function(err) {
-								cb(err);
-							});
-						}).catch(function(err) {
-							cb(err);
-						});
-					} else {
-						sync(config, function(err) {
-							cb(err);
-						});
-					}
-				},
-				function(cb) {
-					if (config.schema) {
-						// No migrations have been done. Mark all migrations as done and then sync
-						migrator.getUndoneMigrations(function(err, migrations) {
-							markMigrationsDone(migrator, migrations, cb);
-						});
-					} else  {
-						// Do not mark migrations done when schemas are in use
-						// Sequelize migrations do not currently support schema option
-						cb(null);
-					}
-				}
-			], callback);
 		}
 		
-		// Marks all given migrations done
-		function markMigrationsDone(migrator, migrations, callback) {
-			async.each(migrations, function(migration, cb) {
-				migrator.saveSuccessfulMigration(migration, migration, function(err) {
-					cb(null);
+		function syncAndUpdateMigrations(callback) {
+			sync(config, function(err) {
+				if (err) return callback(err);
+				umzug.pending().then(function(pendingMigrations) {
+					if (pendingMigrations.length > 0) {
+						async.each(pendingMigrations, function(migration, done) {
+							umzug.storage.logMigration(migration.file).then(function() {
+								done(null);
+							}).catch(function(err) {
+								done(err);
+							});
+						}, function(err) {
+							callback(err);
+						});
+					} else {
+						callback(null);
+					}
+				}).catch(function(err) {
+					callback(err);
 				});
-			}, callback);
+			});
 		}
+	}
+	
+	/**
+	 * Checks if old SequelizeMeta table scheme is in use
+	 * @param sequelize
+	 * @param callback
+	 */
+	db.oldSequelizeMeta = function(sequelize, callback) {
+		var queryInterface = sequelize.getQueryInterface();
+		queryInterface.describeTable(modelUtils.tableName("SequelizeMeta", config.tablePrefix))
+		.then(function(description) {
+			if (description.from && description.to && description.id) {
+				callback(null, true);
+			} else {
+				callback(null, false);
+			}
+		}).catch(function(err) {
+			// Assumes that the error happened because the table doesn't exist
+			callback(null, false);
+		});
+	}
+	
+	/**
+	 * Migrates from old SequelizeMeta table scheme to scheme used by umzug
+	 * @param sequelize
+	 * @param callback
+	 */
+	db.migrateSequelizeMeta = function(sequelize, callback) {
+		var sequelizeMetaName = modelUtils.tableName("SequelizeMeta", config.tablePrefix);
+		var queryInterface = sequelize.getQueryInterface();
+		async.parallel([
+			function(done) {
+				queryInterface.renameColumn(sequelizeMetaName, 'to', 'name').then(done);
+			},
+			function(done) {
+				queryInterface.removeColumn(sequelizeMetaName, 'from');
+			},
+			function(done) {
+				queryInterface.removeColumn(sequelizeMetaName, 'id');
+			}
+		],
+		function(err) {
+			callback(err);
+		});
 	}
 
 	// Custom error class to distinguish fatal errors
@@ -148,6 +192,12 @@ module.exports = function(config) {
 	}
 	util.inherits(db.fatalError, Error);
 	
+	function defineCall(path) {
+		return function(Sequelize, DataTypes) {
+			return (require(path)(Sequelize, DataTypes, config.tablePrefix));
+		}
+	}
+
 	function sync(config, callback) {
 		if (config.options && config.options.dialect == 'mysql') {
 			// Ugly fix to bypass foreign key constraints check with table deletes
