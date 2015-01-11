@@ -1,6 +1,7 @@
 module.exports = {
 	useSSL: true,
 	forcedSSL: true,
+	trustProxy: true,
 	port: process.env.PORT,
 	dbOptions: getHerokuDBOptions(),
 	sessionSecret: process.env.SESSIONSECRET,

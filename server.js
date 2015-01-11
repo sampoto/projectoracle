@@ -88,6 +88,12 @@ module.exports = function() {
 		app.use(passport.session());
 		app.use(conditionalCSRF);
 
+		if (config.trustProxy) {
+			app.enable('trust proxy');
+		} else {
+			app.disable('trust proxy');
+		}
+
 		routes(app, config, passport, db);
 		auth(passport, config.auth, db);
 	}
