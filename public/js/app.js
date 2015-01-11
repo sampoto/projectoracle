@@ -13,7 +13,10 @@ config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
 		abstract: true,
 		controller: 'projectController',
 		url: '/p/:projectId',
-		templateUrl: '/partials/project.html'
+		templateUrl: '/partials/project.html',
+		resolve: {
+			projects: function(ProjectLibrary) { return ProjectLibrary.getProjects(); }
+		}
 	}).state('project.index', {
 		url: '',
 		templateUrl: '/partials/dashboard.html'
