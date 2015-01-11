@@ -67,28 +67,49 @@ module.exports = function(db) {
 			}
 		});
 	}
+
+	requests.getFlow = function(req, res, next) {
+		db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
+			if (err) return next(err);
+			db.utils.projects.getFlowdockAppInfo(req.user, project, function(err, flowdockResource) {
+				if (err) return next(err);
+				var token = flowdockResource.account.access_token;
+				var path = '/flows/' + flowdockResource.organization + '/' + flowdockResource.flow;
+				utils.fetchJSON('api.flowdock.com', path, {Authorization: 'Bearer ' + token}, function(err, data) {
+					if (err) return next(err);
+					res.send(data);
+				});
+			});
+		});
+	}
 	
 	requests.getFlowMessages = function(req, res, next) {
 		db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
-			if (!err) {
-				db.utils.projects.getFlowdockAppInfo(req.user, project, function(err, flowdockResource) {
-					if (!err) {
-						var token = flowdockResource.account.access_token;
-						var path = '/flows/' + flowdockResource.organization + '/' + req.params.flowId + '/messages';
-						utils.fetchJSON('api.flowdock.com', path, {Authorization: 'Bearer ' + token}, function(err, data) {
-							if (!err) {
-								res.send(data);
-							} else {
-								next(err);
-							}
-						});
-					} else {
-						next(err);
-					}
+			if (err) return next(err);
+			db.utils.projects.getFlowdockAppInfo(req.user, project, function(err, flowdockResource) {
+				if (err) return next(err);
+				var token = flowdockResource.account.access_token;
+				var path = '/flows/' + flowdockResource.organization + '/' + flowdockResource.flow + '/messages';
+				utils.fetchJSON('api.flowdock.com', path, {Authorization: 'Bearer ' + token}, function(err, data) {
+					if (err) return next(err);
+					res.send(data);
 				});
-			} else {
-				next(err);
-			}
+			});
+		});
+	}
+
+	requests.getFlowUsers = function(req, res, next) {
+		db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
+			if (err) return next(err);
+			db.utils.projects.getFlowdockAppInfo(req.user, project, function(err, flowdockResource) {
+				if (err) return next(err);
+				var token = flowdockResource.account.access_token;
+				var path = '/flows/' + flowdockResource.organization + '/' + flowdockResource.flow + '/users';
+				utils.fetchJSON('api.flowdock.com', path, {Authorization: 'Bearer ' + token}, function(err, data) {
+					if (err) return next(err);
+					res.send(data);
+				});
+			});
 		});
 	}
 

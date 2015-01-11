@@ -23,7 +23,9 @@ module.exports = function(db) {
     router.get('/projects', requests.getProjects);
     router.get('/projects/:projectId/applications', requests.getProjectApplications);
 
-	router.get('/projects/:projectId/flow/:flowId/messages', requests.getFlowMessages);
+	router.get('/projects/:projectId/flow', requests.getFlow);
+	router.get('/projects/:projectId/flow/messages', requests.getFlowMessages);
+	router.get('/projects/:projectId/flow/users', requests.getFlowUsers);
 	
 	router.get('/projects/:projectId/pivotal', requests.getPivotalProject); //All data from one project
 	router.get('/projects/:projectId/pivotal/stories', requests.getPivotalStories); //get all stories from project
