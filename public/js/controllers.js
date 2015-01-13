@@ -171,7 +171,25 @@ angular.module('ProjectOracle')
 	.controller('pivotalController', ['$scope', '$state', '$http', 'DataFactory', function($scope, $state, $http, DataFactory) {
 		if ($scope.init())
 			pivotal($scope, $state, $http, DataFactory);
-	}]);	
+	}])
+	.controller('settingsController', ['$scope', function($scope) {
+		$scope.pivotalTokenFormVisible = false;
+
+		$scope.togglePivotalTokenForm = function() {
+			if ($scope.pivotalTokenFormVisible) {
+				$("#pivotalTokenForm").slideUp();
+			} else {
+				$("#pivotalTokenForm").slideDown();
+			}
+
+			$scope.pivotalTokenFormVisible = !$scope.pivotalTokenFormVisible;
+		}
+
+		$scope.submitPivotalApiToken = function() {
+			var apiToken = $("#pivotalTokenInput").val();
+		}
+	}]);
+
 // Thanks to Mathew Byrne
 // https://github.com/mathewbyrne
 function slugify(text) {
