@@ -174,6 +174,47 @@ module.exports = function(db) {
 			});
 		});
 	}
+
+	requests.addAdmin = function(req, res, next) {
+		if (db.utils.isAdmin(req.user) && typeof req.body.email === "string") {
+			db.utils.getUser(req.body.email, function(err, user) {
+				if (err) return next(err);
+				if (user != null) {
+					db.utils.setUserLevel(user, db.userlevels.ADMIN, function(err) {
+						if (err) return next(err);
+						res.status(200).send("Admin rights added");
+					});
+				} else {
+					res.status(404).send("User not found");
+				}
+			});
+		} else if (typeof req.body.email !== "string") {
+			res.status(400).send("User email not defined");
+		} else {
+			res.status(403).send("No admin rights");
+		}
+	}
+
+	requests.deleteAdmin = function(req, res, next) {
+		if (db.utils.isAdmin(req.user) && typeof req.params.email === "string") {
+			db.utils.getUser(req.params.email, function(err, user) {
+				if (err) return next(err);
+				if (user != null) {
+					db.utils.setUserLevel(user, db.userlevels.USER, function(err) {
+						if (err) return next(err);
+						res.status(200).send("Admin rights revoked");
+					});
+				} else {
+					res.status(404).send("User not found");
+				}
+			});
+		} else if (typeof req.params.email !== "string") {
+			res.status(400).send("User email not defined");
+		} else {
+			res.status(403).send("No admin rights");
+		}
+		
+	}
 	
 	requests.getGoogleDocs = function(req, res, next) {
 		db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
@@ -185,6 +226,7 @@ module.exports = function(db) {
 			});
 		});
 	}
+
 
 	return requests;
 }

@@ -32,6 +32,9 @@ module.exports = function(db) {
 	router.get('/projects/:projectId/pivotal/stories/:storyId', requests.getPivotalStory); //get one story by story id
 	router.get('/projects/:projectId/pivotal/iterations', requests.getPivotalIterations);
 	router.get('/projects/:projectId/pivotal/memberships', requests.getPivotalMemberships);
+	
+	router.post('/admin', requests.addAdmin);
+	router.delete('/admin/:email', requests.deleteAdmin);
 
 	router.get('/projects/:projectId/docs', requests.getGoogleDocs);
 
