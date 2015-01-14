@@ -1017,24 +1017,30 @@ module.exports = (function () {
         res.json(dummyDocs);
     });
 
-    router.get('/pivotal/project', function(req, res) {
+    router.get('/projects/:projectId/pivotal', function(req, res) {
         res.json(dummyPivotalProject);
     });
 
-    router.get('/pivotal/memberships', function(req, res) {
+    router.get('/projects/:projectId/pivotal/memberships', function(req, res) {
         res.json(dummyPivotalMemberships2);
     });
 
-    router.get('/pivotal/stories/unscheduled', function(req, res) {
-        res.json(dummyPivotalUnscheduledStories2);
+    router.get('/projects/:projectId/pivotal/stories', function(req, res, next) {
+		if (req.query.with_state == 'unscheduled') {
+			res.json(dummyPivotalUnscheduledStories2);
+		} else {
+			next();
+		}
     });
 
-    router.get('/pivotal/iterations/current', function(req, res) {
-        res.json(dummyPivotalCurrentIterations2);
-    });
-
-    router.get('/pivotal/iterations/backlog', function(req, res) {
-        res.json(dummyPivotalBacklogIterations2);
+    router.get('/projects/:projectId/pivotal/iterations/', function(req, res, next) {
+		if (req.query.scope == 'current') {
+			res.json(dummyPivotalCurrentIterations2);
+		} else if (req.query.scope == 'backlog') {
+			res.json(dummyPivotalBacklogIterations2);
+		} else {
+			next();
+		}
     });
 
     router.get('*', function (req, res) {

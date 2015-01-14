@@ -1,18 +1,17 @@
-function pivotal($scope, $state, $http) {
-	$scope.projectId = $state.params.projectId;
-	$http.get('/api/dapi/pivotal/project').
+function pivotal($scope, $state, $http, DataFactory) {
+	DataFactory.getPivotalProject($scope.projectId).
 		success(function(data){
 			$scope.pivotalProject = data;
 		});
 
 	// Get all the icebox stories (current_state: 'unscheduled')
-	$http.get('/api/dapi/pivotal/stories/unscheduled').
+	DataFactory.getPivotalStories($scope.projectId, 'unscheduled').
 		success(function(data){
 			$scope.iceboxStories = data;
 		});
 
 	// Current iterations
-	$http.get('/api/dapi/pivotal/iterations/current').
+	DataFactory.getPivotalIterations($scope.projectId, 'current').
 		success(function(data){
 			// Calculate total estimates for all iterations
 			for(var iterationKey in data) {
@@ -37,7 +36,7 @@ function pivotal($scope, $state, $http) {
 		});
 
 	// Backlog iterations
-	$http.get('/api/dapi/pivotal/iterations/backlog').
+	DataFactory.getPivotalIterations($scope.projectId, 'backlog').
 		success(function(data){
 			for(var iterationKey in data) {
 				var totalPoints = 0;
@@ -52,7 +51,7 @@ function pivotal($scope, $state, $http) {
 		});
 
 	// Get memberships for owner information
-	$http.get('/api/dapi/pivotal/memberships').
+	DataFactory.getPivotalMemberships($scope.projectId).
 		success(function(data){
 			// We don't need actual membership data, only the person resources inside
 			var persons = [];
@@ -156,10 +155,9 @@ angular.module('ProjectOracle')
 				}
 			});
 	}])
-	.controller('pivotalController', ['$scope', '$state', '$http', function($scope, $state, $http) {
-		pivotal($scope, $state, $http);
-	}]);
-	
+	.controller('pivotalController', ['$scope', '$state', '$http', 'DataFactory', function($scope, $state, $http, DataFactory) {
+		pivotal($scope, $state, $http, DataFactory);
+	}]);	
 // Thanks to Mathew Byrne
 // https://github.com/mathewbyrne
 function slugify(text) {

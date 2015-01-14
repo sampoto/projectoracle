@@ -49,6 +49,24 @@ angular.module('ProjectOracle')
 	dataFactory.getGoogleDocs = function(projectId) {
 		return $http.get(baseURL + '/projects/' + projectId + '/docs');
 	}
+
+	dataFactory.getPivotalProject = function(projectId) {
+		return $http.get(baseURL + '/projects/' + projectId + '/pivotal');
+	}
+
+	dataFactory.getPivotalStories = function(projectId, state) {
+		var stateQuery = state ? '/?with_state=' + state : '';
+		return $http.get(baseURL + '/projects/' + projectId + '/pivotal/stories' + stateQuery);
+	}
+	
+	dataFactory.getPivotalIterations = function(projectId, scope) {
+		var scopeQuery = scope ? '/?scope=' + scope : '';
+		return $http.get(baseURL + '/projects/' + projectId + '/pivotal/iterations' + scopeQuery);
+	}
+	
+	dataFactory.getPivotalMemberships = function(projectId) {
+		return $http.get(baseURL + '/projects/' + projectId + '/pivotal/memberships');
+	}
 	
 	return dataFactory;
 	
