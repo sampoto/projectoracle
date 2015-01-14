@@ -36,7 +36,7 @@ module.exports = function(db) {
 		db.utils.projects.getUserProjects(req.user, function(err, projects) {
 			if (!err) {
 				var projectList = projects.map(function(project) {
-					return {id: project.id, name: project.name};
+					return {id: project.id, name: project.project_name};
 				});
 				res.send(projectList);
 			} else {

@@ -39,7 +39,8 @@ module.exports = function(db) {
 	projects.createProjectWithData = function(data, callback) {
 		var searchCondition = data.id ? Sequelize.or({project_name: data.name}, {id: data.id}) : {project_name: data.name};
 		var values = data.id ? {id: data.id} : {};
-		db.models.project.findOrCreate({where: searchCondition}, values).then(function(projectResults) {
+		if (data.name) values.project_name = data.name;
+		db.models.project.findOrCreate({where: searchCondition, defaultValues: values}).then(function(projectResults) {
 			async.parallel([
 			function(cb) {
 				async.each(data.applications, function(app, innerCb) {
