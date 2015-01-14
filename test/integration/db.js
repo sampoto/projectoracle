@@ -14,6 +14,15 @@ describe('Database', function() {
 			done(err);
 		});
 	});
+	it('completes all migrations successfully', function(done) {
+		var oldForceMigrate = config.dbOptions.forceMigrate;
+		config.dbOptions.forceMigrate = true;
+		var db = new database(config.dbOptions);
+		db.init(function(err) {
+			config.dbOptions.forceMigrate = oldForceMigrate;
+			done(err);
+		});
+	});
 	describe('Projects', function() {
 		var projects = [ {name: "test", 
 						applications: [ {id: "flowdock", organization: "test", flow: "test2"},

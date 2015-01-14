@@ -57,6 +57,7 @@ module.exports = function(config) {
 
 		var migrationOptions = {};
 		if (config.force) migrationOptions.force = true;	
+		if (config.forceMigrate) migrationOptions.forceMigrate = true;
 
 		self.sequelize.authenticate()
 			.complete(function(err) {
@@ -115,7 +116,7 @@ module.exports = function(config) {
 		
 		function doMigrations(callback) {
 			umzug.executed().then(function(executed) {
-				if (executed.length == 0 || (options && options.force)) {
+				if (!options.forceMigrate && (executed.length == 0 || (options && options.force))) {
 					syncAndUpdateMigrations(function(err) {
 						callback(err);
 					});
