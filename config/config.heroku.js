@@ -6,7 +6,7 @@ module.exports = {
 	dbOptions: getHerokuDBOptions(),
 	sessionSecret: process.env.SESSIONSECRET,
 	auth: {
-		allowRegistration: process.env.ALLOWREGISTRATION,
+		allowRegistration: process.env.ALLOWREGISTRATION || false,
 		googleAuth: {
 			clientID: process.env.googleClientID,
 			clientSecret: process.env.googleClientSecret
@@ -30,6 +30,10 @@ function getHerokuDBOptions(){
 				host:     match[3],
 				logging:  false
 			},
-			encryptKey: process.env.ENCRYPTKEY
+			encryptKey: process.env.ENCRYPTKEY,
+			admins: (function() {
+				return typeof process.env.ADMIN !== "undefined" ? [process.env.ADMIN] : null; 
+			}()),
+			forceAdmins: typeof process.env.ADMIN !== "undefined" ? process.env.FORCEADMINS : false
 			};
 }

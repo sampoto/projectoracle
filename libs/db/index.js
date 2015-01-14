@@ -67,7 +67,19 @@ module.exports = function(config) {
 					db.migrate(migrationOptions, function(err) {
 						if (!err && config.projects) {
 							var forceProjects = typeof config.forceProjects != "undefined" ? config.forceProjects : false;
-							db.utils.projects.createProjects(config.projects, forceProjects, callback);
+							async.parallel([
+								function(cb) {
+									db.utils.projects.createProjects(config.projects, forceProjects, cb);
+								},
+								function(cb) {
+									if (config.admins) {
+										db.utils.setAdmins(config.admins, config.forceAdmins, cb);
+									} else {
+										cb();
+									}
+								}], function(err) {
+									callback(err);
+								});
 						} else {
 							callback(err);
 						}

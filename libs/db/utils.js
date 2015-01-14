@@ -7,6 +7,7 @@
 var crypto = require('crypto');
 var projects = require('./utils.projects.js');
 var Ptracker = require('pivotaltracker');
+var async = require('async');
 var algorithm = 'aes-256-cbc';
 
 module.exports = function(db, config) {
@@ -65,6 +66,38 @@ module.exports = function(db, config) {
 	utils.isAdmin = function(user) {
 		return (user.userlevel === db.userlevels.ADMIN);
 	}
+	
+	/**
+	 * Sets admins
+	 * @param admins Array of admin email addresses
+	 * @param forceAdmins
+	 * @param callback (err)
+	 */
+	utils.setAdmins = function(admins, forceAdmins, callback) {
+		if (typeof forceAdmins != "undefined" && forceAdmins) {
+			db.models.user.update({userlevel: 0}, {where: {email: { not: admins } }})
+			.then(function() {
+				createAdmins();
+			}).catch(function(err) {
+				callback(err);
+			});
+		} else {
+			createAdmins();
+		}
+
+		function createAdmins() {
+			async.each(admins, function(adminEmail, cb) {
+				db.models.user.findOrCreate({where: {email: adminEmail}, defaults: {userlevel: db.userlevels.ADMIN}})
+				.then(function() {
+					cb();
+				}).catch(function(err) {
+					cb(err);
+				});
+			}, function(err) {
+				callback(err);
+			});
+		}
+	};
 
 	/**
 	 * Links an account to given user
