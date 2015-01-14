@@ -16,7 +16,8 @@ module.exports = {
 				},
 				createdAt: Sequelize.DATE,
 				updatedAt: Sequelize.DATE,
-				email: Sequelize.STRING
+				email: Sequelize.STRING,
+				userlevel: {type: dataTypes.INTEGER, defaultValue: 0}
 			})
 			.then(function() {
 				return QueryInterface.createTable(utils.tableName('projects', tablePrefix),

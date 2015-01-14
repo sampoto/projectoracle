@@ -25,6 +25,13 @@ module.exports = function(config) {
 	db.utils = utils(db, config);
 	var self = this;
 	
+	// Constants
+	// Default userlevel value is defined as 0
+	db.userlevels = {
+		USER: 0,
+		ADMIN: 1
+	};
+
 	db.init = function(callback) {
 		callback = callback || function() {};
 

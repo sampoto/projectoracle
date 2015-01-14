@@ -7,7 +7,8 @@ var utils = require('../modelUtils.js');
 
 module.exports = function(sequelize, dataTypes, tablePrefix) {
     var user = sequelize.define( "User", {
-        email: dataTypes.STRING  
+        email: dataTypes.STRING,
+		userlevel: {type: dataTypes.INTEGER, defaultValue: 0}
     }, {
         classMethods: {
             associate: function(models) {

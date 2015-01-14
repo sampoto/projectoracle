@@ -81,8 +81,12 @@ module.exports = function(passport, db) {
 			res.redirect('/');
 		},
 		
-		loggedIn: function(req, res, next) {
-			res.send(req.isAuthenticated() ? req.user.email : '');
+		profile: function(req, res, next) {
+			if (req.isAuthenticated()) {
+				res.send({email: req.user.email, userlevel: req.user.userlevel});
+			} else {
+				res.status(403).send('Not authenticated');
+			}
 		},
 		
 		logout: function(req, res, next) {

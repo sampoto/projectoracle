@@ -43,7 +43,29 @@ module.exports = function(db, config) {
 			callback(err, null);
 		});
 	}
-	
+
+	/**
+	 * Convenience function for setting userlevel for given user
+	 * @param user
+	 * @param userlevel
+	 * @param callback (err)
+	 */
+	utils.setUserLevel = function(user, userlevel, callback) {
+		user.userlevel = userlevel;
+		user.save().then(function() {
+			callback(null);
+		}).catch(function(err) {
+			callback(err);
+		});
+	}
+
+	/**
+	 * Tells if given user is an admin
+	 */
+	utils.isAdmin = function(user) {
+		return (user.userlevel === db.userlevels.ADMIN);
+	}
+
 	/**
 	 * Links an account to given user
 	 * @param user

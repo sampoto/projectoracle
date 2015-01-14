@@ -60,7 +60,7 @@ module.exports = function(app, config, passport, db) {
 	//Expect POST: {"username":"foo","password":"bar"}
 	app.post('/auth/pivotal', auth.pivotalAuth, auth.pivotalAuthLink);
 
-	app.get('/loggedin', auth.loggedIn);
+	app.get('/profile', auth.profile);
 	app.post('/logout', auth.logout);
 
 	app.use(function(err, req, res, next) {

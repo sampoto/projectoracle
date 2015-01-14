@@ -3,11 +3,16 @@ angular.module('ProjectOracle')
 
 	var authService = {};
 	authService.isLoggedIn = false;
+	authService.profile = {};
 
-	$http.get('/loggedin').
+	$http.get('/profile').
         success(function(data){
-            authService.setLoginState(data != "" ? true : false);
-        });
+            authService.setLoginState(true);
+			authService.profile = data;
+        }).error(function(data, status, headers, config) {
+			authService.setLoginState(false);
+			authService.profile = {};
+		});
 
 	authService.setLoginState = function(state) {
 		authService.isLoggedIn = state;
