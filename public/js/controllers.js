@@ -172,7 +172,18 @@ angular.module('ProjectOracle')
 		if ($scope.init())
 			pivotal($scope, $state, $http, DataFactory);
 	}])
-	.controller('settingsController', ['$scope', function($scope) {
+	.controller('settingsController', ['$scope', '$http', 'DataFactory', function($scope, $http, DataFactory) {
+		$scope.connected = {};
+	
+		// Get the current states of the connected apps for user
+		DataFactory.getAccounts()
+			.success(function (data) {
+				$scope.connected = {};
+				for (var i=0; i<data.length; i++) {
+					$scope.connected[data[i]] = true;
+				}
+			});
+
 		$scope.pivotalTokenFormVisible = false;
 
 		$scope.togglePivotalTokenForm = function() {
@@ -187,6 +198,28 @@ angular.module('ProjectOracle')
 
 		$scope.submitPivotalApiToken = function() {
 			var apiToken = $("#pivotalTokenInput").val();
+			DataFactory.pivotalAuth(apiToken)
+				.success(function (data) {
+					// API token is valid, so let's update the button state and hide the API token form
+					$scope.connected['pivotal'] = true;
+					$("#pivotalTokenForm").slideUp();
+				})
+				.error(function (data) {
+					// API token invalid
+					$scope.connected['pivotal'] = false;
+					alert('API token is invalid, please double-check it.');
+				});
+		}
+
+		$scope.disconnectApplication = function(appId) {
+			if (confirm('Do you really want to disconnect this application?')) {
+				DataFactory.deleteAccount(appId)
+					.success(function (data) {
+						// Update the state of the button
+						$scope.connected[appId] = false;
+					});
+			}
+
 		}
 	}]);
 

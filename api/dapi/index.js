@@ -1043,6 +1043,28 @@ module.exports = (function () {
 		}
     });
 
+    router.get('/accounts', function(req, res) {
+        res.json(['pivotal', 'flowdock']);
+    });
+
+    router.post('/auth/pivotal', function(req, res) {
+        var token = req.body.trackerToken;
+        if (token == '1337') {
+            res.status(500).send('invalid API token');
+        } else {
+            res.status(200).send('ok');
+        }
+    });
+
+    router.delete('/accounts/:appId', function(req, res) {
+        if (req.params.appId == 'pivotal' || req.params.appId == 'flowdock') {
+            res.json('ok');
+        } else {
+            res.status(404).send('App "'+req.params.appId+'" not found');
+        }
+
+    });
+
     router.get('*', function (req, res) {
         res.status(404).send('Not Found');
     });

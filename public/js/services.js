@@ -46,8 +46,12 @@ angular.module('ProjectOracle')
 		return $http.get(baseURL + '/projects/' + projectId + '/applications');
 	}
 
-	dataFactory.getAccounts = function(projectId) {
+	dataFactory.getAccounts = function() {
 		return $http.get(baseURL + '/accounts');
+	}
+	
+	dataFactory.deleteAccount = function(appId) {
+		return $http.delete(baseURL + '/accounts/' + appId);
 	}
 	
 	dataFactory.getGoogleDocs = function(projectId) {
@@ -71,7 +75,11 @@ angular.module('ProjectOracle')
 	dataFactory.getPivotalMemberships = function(projectId) {
 		return $http.get(baseURL + '/projects/' + projectId + '/pivotal/memberships');
 	}
-	
+
+	dataFactory.pivotalAuth = function(trackerToken) {
+		return $http.post('/auth/pivotal', { trackerToken: trackerToken } );
+	}
+
 	return dataFactory;
 	
 }])

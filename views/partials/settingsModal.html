@@ -8,14 +8,19 @@
 			<div class="modal-body row" style="padding: 30px">
 				<div class="form-group">
 					<label>Flowdock</label>
-					<a href="/auth/flowdock" target="_self" class="btn btn-success form-control" role="button">
+					<a ng-if="connected['flowdock']" ng-click="disconnectApplication('flowdock');" target="_self" class="btn btn-success form-control" role="button">
 						<span class="glyphicon glyphicon-ok"></span> Connected
+					</a>
+					<a ng-if="!connected['flowdock']" href="/auth/flowdock" target="_self" class="btn btn-danger form-control" role="button">
+						<span class="glyphicon glyphicon-remove"></span> Disconnected
 					</a>
 				</div>
 				<div class="form-group">
 					<label>Pivotal Tracker</label>
-
-					<a ng-click="togglePivotalTokenForm();" class="btn btn-danger form-control" role="button">
+					<a ng-if="connected['pivotal']" ng-click="disconnectApplication('pivotal');" class="btn btn-success form-control" role="button">
+						<span class="glyphicon glyphicon-ok"></span> Connected
+					</a>
+					<a ng-if="!connected['pivotal']" ng-click="togglePivotalTokenForm();" class="btn btn-danger form-control" role="button">
 						<span class="glyphicon glyphicon-remove"></span> Disconnected
 					</a>
 

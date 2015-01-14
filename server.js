@@ -82,6 +82,7 @@ module.exports = function() {
 		app.use(bodyParser.urlencoded({
 		  extended: true
 		}))
+		app.use(bodyParser.json());
 		app.use(cookieParser());
 		app.use(session({ resave: true, saveUninitialized: true, secret: config.sessionSecret }));
 		app.use(passport.initialize());
