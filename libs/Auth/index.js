@@ -6,7 +6,6 @@
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var LocalStrategy = require('passport-local').Strategy;
 var OAuth2Strategy = require('passport-oauth2');
-var Ptracker = require('pivotaltracker');
 
 /**
  * @param passport Passport instance
@@ -94,9 +93,11 @@ function configureFlowdockAuth(passport, authConfig) {
 function configurePivotalAuth(passport) {
 	passport.use('pivotal', new LocalStrategy(
 		function(username, password, done) {
-			Ptracker.getToken(username, password, function(err, token) {
+			var path = pivotalServicePath + "/me";
+			var auth = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
+			utils.fetchJSON(pivotalHost, path, {"X-TrackerToken": token, Authorization: auth}, function(err, profile) {
 				if (!err) {
-					done(null, {trackerToken: token});
+					done(null, {trackerToken: profile.api_token});
 				} else {
 					done(err, null);
 				}

@@ -27,7 +27,6 @@
     "passport-google-oauth": "0.1.5",
     "passport-local": "^1.0.0",
     "passport-oauth2": "1.1.2",
-	"pivotaltracker": "^0.1.1",
     "pg": "3.5.0",
     "sequelize": "^2.0.0-rc7",
     "umzug": "1.2.4"

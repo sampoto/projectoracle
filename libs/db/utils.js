@@ -6,7 +6,6 @@
  
 var crypto = require('crypto');
 var projects = require('./utils.projects.js');
-var Ptracker = require('pivotaltracker');
 var async = require('async');
 var algorithm = 'aes-256-cbc';
 
@@ -149,18 +148,6 @@ module.exports = function(db, config) {
 		})
 		.catch(function(err) {
 			callback(err, null);
-		});
-	}
-	
-	/**
-	 * Convenience function for getting pivotal client with user pivotal account details
-	 * @param user
-	 * @param callback (err, client)
-	 */
-	utils.getPivotalClient = function(user, callback) {
-		db.utils.getAccount(user, "pivotal", function(err, account) {
-			if (err) return callback(err, null);
-			callback(null, new Ptracker.Client({trackerToken: account.access_token}));
 		});
 	}
 	

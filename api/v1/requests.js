@@ -8,6 +8,8 @@ var utils = require('../../utils.js');
 module.exports = function(db) {
 
 	var requests = {};
+	var pivotalHost = "www.pivotaltracker.com";
+	var pivotalServicePath = "/services/v5";
 	
 	requests.getAccounts = function(req, res, next) {
 		db.utils.getAccounts(req.user, function(err, accounts) {
@@ -115,33 +117,25 @@ module.exports = function(db) {
 
 	requests.getPivotalProject = function(req, res, next) {
 		db.utils.projects.getPivotalResources(req.user, req.params.projectId,
-		function(err, project, client, projectId) {
+		function(err, project, token, projectId) {
 			if (err) return next(err);
-			client.project(projectId).get(function(error, PivotalProject) {
-				if (error) return next(error);
-				res.send(PivotalProject);
+			var path = pivotalServicePath + "/projects/" + projectId;
+			utils.fetchJSON(pivotalHost, path, {"X-TrackerToken": token}, function(err, pivotalProject) {
+				if (err) return next(err);
+				res.send(pivotalProject);
 			});
 		});
 	}
 
 	requests.getPivotalStories = function(req, res, next) {
 		db.utils.projects.getPivotalResources(req.user, req.params.projectId,
-		function(err, project, client, projectId) {
+		function(err, project, token, projectId) {
 			if (err) return next(err);
-			client.project(projectId).stories.all(function(error, stories) {
-				if (error) return next(error);
-				if (typeof req.query.with_state == "undefined") {
-					res.send(stories);
-				} else {
-					var state = req.query.with_state; //State: unscheduled etc..
-					var items = [];
-					for ( i=0; i < stories.length; ++i ) {
-						if (stories[i]['currentState'] == state) {
-							items.push(stories[i]);
-						}
-					}
-					res.send(items);
-				}
+			var path = pivotalServicePath + "/projects/" + projectId + "/stories";
+			var query = typeof req.query.with_state !== "undefined" ? "?with_state=" + req.query.with_state : "";
+			utils.fetchJSON(pivotalHost, path + query, {"X-TrackerToken": token}, function(err, stories) {
+				if (err) return next(err);
+				res.send(stories);
 			});
 		});
 
@@ -150,10 +144,11 @@ module.exports = function(db) {
 	requests.getPivotalStory = function(req, res, next) {
 		var storyId = req.params.storyId;
 		db.utils.projects.getPivotalResources(req.user, req.params.projectId,
-		function(err, project, client, projectId) {
+		function(err, project, token, projectId) {
 			if (err) return next(err);
-			client.project(projectId).story(storyId).get(function(error, story) {
-				if (error) return next(error);
+			var path = pivotalServicePath + "/projects/" + projectId + "/stories/" + storyId;
+			utils.fetchJSON(pivotalHost, path, {"X-TrackerToken": token}, function(err, story) {
+				if (err) return next(err);
 				res.send(story);
 			});
 		})
@@ -161,32 +156,25 @@ module.exports = function(db) {
 
 	requests.getPivotalIterations = function(req, res, next) {
 		db.utils.projects.getPivotalResources(req.user, req.params.projectId,
-		function(err, project, client, projectId) {
+		function(err, project, token, projectId) {
 			if (err) return next(err);
-			client.project(projectId).iterations.all(function(error, iterations) {
-				if (error) return next(error);
-				if (typeof req.query.scope == "undefined"){
-					res.send(iterations);
-				} else {
-					var scope = req.query.scope; //Scope: current, backlog..
-					var items = [];   
-					for ( i=0; i < iterations.length; ++i) {
-						if (iterations[i]['scope'] == scope) {
-							items.push(iterations[i]);
-						}	
-					}
-					res.send(items);
-				}
+			var path = pivotalServicePath + "/projects/" + projectId + "/iterations";
+			var query = typeof req.query.scope !== "undefined" ? "/?scope=" + req.query.scope : "";
+			utils.fetchJSON(pivotalHost, path + query, {"X-TrackerToken": token}, function(err, iterations) {
+				if (err) return next(err);
+				res.send(iterations);
 			});
 		});
 	}
 
 	requests.getPivotalMemberships = function(req, res, next) {
 		db.utils.projects.getPivotalResources(req.user, req.params.projectId,
-		function(err, project, client, projectId) {
+		function(err, project, token, projectId) {
 			if (err) return next(err);
-			client.project(projectId).memberships.all(function(error, memberships) {
-				if (error) return next(error);
+			//TODO memberships
+			var path = pivotalServicePath + "/projects/" + projectId + "/memberships";
+			utils.fetchJSON(pivotalHost, path, {"X-TrackerToken": token}, function(err, memberships) {
+				if (err) return next(err);
 				res.send(memberships);
 			});
 		});
