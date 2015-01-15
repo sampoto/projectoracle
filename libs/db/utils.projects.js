@@ -4,7 +4,7 @@
  * Module for database project utils
  */
 
- var async = require('async');
+var async = require('async');
  
 module.exports = function(db) {
 
@@ -303,20 +303,20 @@ module.exports = function(db) {
 	}
 	
 	/**
-	 * Convenience function for getting project, Pivotal tracker client and pivotal tracker project id
+	 * Convenience function for getting project, tracker token and pivotal tracker project id
 	 * from project ID
 	 * @param user
 	 * @param projectId Project's ID in database
-	 * @param callback (err, project, client, projectId)
+	 * @param callback (err, project, trackertoken, projectId)
 	 */
 	projects.getPivotalResources = function(user, projectId, callback) {
 		db.utils.projects.getUserProjectById(user, projectId, function(err, project) {
 			if (err) return callback(err);
-			db.utils.getPivotalClient(user, function(err, client) {
-				if (err) return callback(err);
+			db.utils.getAccount(user, "pivotal", function(err, account) {
+				if (err) return callback(err, null);
 				db.utils.projects.getPivotalApp(project, function(err, pivotalResource) {
 					if (err) return callback(err);
-					callback(null, project, client, pivotalResource.projectId);
+					callback(null, project, account.access_token, pivotalResource.projectId);
 				});
 			});
 		});

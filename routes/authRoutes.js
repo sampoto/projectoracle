@@ -2,7 +2,6 @@
  * Project Oracle
  * TIE-13106 Project Work on Pervasive Systems
  */
-var Ptracker = require('pivotaltracker');
 var utils = require('../utils.js');
 
  /**

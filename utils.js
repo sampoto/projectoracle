@@ -9,6 +9,9 @@ module.exports = (function() {
 
 	var utils = {};
 
+	utils.pivotalHost = "www.pivotaltracker.com";
+	utils.pivotalServicePath = "/services/v5";
+	
 	/**
 	 * Fetches JSON objects from given source
 	 * @param hostname
