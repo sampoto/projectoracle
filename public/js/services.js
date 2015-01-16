@@ -46,6 +46,10 @@ angular.module('ProjectOracle')
 		return $http.get(baseURL + '/projects/' + projectId + '/applications');
 	}
 	
+	dataFactory.getGoogleDocs = function(projectId) {
+		return $http.get(baseURL + '/projects/' + projectId + '/docs');
+	}
+	
 	return dataFactory;
 	
 }])

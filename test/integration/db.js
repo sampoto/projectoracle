@@ -99,7 +99,7 @@ describe('Database', function() {
 					db.utils.projects.createProjects(projects2, false, function(err) {
 						db.models.project.find({where: {project_name: "test"}})
 						.then(function(project) {
-							db.utils.projects.getGoogleDocs(project, false, function(err, docs) {
+							db.utils.projects.getGoogleDocs(project, function(err, docs) {
 								if (err) throw err;
 								assert(docs.length == 1, 'Document did not get replaced with another');
 								assert(docs[0].doc_name == "test2", 'Document did not get replaced with another');
@@ -147,7 +147,7 @@ function getInvalidRefs(db, project, callback) {
 			});
 		},
 		function(done) {
-			db.utils.projects.getGoogleDocs(project, false, function(err, docs) {
+			db.utils.projects.getGoogleDocs(project, function(err, docs) {
 				if (err || docs == null || docs.length == 0) invalidRefs.push("GoogleDocs");
 				done(err);
 			});

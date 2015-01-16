@@ -177,6 +177,17 @@ module.exports = function(db) {
 			});
 		});
 	}
+	
+	requests.getGoogleDocs = function(req, res, next) {
+		db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
+			if (err) return next(err);
+			db.utils.projects.getGoogleDocs(project, function(err, docs) {
+				if (err) return next(err);
+				var docList = docs.map(function(doc) { return {"name": doc.doc_name, "url": doc.doc_url} } );
+				res.send(docList);
+			});
+		});
+	}
 
 	return requests;
 }

@@ -33,6 +33,8 @@ module.exports = function(db) {
 	router.get('/projects/:projectId/pivotal/iterations', requests.getPivotalIterations);
 	router.get('/projects/:projectId/pivotal/memberships', requests.getPivotalMemberships);
 
+	router.get('/projects/:projectId/docs', requests.getGoogleDocs);
+
 	router.use(function(err, req, res, next) {
 		if (err.code == 'nonexistentproject') {
 			res.status(404).send('Project does not exist');

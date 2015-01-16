@@ -158,7 +158,7 @@ module.exports = function(db) {
 				});
 			},
 			function(cb) {
-				projects.getGoogleDocs(project, false, function(err, docs) {
+				projects.getGoogleDocs(project, function(err, docs) {
 					cb(err, (docs.length > 0) ? "googledocs" : null);
 				});
 			}
@@ -325,21 +325,11 @@ module.exports = function(db) {
 	/**
 	 * Gets list of google documents related to given project
 	 * @param project
-	 * @param valuesOnly
 	 * @param callback (err, docs)
 	 */
-	projects.getGoogleDocs = function(project, valuesOnly, callback) {
-		var options = {};
-		if (valuesOnly)
-			options.attributes = ["doc_name", "doc_url"];
-
-		project.getGoogleDocs(options).then(function(docs) {
-			if (valuesOnly) {
-				var values = docs.filter(function(doc) { return doc.values } );
-				callback(null, values);
-			} else {
-				callback(null, docs);
-			}
+	projects.getGoogleDocs = function(project, callback) {
+		project.getGoogleDocs().then(function(docs) {
+			callback(null, docs);
 		})
 		.catch(function(err) {
 			callback(err, null);

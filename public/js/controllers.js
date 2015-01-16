@@ -142,14 +142,18 @@ angular.module('ProjectOracle')
 		$scope.title = $state.params.title;
 		$scope.reason = $state.params.reason;
 	}])
-	.controller('docsController', ['$scope', '$state', '$http', '$sce', function($scope, $state, $http, $sce) {
-		$scope.trustSrc = function(src) {
-			return $sce.trustAsResourceUrl(src);
+	.controller('docsController', ['$scope', '$state', '$http', '$sce', 'DataFactory', function($scope, $state, $http, $sce, DataFactory) {
+		$scope.defaultURL = null;
+		$scope.imageUrl = function(src) {
+			if (src) return $sce.trustAsResourceUrl(src);
+			return '';
 		};
-		$http.get('/api/dapi/docs').
+		DataFactory.getGoogleDocs($scope.projectId).
 			success(function(data){
 				$scope.docs = data;
-				$scope.defaultURL = data.docs[0].url;
+				if (data.length > 0) {
+					$scope.defaultURL = data[0].url;
+				}
 			});
 	}])
 	.controller('pivotalController', ['$scope', '$state', '$http', function($scope, $state, $http) {
