@@ -115,9 +115,9 @@ angular.module('ProjectOracle')
 		}
 
 		function appName(appId) {
-			if (appId == "flows") return "Flowdock";
+			if (appId == "flowdock") return "Flowdock";
 			if (appId == "pivotal") return "Pivotal tracker";
-			if (appId == "docs") return "Google spreadsheets";
+			if (appId == "googledocs") return "Google spreadsheets";
 		}
 
 		var search = projects.data.filter(function(project) {

@@ -23,15 +23,15 @@ config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
     }).state('project.dashboard', {
 		url: '/dashboard',
 		templateUrl: '/partials/dashboard.html'
-	}).state('project.flows', {
-		url: '/flows',
+	}).state('project.flowdock', {
+		url: '/flowdock',
 		templateUrl: '/partials/flows.html'
 	}).state('project.pivotal', {
 		url: '/pivotal',
 		controller: 'pivotalController',
 		templateUrl: '/partials/pivotal.html'
-	}).state('project.docs', {
-		url: '/docs',
+	}).state('project.googledocs', {
+		url: '/googledocs',
 		controller: 'docsController',
 		templateUrl: '/partials/docs.html'
 	}).state('error', {

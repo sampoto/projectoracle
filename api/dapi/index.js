@@ -1,25 +1,19 @@
 var express = require('express');
 
-var dummyDocs={
-	"docs": [
-		{
-			"type":"slides",
-			"url" :"https://docs.google.com/presentation/d/1HqLpL1lkOrtoxEIFRwu7UbCEUfUvalSEP7GnT5MKvLc/embed?start=false&loop=true&delayms=60000",
-			"name":"requirement"
-		},
-		{
-			"type":"spreadsheet",
-			"url" :"https://docs.google.com/spreadsheets/d/1rFUSxn6kGnBhm7CYHeT8bqf5NxwdwmQy_s8QQ1I3HdA/pubhtml?widget=true&amp;headers=false",
-			"name":"hourlog"
-		},
-		{
-			"type":"spreadsheet",
-			"url" :"https://docs.google.com/spreadsheets/d/1KuzTYVn-pc9PzI387Q7HpbkZGvJ0xfwxq82LzMGt5S0/pubhtml?widget=true&amp;headers=false",
-			"name":"dummy spreadsheet"
-		}
-
-    ]
-}
+var dummyDocs = [
+	{
+		"url" :"https://docs.google.com/presentation/d/1HqLpL1lkOrtoxEIFRwu7UbCEUfUvalSEP7GnT5MKvLc/embed?start=false&loop=true&delayms=60000",
+		"name":"requirement"
+	},
+	{
+		"url" :"https://docs.google.com/spreadsheets/d/1rFUSxn6kGnBhm7CYHeT8bqf5NxwdwmQy_s8QQ1I3HdA/pubhtml?widget=true&amp;headers=false",
+		"name":"hourlog"
+	},
+	{
+		"url" :"https://docs.google.com/spreadsheets/d/1KuzTYVn-pc9PzI387Q7HpbkZGvJ0xfwxq82LzMGt5S0/pubhtml?widget=true&amp;headers=false",
+		"name":"dummy spreadsheet"
+	}
+];
 
 /*
 
@@ -1014,12 +1008,12 @@ module.exports = (function () {
     });
 
     router.get('/projects/:projectId/applications', function (req, res) {
-        res.send([{id: "flows"},
+        res.send([{id: "flowdock"},
             {id: "pivotal"},
-            {id: "docs"}]);
+            {id: "googledocs"}]);
     });
 
-    router.get('/docs', function (req, res) {
+    router.get('/projects/:projectId/docs', function (req, res) {
         res.json(dummyDocs);
     });
 
