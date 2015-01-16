@@ -36,7 +36,7 @@ angular.module('ProjectOracle')
 .factory('DataFactory', ['$http', '$state', function($http, $state) {
 
 	var dataFactory = {};
-	var baseURL = "/api/dapi";
+	var baseURL = "/api/v1";
 
 	dataFactory.getProjects = function() {
 		return $http.get(baseURL + '/projects');
