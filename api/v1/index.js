@@ -36,8 +36,10 @@ module.exports = function(db) {
 	router.get('/projects/:projectId/docs', requests.getGoogleDocs);
 
 	router.use(function(err, req, res, next) {
-		if (err.code == 'nonexistentproject') {
+		if (err.code && err.code == 'nonexistentproject') {
 			res.status(404).send('Project does not exist');
+		} else if (err.code && err.code == 'accountnotfound') {
+			res.status(404).send('Account not found');
 		} else {
 			next(err);
 		}

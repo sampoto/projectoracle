@@ -59,7 +59,8 @@ function configureGoogleAuth(passport, db, authConfig) {
 					if (!err) {
 						return done(null, user);
 					} else {
-						return done(new Error('Account creation failed'), null);
+						err.code = 'accountcreationfailed';
+						return done(err, null);
 					}
 				});
 			} else {

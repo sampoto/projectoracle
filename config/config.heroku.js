@@ -15,7 +15,8 @@ module.exports = {
 			clientID: process.env.flowdockClientID,
 			clientSecret: process.env.flowdockClientSecret
 		}
-	}
+	},
+	debug: process.env.DEBUG
 }
 
 function getHerokuDBOptions(){

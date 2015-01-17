@@ -143,7 +143,9 @@ module.exports = function(db, config) {
 								refresh_token: decrypt(config.encryptKey, user.email, acc.refresh_token) };
 				callback(null, account);
 			} else {
-				callback(new Error('Account not found'));
+				var error = new Error('Account not found');
+				error.code = 'accountnotfound';
+				callback(error);
 			}
 		})
 		.catch(function(err) {

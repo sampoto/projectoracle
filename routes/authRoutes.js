@@ -17,7 +17,12 @@ module.exports = function(passport, db) {
 					if (typeof req.session.errors == "undefined") {
 						req.session.errors = [];
 					}
-					req.session.errors.push(err.message);
+					var message = err.message;
+					if (err.code && err.code == 'accountcreationfailed') {
+						console.error(err);
+						message = 'Account creation failed';
+					}
+					req.session.errors.push(message);
 					return res.redirect('/');
 				}
 				req.logIn(user, function(err) {
