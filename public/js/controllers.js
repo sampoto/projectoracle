@@ -100,7 +100,7 @@ angular.module('ProjectOracle')
 			$state.go( "project.index", {projectId: project.name} );
 		}
     }])
-	.controller('projectController', ['$scope', '$state', 'DataFactory', 'projects', function($scope, $state, DataFactory, projects) {
+	.controller('projectController', ['$scope', '$state', 'DataFactory', 'projectData', function($scope, $state, DataFactory, projectData) {
 		function updateProjectNavigation(projectId) {
 			DataFactory.getApplications(projectId).success(function(pages) {
 				// Map applications to states and names
@@ -113,13 +113,26 @@ angular.module('ProjectOracle')
 			});
 		}
 
+		// This function is used in child controllers to check if matching application has been linked
+		// Returns true if the application has been linked to user's account
+		$scope.init = function() {
+			var linkedAccounts = projectData[1].data;
+			var page = $state.current.name.substr($state.current.name.lastIndexOf(".")+1);
+			if (linkedAccounts.indexOf(page) == -1) {
+				var errorMessage = "App '" + page + "' needs to be linked.";
+				$state.go("^.error", {title: 'Error', reason: errorMessage}, {location: false});
+				return false;
+			}
+			return true;
+		}
+
 		function appName(appId) {
 			if (appId == "flowdock") return "Flowdock";
 			if (appId == "pivotal") return "Pivotal tracker";
 			if (appId == "googledocs") return "Google spreadsheets";
 		}
 
-		var search = projects.data.filter(function(project) {
+		var search = projectData[0].data.filter(function(project) {
 			return $state.params.projectId == slugify(project.name);
 		});
 		if (search.length > 0) {
@@ -130,7 +143,7 @@ angular.module('ProjectOracle')
 		}
 
 		updateProjectNavigation($scope.projectId);
-
+		
 		// Checks if given page is selected
 		$scope.isSelected = function(page) {
 			return $state.current.name == "project." + page.state 
@@ -156,7 +169,8 @@ angular.module('ProjectOracle')
 			});
 	}])
 	.controller('pivotalController', ['$scope', '$state', '$http', 'DataFactory', function($scope, $state, $http, DataFactory) {
-		pivotal($scope, $state, $http, DataFactory);
+		if ($scope.init())
+			pivotal($scope, $state, $http, DataFactory);
 	}]);	
 // Thanks to Mathew Byrne
 // https://github.com/mathewbyrne

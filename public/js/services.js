@@ -45,6 +45,10 @@ angular.module('ProjectOracle')
 	dataFactory.getApplications = function(projectId) {
 		return $http.get(baseURL + '/projects/' + projectId + '/applications');
 	}
+
+	dataFactory.getAccounts = function(projectId) {
+		return $http.get(baseURL + '/accounts');
+	}
 	
 	dataFactory.getGoogleDocs = function(projectId) {
 		return $http.get(baseURL + '/projects/' + projectId + '/docs');
@@ -71,14 +75,10 @@ angular.module('ProjectOracle')
 	return dataFactory;
 	
 }])
-.factory('ProjectLibrary', ['$state', 'DataFactory', function($state, DataFactory) {
+.factory('ProjectLibrary', ['$state', '$q', 'DataFactory', function($state, $q, DataFactory) {
 	var sdo = {
-		getProjects: function() {
-			return DataFactory.getProjects();
-		},
-		getApplications: function() {
-			var projectId = $state.params.projectId;
-			return DataFactory.getApplications(projectId);
+		getProjectData: function() {
+			return $q.all([DataFactory.getProjects(), DataFactory.getAccounts()]);
 		}
 	};
 	return sdo;

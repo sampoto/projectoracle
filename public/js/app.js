@@ -15,7 +15,7 @@ config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
 		url: '/p/:projectId',
 		templateUrl: '/partials/project.html',
 		resolve: {
-			projects: function(ProjectLibrary) { return ProjectLibrary.getProjects(); }
+			projectData: function(ProjectLibrary) { return ProjectLibrary.getProjectData(); }
 		}
 	}).state('project.index', {
 		url: '',
@@ -34,6 +34,10 @@ config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
 		url: '/googledocs',
 		controller: 'docsController',
 		templateUrl: '/partials/docs.html'
+	}).state('project.error', {
+		templateUrl: '/partials/error.html',
+		controller: 'errorController',
+		params: {projectId:{}, title:{}, reason:{}}
 	}).state('error', {
 		templateUrl: '/partials/error.html',
 		controller: 'errorController',
