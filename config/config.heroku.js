@@ -32,6 +32,7 @@ function getHerokuDBOptions(){
 				logging:  false
 			},
 			encryptKey: process.env.ENCRYPTKEY,
+			force: typeof process.env.FORCE !== "undefined" ? process.env.FORCE : false,
 			admins: (function() {
 				return typeof process.env.ADMIN !== "undefined" ? [process.env.ADMIN] : null; 
 			}()),
