@@ -36,7 +36,7 @@ module.exports = function(db, config) {
 	 * @param callback (error, user)
 	 */
 	utils.getUser = function(email, callback) {
-		db.models.user.find({email: email}).then(function(user) {
+		db.models.user.findOne({where: {email: email}}).then(function(user) {
 			callback(null, user);
 		})
 		.catch(function(err) {
