@@ -59,35 +59,14 @@
         <row>
 
             <!-- Messages -->
-            <div class="chat col-xs-7" chat>
+            <div class="chat col-xs-7" chat ng-init="filter = ''">
 
             </div>
             <!-- /Messages -->
 
             <!-- News -->
             <div class="news col-xs-5" news>
-                <!-- TODO: Tän elementin sisällön voi varmaan siirtää omaan filuun kun kerkiää -->
 
-                <ul>
-                    <li ng-repeat="message in teamInbox" ng-switch="message.event">
-
-                        <!-- TODO: Näin saa eroteltua kivasti millasta muotoa käyttää eri tyyppisille inbox-viesteille -->
-                        <span ng-switch-when="mail">
-                            <b>Maili</b>
-                            <!-- TODO: Syystä XYZ "mail"-eventeissä otsikko on "subject", "rss":llä "title" -->
-                            <h4><u><i><b>{{message.content.subject}}</b></i></u></h4>
-                            <!-- TODO: Tämä säätö vaaditaan saadun HTML-stringin kääntämiseksi oikeaan HTML:ään (ainakin näkyi uutisteksteissä) -->
-                            <div ng-bind-html="convertStringToHtml(message.content.content);"></div>
-                        </span>
-
-                        <span ng-switch-when="rss">
-                            <b>Är-äs-ässä</b>
-                            <h4><u><i><b>{{message.content.title}}</b></i></u></h4>
-                            <div ng-bind-html="convertStringToHtml(message.content.content);"></div>
-                        </span>
-
-                    </li>
-                </ul>
             </div>
             <!-- /News -->
         </row>
