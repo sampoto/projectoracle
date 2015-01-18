@@ -61,14 +61,10 @@ module.exports = function(passport, db) {
 					// Test token using /me endpoint
 					utils.fetchJSON("www.pivotaltracker.com", "/services/v5/me", {"X-TrackerToken": token}, function(err, json) {
 						if (err) return next(err);
-						if (!json.error) {
-							var accountInfo = { account_name: 'pivotal',
-												access_token: token };
-							db.utils.linkAccount(req.user, accountInfo, null);
-							res.redirect('/');
-						} else {
-							next(new Error(json.error));
-						}
+						var accountInfo = { account_name: 'pivotal',
+											access_token: token };
+						db.utils.linkAccount(req.user, accountInfo, null);
+						res.redirect('/');
 					});
 				} else {
 					passport.authorize('pivotal', { successRedirect : '/', failureRedirect: '/' })(req, res, next);
