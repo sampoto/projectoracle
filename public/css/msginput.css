@@ -1,10 +1,16 @@
-.search_part{
-    position:fixed;
-    height:40px;
-    width: 100px;
-    margin-bottom:2cm;
-}
-#search_input{
-    background:blue;
+#search_part{
 
+}
+
+.footer {
+    position: absolute;
+    vertical-align: bottom;
+    margin: 0;
+    padding: 0;
+    padding-top: 4px;
+    float: none;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 43px;
+    background-color: #f5f5f5;
 }
