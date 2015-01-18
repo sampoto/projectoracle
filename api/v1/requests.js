@@ -8,6 +8,8 @@ var utils = require('../../utils.js');
 module.exports = function(db) {
 
 	var requests = {};
+
+	var INPUT_MAX_LENGTH = 200;
 	
 	requests.getAccounts = function(req, res, next) {
 		db.utils.getAccounts(req.user, function(err, accounts) {
@@ -109,6 +111,37 @@ module.exports = function(db) {
 			});
 		});
 	}
+	
+	requests.setFlowdockApp = function(req, res, next) {
+		if (db.utils.isAdmin(req.user)) {
+			db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
+				if (err) return next(err);
+				var organization = req.body.organization;
+				var flow = req.body.flow;
+				if (typeof organization === "string" && typeof flow === "string" 
+				&& organization.length < INPUT_MAX_LENGTH && flow.length < INPUT_MAX_LENGTH) {
+					db.utils.projects.setFlowdockApp(project, organization, flow, function(err) {
+						if (err) return next(err);
+						res.send("Flowdock application set");
+					});
+				} else {
+					res.status(400).send("Invalid organization or flow");
+				}
+			});
+		}
+	}
+	
+	requests.deleteFlowdockApp = function(req, res, next) {
+		if (db.utils.isAdmin(req.user)) {
+			db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
+				if (err) return next(err);
+				db.utils.projects.setFlowdockApp(project, null, null, function(err) {
+					if (err) return next(err);
+					res.send("Flowdock application deleted");
+				});
+			});
+		}
+	}
 
 	requests.getPivotalProject = function(req, res, next) {
 		db.utils.projects.getPivotalResources(req.user, req.params.projectId,
@@ -174,7 +207,40 @@ module.exports = function(db) {
 			});
 		});
 	}
-
+	
+	requests.setPivotalApp = function(req, res, next) {
+		if (db.utils.isAdmin(req.user)) {
+			db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
+				if (err) return next(err);
+				if (typeof req.body.projectId === "string" && /^[0-9]+$/.test(req.body.projectId)) {
+					var pivotalProjectId = parseInt(req.body.projectId);
+					db.utils.projects.setPivotalApp(project, pivotalProjectId, function(err) {
+						if (err) return next(err);
+						res.send("Pivotal application set");
+					});
+				} else {
+					res.status(400).send("Invalid project ID");
+				}
+			});
+		} else {
+			res.status(403).send("No admin rights");
+		}
+	}
+	
+	requests.deletePivotalApp = function(req, res, next) {
+		if (db.utils.isAdmin(req.user)) {
+			db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
+				if (err) return next(err);
+				db.utils.projects.setPivotalApp(project, null, function(err) {
+					if (err) return next(err);
+					res.send("Pivotal application deleted");
+				});
+			});
+		} else {
+			res.status(403).send("No admin rights");
+		}
+	}
+	
 	requests.addAdmin = function(req, res, next) {
 		if (db.utils.isAdmin(req.user) && typeof req.body.email === "string") {
 			db.utils.getUser(req.body.email, function(err, user) {
@@ -221,12 +287,59 @@ module.exports = function(db) {
 			if (err) return next(err);
 			db.utils.projects.getGoogleDocs(project, function(err, docs) {
 				if (err) return next(err);
-				var docList = docs.map(function(doc) { return {"name": doc.doc_name, "url": doc.doc_url} } );
+				var docList = docs.map(function(doc) { 
+					return {"id": doc.id, "name": doc.doc_name, "url": doc.doc_url} 
+				});
 				res.send(docList);
 			});
 		});
 	}
 
+	requests.addGoogleDoc = function(req, res, next) {
+		if (db.utils.isAdmin(req.user)) {
+			db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
+				if (err) return next(err);
+				var name = req.body.name;
+				var url = req.body.url;
+				if (typeof name === "string" && typeof url === "string") {
+					db.utils.projects.createGoogleDoc(project, name, url, function(err, doc) {
+						if (err) return next(err);
+						res.send("Document added");
+					});
+				} else {
+					res.status(400).send("Invalid name or URL");
+				}
+			});
+		} else {
+			res.status(403).send("No admin rights");
+		}
+	}
+	
+	requests.deleteGoogleDoc = function(req, res, next) {
+		if (db.utils.isAdmin(req.user)) {
+			db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
+				if (err) return next(err);
+				var id = parseInt(req.params.docId);
+				if (typeof id !== "undefined" && !isNaN(id)) {
+					db.utils.projects.getGoogleDocs(project, {id: id}, function(err, docs) {
+						if (err) return next(err);
+						if (docs.length == 1) {
+							db.utils.projects.deleteGoogleDoc(docs[0], function(err) {
+								if (err) return next(err);
+								res.send("Document deleted");
+							});
+						} else {
+							res.status(404).send("Document doesn't exist");
+						}
+					});
+				} else {
+					res.status(400).send("Invalid ID");
+				}
+			});
+		} else {
+			res.status(403).send("No admin rights");
+		}
+	}
 
 	return requests;
 }

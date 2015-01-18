@@ -26,17 +26,23 @@ module.exports = function(db) {
 	router.get('/projects/:projectId/flow', requests.getFlow);
 	router.get('/projects/:projectId/flow/messages', requests.getFlowMessages);
 	router.get('/projects/:projectId/flow/users', requests.getFlowUsers);
+	router.post('/projects/:projectId/applications/flowdock', requests.setFlowdockApp);
+	router.delete('/projects/:projectId/applications/flowdock', requests.deleteFlowdockApp);
 	
 	router.get('/projects/:projectId/pivotal', requests.getPivotalProject); //All data from one project
 	router.get('/projects/:projectId/pivotal/stories', requests.getPivotalStories); //get all stories from project
 	router.get('/projects/:projectId/pivotal/stories/:storyId', requests.getPivotalStory); //get one story by story id
 	router.get('/projects/:projectId/pivotal/iterations', requests.getPivotalIterations);
 	router.get('/projects/:projectId/pivotal/memberships', requests.getPivotalMemberships);
-	
+	router.post('/projects/:projectId/applications/pivotal', requests.setPivotalApp);
+	router.delete('/projects/:projectId/applications/pivotal', requests.deletePivotalApp);
+
 	router.post('/admin', requests.addAdmin);
 	router.delete('/admin/:email', requests.deleteAdmin);
 
 	router.get('/projects/:projectId/docs', requests.getGoogleDocs);
+	router.post('/projects/:projectId/docs', requests.addGoogleDoc);
+	router.delete('/projects/:projectId/docs/:docId', requests.deleteGoogleDoc);
 
 	router.use(function(err, req, res, next) {
 		if (err.code && err.code == 'nonexistentproject') {

@@ -201,7 +201,7 @@ module.exports = function(db) {
 	}
 	
 	/**
-	 * Gets Pivotal Tracker app information from given project
+	 * Gets Flow dock app information from given project
 	 * @param project
 	 * @param callback (err, values)
 	 */
@@ -327,10 +327,14 @@ module.exports = function(db) {
 	/**
 	 * Gets list of google documents related to given project
 	 * @param project
+	 * @param options [optional]
 	 * @param callback (err, docs)
 	 */
-	projects.getGoogleDocs = function(project, callback) {
-		project.getGoogleDocs().then(function(docs) {
+	projects.getGoogleDocs = function(project, options, callback) {
+		if (typeof options === "function" && typeof callback === "undefined") callback = options;
+		var opt = {};
+		if (options.id) opt.where = {id: options.id};
+		project.getGoogleDocs(opt).then(function(docs) {
 			callback(null, docs);
 		})
 		.catch(function(err) {
@@ -370,6 +374,19 @@ module.exports = function(db) {
 		})
 		.catch(function(err) {
 			callback(err, null);
+		});
+	}
+	
+	/**
+	 * Deletes given google document
+	 * @param doc
+	 * @param callback (err)
+	 */
+	projects.deleteGoogleDoc = function(doc, callback) {
+		doc.destroy().then(function() {
+			callback(null);
+		}).catch(function(err) {
+			callback(err);
 		});
 	}
 	
