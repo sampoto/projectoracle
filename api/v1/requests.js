@@ -51,10 +51,7 @@ module.exports = function(db) {
 				if (project != null) {
 					db.utils.projects.getProjectApps(project, function(err, apps) {
 						if (!err) {
-							var appList = apps.map(function(app) {
-								return {id: app};
-							});
-							res.send(appList);
+							res.send(apps);
 						} else {
 							next(err);
 						}

@@ -145,35 +145,15 @@ module.exports = function(db) {
 	 * @param callback (err, apps)
 	 */
 	projects.getProjectApps = function(project, callback) {
-	
-		var fetchList = [
-		function(cb) {
-				projects.getFlowdockApp(project, function(err, values) {
-					cb(err, (values != null) ? "flowdock" : null);
-				});
-			},
-			function(cb) {
-				projects.getPivotalApp(project, function(err, projectId) {
-					cb(err, (projectId != null) ? "pivotal" : null);
-				});
-			},
-			function(cb) {
-				projects.getGoogleDocs(project, function(err, docs) {
-					cb(err, (docs.length > 0) ? "googledocs" : null);
-				});
-			}
-		];
-	
-		async.parallel(fetchList, 
-		function(err, results) {
+		var apps = [projects.getFlowdockApp, projects.getPivotalApp, projects.getGoogleDocsApp];
+		async.map(apps, function(app, cb) {
+			app(project, function(err, info) {
+				cb(err, info);
+			});
+		}, function(err, results) {
 			if (!err) {
-				var apps = [];
-				for (app in results) {
-					if (results[app] != null) {
-						apps.push(results[app]);
-					}
-				}
-				callback(null, apps);
+				appList = results.filter(function(app) { return app != null; });
+				callback(null, appList);
 			} else {
 				callback(err, null);
 			}
@@ -221,7 +201,7 @@ module.exports = function(db) {
 	projects.getFlowdockApp = function(project, callback) {
 		if (project.flowdock_ref != null) {
 			var components = project.flowdock_ref.split("/");
-			callback(null, {organization: components[0], flow: components[1]});
+			callback(null, {id: "flowdock", organization: components[0], flow: components[1]});
 		} else {
 			callback(null, null);
 		}
@@ -277,7 +257,7 @@ module.exports = function(db) {
 	 */
 	projects.getPivotalApp = function(project, callback) {
 		if (project.pivotal_ref != null) {
-			callback(null, {projectId: project.pivotal_ref});
+			callback(null, {id: "pivotal", projectId: project.pivotal_ref});
 		} else {
 			callback(null, null);
 		}
@@ -319,6 +299,21 @@ module.exports = function(db) {
 					callback(null, project, account.access_token, pivotalResource.projectId);
 				});
 			});
+		});
+	}
+	
+	/**
+	 * Returns information about google docs app
+	 * @param project
+	 * @param callback (err, info)
+	 */
+	projects.getGoogleDocsApp = function(project, callback) {
+		project.getGoogleDocs().then(function(docs) {
+			var info = docs.length > 0 ? {id: "googledocs"} : null;
+			callback(null, info);
+		})
+		.catch(function(err) {
+			callback(err, null);
 		});
 	}
 	
