@@ -10,6 +10,12 @@ module.exports = function(db) {
 
 	var projects = {};
 
+	projects.appIds = {
+		FLOWDOCK: "flowdock",
+		PIVOTAL: "pivotal",
+		GOOGLEDOCS: "googledocs"
+	};
+	
 	/**
 	 * Creates a new project
 	 * @param name
@@ -177,12 +183,13 @@ module.exports = function(db) {
 	 * Sets project app
 	 * @param project
 	 * @param app
+	 * @param app.id App id - see db AppId constants
 	 * @param callback
 	 */
 	projects.setApp = function(project, app, callback) {
-		if (app.id == "flowdock") projects.setFlowdockApp(project, app.organization, app.flow, callback);
-		if (app.id == "pivotal") projects.setPivotalApp(project, app.projectId, callback);
-		if (app.id == "googledocs") {
+		if (app.id == projects.appIds.FLOWDOCK) projects.setFlowdockApp(project, app.organization, app.flow, callback);
+		if (app.id == projects.appIds.PIVOTAL) projects.setPivotalApp(project, app.projectId, callback);
+		if (app.id == projects.appIds.GOOGLEDOCS) {
 			project.getGoogleDocs().then(function(docs) {
 				project.removeGoogleDocs(docs).then(function() {
 					async.each(app.docs, function(doc, cb) {
@@ -201,7 +208,7 @@ module.exports = function(db) {
 	projects.getFlowdockApp = function(project, callback) {
 		if (project.flowdock_ref != null) {
 			var components = project.flowdock_ref.split("/");
-			callback(null, {id: "flowdock", organization: components[0], flow: components[1]});
+			callback(null, {id: projects.appIds.FLOWDOCK, organization: components[0], flow: components[1]});
 		} else {
 			callback(null, null);
 		}
@@ -215,7 +222,7 @@ module.exports = function(db) {
 	 */
 	projects.getFlowdockAppInfo = function(user, project, callback) {
 		projects.getFlowdockApp(project, function(err, info) {
-			db.utils.getAccount(user, "flowdock", function (err, account) {
+			db.utils.getAccount(user, projects.appIds.FLOWDOCK, function (err, account) {
 				if (!err) {
 					info.account = account;
 					callback(null, info);
@@ -257,7 +264,7 @@ module.exports = function(db) {
 	 */
 	projects.getPivotalApp = function(project, callback) {
 		if (project.pivotal_ref != null) {
-			callback(null, {id: "pivotal", projectId: project.pivotal_ref});
+			callback(null, {id: projects.appIds.PIVOTAL, projectId: project.pivotal_ref});
 		} else {
 			callback(null, null);
 		}
@@ -292,7 +299,7 @@ module.exports = function(db) {
 	projects.getPivotalResources = function(user, projectId, callback) {
 		db.utils.projects.getUserProjectById(user, projectId, function(err, project) {
 			if (err) return callback(err);
-			db.utils.getAccount(user, "pivotal", function(err, account) {
+			db.utils.getAccount(user, projects.appIds.PIVOTAL, function(err, account) {
 				if (err) return callback(err, null);
 				db.utils.projects.getPivotalApp(project, function(err, pivotalResource) {
 					if (err) return callback(err);
@@ -309,7 +316,7 @@ module.exports = function(db) {
 	 */
 	projects.getGoogleDocsApp = function(project, callback) {
 		project.getGoogleDocs().then(function(docs) {
-			var info = docs.length > 0 ? {id: "googledocs"} : null;
+			var info = docs.length > 0 ? {id: projects.appIds.GOOGLEDOCS} : null;
 			callback(null, info);
 		})
 		.catch(function(err) {

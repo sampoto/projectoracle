@@ -44,7 +44,7 @@ module.exports = function(passport, db) {
 		flowdockAuthLink: function(req, res) {
 			if (req.isAuthenticated()) {
 				var account = req.account;
-				var accountInfo = { account_name: 'flowdock',
+				var accountInfo = { account_name: db.utils.projects.appIds.FLOWDOCK,
 									access_token: account.access_token,
 									refresh_token: account.refresh_token };
 				db.utils.linkAccount(req.user, accountInfo, null);
@@ -61,7 +61,7 @@ module.exports = function(passport, db) {
 					// Test token using /me endpoint
 					utils.fetchJSON("www.pivotaltracker.com", "/services/v5/me", {"X-TrackerToken": token}, function(err, json) {
 						if (err) return next(err);
-						var accountInfo = { account_name: 'pivotal',
+						var accountInfo = { account_name: db.utils.projects.appIds.PIVOTAL,
 											access_token: token };
 						db.utils.linkAccount(req.user, accountInfo, null);
 						res.redirect('/');
@@ -75,7 +75,7 @@ module.exports = function(passport, db) {
 		},
 		
 		pivotalAuthLink: function(req, res) {
-			var accountInfo = { account_name: 'pivotal',
+			var accountInfo = { account_name: db.utils.projects.appIds.PIVOTAL,
 								access_token: req.account.trackerToken };
 			db.utils.linkAccount(req.user, accountInfo, null);
 			res.redirect('/');
