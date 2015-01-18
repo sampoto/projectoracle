@@ -36,6 +36,6 @@ function getHerokuDBOptions(){
 			admins: (function() {
 				return typeof process.env.ADMIN !== "undefined" ? [process.env.ADMIN] : null; 
 			}()),
-			forceAdmins: typeof process.env.ADMIN !== "undefined" ? process.env.FORCEADMINS : false
+			forceAdmins: typeof process.env.FORCEADMINS !== "undefined" ? process.env.FORCEADMINS : false
 			};
 }

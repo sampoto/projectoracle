@@ -65,28 +65,42 @@ module.exports = function(config) {
 					return callback(new Error('Unable to connect to the database: ' + err));
 				} else {
 					db.migrate(migrationOptions, function(err) {
-						if (!err && config.projects) {
-							var forceProjects = typeof config.forceProjects != "undefined" ? config.forceProjects : false;
-							async.parallel([
-								function(cb) {
-									db.utils.projects.createProjects(config.projects, forceProjects, cb);
-								},
-								function(cb) {
-									if (config.admins) {
-										db.utils.setAdmins(config.admins, config.forceAdmins, cb);
-									} else {
-										cb();
-									}
-								}], function(err) {
-									callback(err);
-								});
-						} else {
-							callback(err);
-						}
+						if (err) return callback(err);
+						runInitTasks(callback);
 					});
 				}
 		});
 	};
+	
+	function runInitTasks(callback) {
+		var forceProjects = typeof config.forceProjects != "undefined" ? config.forceProjects : false;
+		var initTasks = [];
+		if (config.projects) {
+			initTasks.push(function(cb) {
+				if (config.projects) {
+					db.utils.projects.createProjects(config.projects, forceProjects, cb);
+				} else {
+					cb(null);
+				}
+			});
+		}
+		if (config.admins) {
+			initTasks.push(function(cb) {
+				if (config.admins) {
+					db.utils.setAdmins(config.admins, config.forceAdmins, cb);
+				} else {
+					cb(null);
+				}
+			});
+		}
+		if (initTasks.length > 0) {
+			async.parallel(initTasks, function(err) {
+				callback(err);
+			});
+		} else {
+			callback(null);
+		}
+	}
 	
 	/**
 	 * Creates newest database schema
