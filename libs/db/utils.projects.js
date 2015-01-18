@@ -112,6 +112,17 @@ module.exports = function(db) {
 	};
 	
 	/**
+	 * Gets project by ID
+	 * @param callback (err, project)
+	 */
+	projects.getProjectById = function(id, callback) {
+		db.models.project.findOne({where: {id: id}}).then(function(project) {
+			callback(null, project);
+		}).catch(function(err) {
+			callback(err, null);
+		});
+	}
+	/**
 	 * Gets all projects of given user
 	 * @param user
 	 * @param callback (err, projects)
@@ -176,6 +187,21 @@ module.exports = function(db) {
 		user.addProject(project);
 		user.save().complete(function(err) {
 			callback(err);
+		});
+	}
+	
+	/**
+	 * Removes user from given project
+	 * @param user
+	 * @param project
+	 * @param callback (err)
+	 */
+	projects.removeUserFromProject = function(user, project, callback) {
+		project.removeUser(user).complete(function(err) {
+			if (err) return callback(err);
+			project.save().complete(function(err) {
+				callback(err);
+			});
 		});
 	}
 	

@@ -21,6 +21,11 @@ module.exports = function(db) {
 	router.delete('/accounts/:appId', requests.deleteAccount);
 
     router.get('/projects', requests.getProjects);
+	router.post('/projects', requests.createProject);
+	router.delete('/projects/:projectId', requests.deleteProject);
+	router.post('/projects/:projectId/users', requests.addUserToProject);
+	router.delete('/projects/:projectId/users/:email', requests.removeUserFromProject);
+	
     router.get('/projects/:projectId/applications', requests.getProjectApplications);
 
 	router.get('/projects/:projectId/flow', requests.getFlow);

@@ -47,6 +47,73 @@ module.exports = function(db) {
 		});
 	}
 	
+	requests.createProject = function(req, res, next) {
+		if (db.utils.isAdmin(req.user)) {
+			db.utils.projects.createProject(req.body.name, function(err, project) {
+				if (err) return next(err);
+				res.send({projectId: project.id});
+			});
+		} else {
+			res.status(403).send("No admin rights");
+		}
+	}
+	
+	requests.deleteProject = function(req, res, next) {
+		if (db.utils.isAdmin(req.user)) {
+			db.utils.projects.getProjectById(req.params.projectId, function(err, project) {
+				if (err) return next(err);
+				if (project != null) {
+					db.utils.projects.deleteProject(project, function(err) {
+						if (err) return next(err);
+						res.send("Project deleted");
+					});
+				} else {
+					res.status(404).send("Project doesn't exist");
+				}
+			});
+		} else {
+			res.status(403).send("No admin rights");
+		}
+	}
+
+	requests.addUserToProject = function(req, res, next) {
+		if (db.utils.isAdmin(req.user)) {
+			db.utils.projects.getProjectById(req.params.projectId, function(err, project) {
+				if (err) return next(err);
+				if (project == null) return res.status(404).send("Project doesn't exist");
+				db.utils.getUser(req.body.email, function(err, user) {
+					if (err) return next(err);
+					if (user == null) return res.status(404).send("User doesn't exist");
+					db.utils.projects.addUserToProject(user, project, function(err) {
+						if (err) return next(err);
+						res.send("User added to project");
+					});
+				});
+			});
+		} else {
+			res.status(403).send("No admin rights");
+		}
+	}
+
+	requests.removeUserFromProject = function(req, res, next) {
+		if (db.utils.isAdmin(req.user)) {
+			db.utils.projects.getProjectById(req.params.projectId, function(err, project) {
+				if (err) return next(err);
+				if (project == null) return res.status(404).send("Project doesn't exist");
+				db.utils.getUser(req.params.email, function(err, user) {
+					if (err) return next(err);
+					if (user == null) return res.status(404).send("User doesn't exist");
+					db.utils.projects.removeUserFromProject(user, project, function(err) {
+						if (err) return next(err);
+						res.send("User removed from project");
+					});
+				});
+			});
+		} else {
+			res.status(403).send("No admin rights");
+		}
+	}
+
 	requests.getProjectApplications = function(req, res, next) {
 		db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
 			if (!err) {
