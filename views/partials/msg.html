@@ -1,76 +1,82 @@
 <link rel="stylesheet" href="/css/msg.css" type="text/css"/>
 
-<div class="msganim container well well-sm col-xs-12" ng-repeat="msg in flowChat | filter:filter" >
-  <div class="chat-row" ng-click="filterByThread(msg.id)">
-    <span ng-if="msg.event=='message'">
-            <div display:inline class="flow-msg flow-msg-message">
-            	<i class="fa fa-comment" ></i>
-            	<img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}></img>
-            
-           <b>{{userLookup[msg.user].nick}}</b> 
-           
-           <p class="p-cmt-content" ng-if="!msg.content.text">{{msg.content}}</p>
-          
+<button ng-if="filter!==''" ng-click="resetFilter()" type="button" class="btn btn-default btn-lg" id="rst_filter">
+    &nbsp;
+    <i class="fa fa-angle-double-left fa-3x"></i>
+    &nbsp;
+</button>
+<div class="msganim container well well-sm col-xs-12" ng-repeat="msg in flowChat | filter:filter">
+    <div class="chat-row" >
+
+        <span ng-if="msg.event=='message'">
+            <div class="flow-msg flow-msg-message" ng-click="filterByThread(msg.id)">
+                <i class="fa fa-comment"></i>
+                <img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}></img>
+                <b>{{userLookup[msg.user].nick}}</b>
+                <p class="p-cmt-content">{{msg.content}}</p>
             </div>
+        </span>
 
-    </span>
-    <span ng-if="msg.event=='comment'">
-        <div display:inline class="flow-msg flow-msg-comment">
-            
-            <i class="fa fa-comments" ></i>
-            <img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}></img>
-            
-            <b>{{userLookup[msg.user].nick}}</b>
-            
-            <p class="p-msg-content" ng-if=" msg.content.text">{{msg.content.text}}</p>
-        </div>
+        <span ng-if="msg.event=='comment'">
+            <div class="flow-msg flow-msg-comment" ng-click="filterByThread(msg.id)">
+                <i class="fa fa-comments"></i>
+                <img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}></img>
+                <b>{{userLookup[msg.user].nick}}</b>
+                <p class="p-msg-content">{{msg.content.text}}</p>
+            </div>
+        </span>
 
-    </span>
-    
-    <span ng-if="msg.event=='action'">
-       <div display:inline class="flow-msg flow-msg-comment">
-            
-           
-            <img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}></img>
-            
-            <b>{{userLookup[msg.user].nick}}</b>
-            
-            <p style="display:inline" class="p-msg-content" ng-if=" msg.content.type=='invite'">Invited {{msg.content.email}} to the flow</p>
-            <p style="display:inline" class="p-msg-content" ng-if=" msg.content.type=='join'">Joined the flow</p>
-            <p style="display:inline" class="p-msg-content" ng-if=" msg.content.type=='add_people'"> Added {{msg.content.message[0]}} to the flow</p>
-        </div>
+        <span ng-if="msg.event=='action'">
+           <div class="flow-msg flow-msg-comment">
+               <img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}></img>
 
-        
-    </span>
-    <span ng-if="msg.event=='line'">
-    <div display:inline class="flow-msg flow-msg-comment">
-           
-            <img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}>
-            
-            <b>{{userLookup[msg.user].nick}}</b>
-            <p style="display:inline" class="p-msg-content" > {{msg.content}}</p>
-    </span>
-    <span ng-if="msg.event=='user-edit'">
-    <div display:inline class="flow-msg flow-msg-comment">
-           
-           <img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}>
-            
-            <b>{{userLookup[msg.user].nick}}</b>
-            <p style="display:inline" class="p-msg-content" > is also known as </p>
-    </span>
+               <b>{{userLookup[msg.user].nick}}</b>
+               <p style="display:inline" class="p-msg-content" ng-if=" msg.content.type=='invite'">
+                   Invited {{msg.content.email}} to the flow</p>
+               <p style="display:inline" class="p-msg-content" ng-if=" msg.content.type=='join'">Joined the flow</p>
+               <p style="display:inline" class="p-msg-content" ng-if=" msg.content.type=='add_people'"> Added
+                   {{msg.content.message[0]}} to the flow</p>
+           </div>
+
+
+        </span>
+
+        <span ng-if="msg.event=='line'">
+            <div class="flow-msg flow-msg-comment">
+
+                <img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}/>
+
+                <b>{{userLookup[msg.user].nick}}</b>
+
+                <p style="display:inline" class="p-msg-content"> {{msg.content}}</p>
+            </div>
+        </span>
+
+        <span ng-if="msg.event=='user-edit'">
+            <div class="flow-msg flow-msg-comment">
+                <i class="fa fa-comments"></i>
+                <img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}/>
+
+                <b>{{userLookup[msg.user].nick}}</b>
+
+                <p style="display:inline" class="p-msg-content"> is now known as </p>
+            </div>
+        </span>
     
-    <span ng-if="msg.event=='file'">
-    <div display:inline class="flow-msg flow-msg-comment">
-           
-            <img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}>
-            
-            <b>{{userLookup[msg.user].nick}}</b>
-            <img  src={{msg.content.path}}></img>
-            
-    </span>
-    
-    <p style="padding-left:50px" ng-if="msg.edited !== null">
-    	<span class="text-muted">- Last edited: {{msg.edited | date: medium}}</span>
-    </p>
-   </div>    
+        <span ng-if="msg.event=='file'">
+            <div class="flow-msg flow-msg-comment">
+                <i ng-if="msg.tags.indexOf(':thread') ==-1" class="fa fa-comments"></i>
+                <i ng-if="msg.tags.indexOf(':thread')!==-1" class="fa fa-comment"></i>
+
+                <img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}/>
+
+                <b>{{userLookup[msg.user].nick}}</b>
+                <img src={{msg.content.path}}/>
+            </div>
+        </span>
+
+        <p style="padding-left:50px" ng-if="msg.edited !== null">
+            <span class="text-muted">- Last edited: {{msg.edited | date: medium}}</span>
+        </p>
+    </div>
 </div>

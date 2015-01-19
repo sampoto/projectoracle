@@ -1,17 +1,32 @@
+
+
 .messages {
     margin-left: 0px;
     vertical-align: bottom;
+}
+#rst_filter {
+    position: fixed;
+    left: 10px;
+    top: 150px;
+    z-index: 1;
+    background: rgba(86, 79, 76, 0.25);
 }
 
 .flow-msg{
     padding-left:20px;
 }
 .flow-msg-message{
-
     padding-left:10px;
 }
 .flow-msg-comment{
     padding-left:40px;
+}
+
+.p-cmt-content{
+    position:relative;
+}
+.well:hover{
+    background-color:#A9E2F3;
 }
 
 .flowheader {
@@ -117,7 +132,6 @@ div.msglist {
 }
 
 .msganim {
-  line-height:40px;
   list-style:none;
   box-sizing:border-box;
 }

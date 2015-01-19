@@ -170,7 +170,7 @@ var dummyFlow = {
       "email": "stevie@example.com",
       "avatar": "https://dl.dropboxusercontent.com/u/65965007/tywin.jpg",
       "status": null,
-      "disabled": true,
+      "disabled": false,
       "last_activity": 1328016712345000,
       "last_ping": 1328017612345050
     },
@@ -181,7 +181,7 @@ var dummyFlow = {
       "email": "stevie@example.com",
       "avatar": "https://dl.dropboxusercontent.com/u/65965007/joffrey.gif",
       "status": null,
-      "disabled": true,
+      "disabled": false,
       "last_activity": 1328016712345000,
       "last_ping": 1528017612345000
     },
@@ -192,7 +192,7 @@ var dummyFlow = {
       "email": "stevie@example.com",
       "avatar": "https://dl.dropboxusercontent.com/u/65965007/tyrion.png",
       "status": null,
-      "disabled": true,
+      "disabled": false,
       "last_activity": 1328016712345000,
       "last_ping": 1328017612345050
     }
