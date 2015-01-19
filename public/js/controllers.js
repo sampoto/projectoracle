@@ -108,7 +108,6 @@ angular.module('ProjectOracle')
 					pages[page].state = pages[page].id;
 					pages[page].name = appName(pages[page].id);
 				}
-				pages = [{state: "dashboard", name: "Dashboard"}].concat(pages);
 				$scope.projectNavigation = pages;
 			});
 		}

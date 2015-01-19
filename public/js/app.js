@@ -19,10 +19,7 @@ config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
 		}
 	}).state('project.index', {
 		url: '',
-		templateUrl: '/partials/dashboard.html'
-    }).state('project.dashboard', {
-		url: '/dashboard',
-		templateUrl: '/partials/dashboard.html'
+		templateUrl: '/partials/flows.html'
 	}).state('project.flowdock', {
 		url: '/flowdock',
 		templateUrl: '/partials/flows.html'
