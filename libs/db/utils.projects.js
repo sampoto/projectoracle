@@ -86,7 +86,7 @@ module.exports = function(db) {
 				}
 			}, 
 			function(cb) {
-				async.each(projectArr, function(project, innerCb) {
+				async.eachSeries(projectArr, function(project, innerCb) {
 					projects.createProjectWithData(project, innerCb);
 				}, cb);
 			}
