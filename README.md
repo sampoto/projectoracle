@@ -6,7 +6,13 @@ Project Oracle aims at a mash-up application which integrates together other app
 Installation
 ------------
 1. Clone/download the project
-2. Configure the application using config file.
+2. Generate an SSL key and cert for yourself:
+
+        $ mkdir ssl
+        $ cd ssl
+        $ openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 1000
+
+3. Configure the application using config file.
 The used configuration file is determined by NODE_ENV environment variable. The configuration file path pattern is *config/config.[NODE_ENV].js*.
 If NODE_ENV is not issued, the file is *config/config.development.js*.
 
@@ -15,21 +21,21 @@ If NODE_ENV is not issued, the file is *config/config.development.js*.
         var fs = require('fs');
         module.exports = {
         	sslOptions: {
-        		key: fs.readFileSync('./ssl/server.key'),
-        		cert: fs.readFileSync('./ssl/server.crt')
+        		key: fs.readFileSync('./ssl/key.pem'),
+        		cert: fs.readFileSync('./ssl/cert.pem')
         	},
         	dbOptions: {
         		options: {
-        			database:'database', username:'<username>', 
-        			password:'<password>', dialect: '<dialect>', 
+        			database:'database', username:'<username>',
+        			password:'<password>', dialect: '<dialect>',
         			logging: false
         		},
         		encryptKey:'<encryptkey>',
-        		projects: [ 
-        			{name: "test", 
+        		projects: [
+        			{name: "test",
         			applications: [ {id: "flowdock", organization: "<organization>", flow: "<flow>"},
         							{id: "pivotal", projectId: "<projectId>"},
-        							{id: "googledocs", docs: [{name: "<name>", url: "<url>"}]}], 
+        							{id: "googledocs", docs: [{name: "<name>", url: "<url>"}]}],
         			users: ["test@test.invalid"] }
         		],
         		force: true
