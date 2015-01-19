@@ -108,24 +108,35 @@ module.exports = function(db, config) {
 	 * @param callback (err)
 	 */
 	utils.linkAccount = function(user, accountInfo, callback) {
+		callback = callback || function(){};
+		user.getAccounts({where: {account_name: accountInfo.account_name}}).then(function(accounts) {
+			if (accounts.length > 0) {
+				accounts[0].destroy().then(function() {
+					createAccount();
+				});
+			} else {
+				createAccount();
+			}
+		}).catch(function(err) {
+			callback(err);
+		});
 
-		db.models.account.create({account_name: accountInfo.account_name,
-		access_token: encrypt(config.encryptKey, user.email, accountInfo.access_token),
-        refresh_token: encrypt(config.encryptKey, user.email, accountInfo.refresh_token)})
-		.then(function(account) {
-			user.addAccount(account).then(function() {
-				if (callback)
+		function createAccount() {
+			db.models.account.create({account_name: accountInfo.account_name,
+			access_token: encrypt(config.encryptKey, user.email, accountInfo.access_token),
+			refresh_token: encrypt(config.encryptKey, user.email, accountInfo.refresh_token)})
+			.then(function(account) {
+				user.addAccount(account).then(function() {
 					callback(null);
+				})
+				.catch(function(err) {
+					callback(err);
+				});
 			})
 			.catch(function(err) {
-				if (callback)
-					callback(err);
-			});
-		})
-		.catch(function(err) {
-			if (callback)
 				callback(err);
-		});
+			});
+		}
 	}
 	
 	/**

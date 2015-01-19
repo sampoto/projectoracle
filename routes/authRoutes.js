@@ -47,8 +47,10 @@ module.exports = function(passport, db) {
 				var accountInfo = { account_name: db.utils.projects.appIds.FLOWDOCK,
 									access_token: account.access_token,
 									refresh_token: account.refresh_token };
-				db.utils.linkAccount(req.user, accountInfo, null);
-				res.redirect('/');
+				db.utils.linkAccount(req.user, accountInfo, function(err) {
+					if (err) return next(err);
+					res.redirect('/');
+				});
 			} else {
 				res.status(403).send('Not authenticated');
 			}
@@ -63,8 +65,10 @@ module.exports = function(passport, db) {
 						if (err) return next(err);
 						var accountInfo = { account_name: db.utils.projects.appIds.PIVOTAL,
 											access_token: token };
-						db.utils.linkAccount(req.user, accountInfo, null);
-						res.redirect('/');
+						db.utils.linkAccount(req.user, accountInfo, function(err) {
+							if (err) return next(err);
+							res.redirect('/');
+						});
 					});
 				} else {
 					passport.authorize('pivotal', { successRedirect : '/', failureRedirect: '/' })(req, res, next);
@@ -74,10 +78,13 @@ module.exports = function(passport, db) {
 			}
 		},
 		
-		pivotalAuthLink: function(req, res) {
+		pivotalAuthLink: function(req, res, next) {
 			var accountInfo = { account_name: db.utils.projects.appIds.PIVOTAL,
 								access_token: req.account.trackerToken };
-			db.utils.linkAccount(req.user, accountInfo, null);
+			db.utils.linkAccount(req.user, accountInfo, function(err) {
+				if (err) return next(err);
+				res.redirect('/');
+			});
 			res.redirect('/');
 		},
 		
