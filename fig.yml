@@ -1,0 +1,14 @@
+---
+db:
+    image: postgres
+    ports:
+        - "5432:5432"
+    environment:
+        - POSTGRES_PASSWORD=projectoracle
+node:
+    build: .
+    ports:
+        - "5000:5000"
+        - "5001:5001"
+    links:
+        - db
