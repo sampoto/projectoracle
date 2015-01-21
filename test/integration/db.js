@@ -8,8 +8,14 @@ if (config.testOptions)
 var database = require('../../libs/db');
 
 describe('Database', function() {
+	var db;
+	afterEach(function(done) {
+		db.close();
+		done();
+	});
+
 	it('initializes', function(done) {
-		var db = new database(config.dbOptions);
+		db = new database(config.dbOptions);
 		db.init(function(err) {
 			done(err);
 		});
@@ -17,9 +23,10 @@ describe('Database', function() {
 	it('completes all migrations successfully', function(done) {
 		var oldForceMigrate = config.dbOptions.forceMigrate;
 		config.dbOptions.forceMigrate = true;
-		var db = new database(config.dbOptions);
+		db = new database(config.dbOptions);
 		db.init(function(err) {
 			config.dbOptions.forceMigrate = oldForceMigrate;
+			db.close();
 			done(err);
 		});
 	});
@@ -34,7 +41,6 @@ describe('Database', function() {
 										{id: "pivotal", projectId: "2"},
 										{id: "googledocs", docs: [{name: "test2", url: "http://test2.invalid"}]}], 
 						users: ["test2@test.invalid"] } ];
-		var db;
 		beforeEach(function(done){
 			// Initialize database before each test
 			db = new database(config.dbOptions);

@@ -225,6 +225,14 @@ module.exports = function(config) {
 			callback(err);
 		});
 	}
+	
+	/**
+	 * Closes sequelize connections
+	 */
+	db.close = function() {
+		if (typeof db.sequelize !== "undefined")
+			db.sequelize.close();
+	}
 
 	// Custom error class to distinguish fatal errors
 	db.fatalError = function(message) {
