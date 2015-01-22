@@ -8,6 +8,7 @@ var crypto = require('crypto');
 var projects = require('./utils.projects.js');
 var async = require('async');
 var algorithm = 'aes-256-cbc';
+var commonUtils = require('../../utils.js');
 
 module.exports = function(db, config) {
 	var utils = {};
@@ -179,16 +180,21 @@ module.exports = function(db, config) {
 	
 	/**
 	 * Deletes given account from user
+	 * @param user
+	 * @param accountName
+	 * @param callback (err);
 	 */
 	utils.deleteAccount = function(user, accountName, callback) {
 		user.getAccounts({where: {account_name: accountName}}).then(function(accounts) {
 			if (accounts.length > 0) {
 				var acc = accounts[0];
-				acc.destroy().then(function() {
-					callback();
-				}).catch(function(err) {
-					callback(err);
-				});
+				if (accountName == 'flowdock') {
+					utils.revokeAndDeleteAccount(user, acc, "api.flowdock.com", commonUtils.flowdockRevokePath, callback);
+				} else {
+					acc.destroy().complete(function(err) {
+						callback(err);
+					});
+				}
 			} else {
 				callback(new Error('Account not found'));
 			}
@@ -197,6 +203,33 @@ module.exports = function(db, config) {
 		});
 	}
 	
+	/**
+	 * Revokes and deletes given account (RFC 7009)
+	 * @param user
+	 * @param account
+	 * @param host
+	 * @param path
+	 * @param callback (err)
+	 */
+	utils.revokeAndDeleteAccount = function(user, account, host, path, callback) {
+		var accessToken = decrypt(config.encryptKey, user.email, account.access_token);
+		var refreshToken = decrypt(config.encryptKey, user.email, account.refresh_token);
+		var data = {"token": refreshToken, "token_type_hint": "refresh_token"};
+		var headers = {Authorization: 'Bearer ' + accessToken};
+		commonUtils.post(host, path, headers, data, function(err, status, response) {
+			if (err) return callback(err);
+			data = {"token": accessToken, "token_type_hint": "access_token"};
+			commonUtils.post(host, path, headers, data, function(err, status, response) {
+				if (err) return callback(err);
+				account.destroy().then(function() {
+					callback(null);
+				}).catch(function(err) {
+					callback(err);
+				});
+			});
+		});
+	}
+
 	return utils;
 }
 
