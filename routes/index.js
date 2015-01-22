@@ -5,7 +5,6 @@
 
 var express = require('express');
 var path = require('path');
-var dapi = require('../api/dapi');
 var Apiv1 = require('../api/v1');
 
 var index = function(req, res){
@@ -48,7 +47,6 @@ module.exports = function(app, config, passport, db) {
 	app.get('/', index);
 	app.get('/partials/:name', partials);
 
-	app.use('/api/dapi', dapi);
 	app.use('/api/v1', apiv1);
 
 	var auth = require('./authRoutes.js')(passport, db);
@@ -57,7 +55,18 @@ module.exports = function(app, config, passport, db) {
 	app.get('/auth/flowdock', auth.flowdockAuth);
 	app.get('/auth/flowdock/callback', auth.flowdockAuthCallback, auth.flowdockAuthLink);
 	
-	//Expect POST: {"username":"foo","password":"bar"}
+	/**
+	 * @apiDescription Method to get Pivotal Tracker token by authenticating with username and password to Pivotal Tracker.
+	 * @api {post} /auth/pivotal Pivotal Tracker authentication
+	 * @apiGroup Authentication
+	 * @apiParam {String} username	Pivotal tracker username 
+	 * @apiParam {String} password	Pivotal tracker password
+	 * @apiParamExample {json} Pivotal-Authentication-Example:
+	 *     {
+	 *       "username":"foo",
+	 *		 "password":"bar"
+	 *     }	 
+	 */
 	app.post('/auth/pivotal', auth.pivotalAuth, auth.pivotalAuthLink);
 
 	app.get('/profile', auth.profile);

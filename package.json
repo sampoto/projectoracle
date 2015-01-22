@@ -2,6 +2,11 @@
   "name": "ProjectOracle",
   "description": "",
   "private": true,
+  "version" : "0.1.0",
+  "apidoc": {
+    "title": "Project Oracle v1",
+    "url" : "https://<domain>/api/v1"
+	},
   "repository": {
     "type": "git",
     "url": "https://github.com/sampoto/projectoracle"
@@ -11,6 +16,7 @@
     "Atte Perämäki",
     "Jouni Mikkola",
     "Eliisa Väkevä",
+	"Joona Laamanen",
     "Jingui Li"
   ],
   "dependencies": {
