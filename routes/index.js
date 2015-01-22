@@ -25,7 +25,7 @@ var partials = function (req, res) {
  */
 module.exports = function(app, config, passport, db) {
 	
-	var apiv1 = Apiv1(db);
+	var apiv1 = Apiv1(db, config);
 	
 	app.use("/", express.static(path.join(__dirname + "/../", 'public')));
 	app.use(function(req, res, next) {

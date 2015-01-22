@@ -146,13 +146,11 @@ module.exports = function(db, config) {
 	 * @param accountName
 	 * @param callback (error, account)
 	 */
-	utils.getAccount = function(user, accountName, callback) {
+	utils.getAccountInfo = function(user, accountName, callback) {
 		user.getAccounts({where: {account_name: accountName}}).then(function(accounts) {
 			if (accounts.length > 0) {
 				var acc = accounts[0];
-				var account = { account_name: acc.account_name,
-								access_token: decrypt(config.encryptKey, user.email, acc.access_token),
-								refresh_token: decrypt(config.encryptKey, user.email, acc.refresh_token) };
+				var account = utils.getAccountDetails(user, acc);
 				callback(null, account);
 			} else {
 				var error = new Error('Account not found');
@@ -163,6 +161,20 @@ module.exports = function(db, config) {
 		.catch(function(err) {
 			callback(err, null);
 		});
+	}
+	
+	/**
+	 * Gets account details from user's account object
+	 * Use this to access decrypted tokens
+	 * @param user
+	 * @param account
+	 */
+	utils.getAccountDetails = function(user, account) {
+		var details = { account_name: account.account_name,
+						access_token: decrypt(config.encryptKey, user.email, account.access_token),
+						refresh_token: decrypt(config.encryptKey, user.email, account.refresh_token),
+						account: account };
+		return details;
 	}
 	
 	/**
@@ -178,6 +190,18 @@ module.exports = function(db, config) {
 		});
 	}
 	
+	/**
+	 * @param account
+	 * @param accessToken
+	 * @param callback (err)
+	 */
+	utils.updateAccessToken = function(account, user, accessToken, callback) {
+		account.access_token = encrypt(config.encryptKey, user.email, accessToken);
+		account.save().complete(function(err) {
+			callback(err);
+		});
+	}
+
 	/**
 	 * Deletes given account from user
 	 * @param user

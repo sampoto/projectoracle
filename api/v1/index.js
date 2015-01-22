@@ -9,11 +9,12 @@ var Requests = require('./requests.js');
 /**
  * API v1
  * @param db Database module
+ * @param config Application config
  */
-module.exports = function(db) {
+module.exports = function(db, config) {
 
 	var router = express.Router();
-	var requests = Requests(db);
+	var requests = Requests(db, config);
 
 	router.all('*', requireAuthentication);
 

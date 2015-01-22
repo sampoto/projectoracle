@@ -248,7 +248,7 @@ module.exports = function(db) {
 	 */
 	projects.getFlowdockAppInfo = function(user, project, callback) {
 		projects.getFlowdockApp(project, function(err, info) {
-			db.utils.getAccount(user, projects.appIds.FLOWDOCK, function (err, account) {
+			db.utils.getAccountInfo(user, projects.appIds.FLOWDOCK, function (err, account) {
 				if (!err) {
 					info.account = account;
 					callback(null, info);
@@ -325,7 +325,7 @@ module.exports = function(db) {
 	projects.getPivotalResources = function(user, projectId, callback) {
 		db.utils.projects.getUserProjectById(user, projectId, function(err, project) {
 			if (err) return callback(err);
-			db.utils.getAccount(user, projects.appIds.PIVOTAL, function(err, account) {
+			db.utils.getAccountInfo(user, projects.appIds.PIVOTAL, function(err, account) {
 				if (err) return callback(err, null);
 				db.utils.projects.getPivotalApp(project, function(err, pivotalResource) {
 					if (err) return callback(err);

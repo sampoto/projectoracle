@@ -5,7 +5,7 @@
  */
 var utils = require('../../utils.js');
 
-module.exports = function(db) {
+module.exports = function(db, config) {
 
 	var requests = {};
 
@@ -141,7 +141,8 @@ module.exports = function(db) {
 				if (err) return next(err);
 				var token = flowdockResource.account.access_token;
 				var path = '/flows/' + flowdockResource.organization + '/' + flowdockResource.flow;
-				utils.fetchJSON('api.flowdock.com', path, {Authorization: 'Bearer ' + token}, function(err, data) {
+				utils.OAuthRequest(db, {clientId: config.auth.flowdockAuth.clientID, clientSecret: config.auth.flowdockAuth.clientSecret}, 
+				req.user, flowdockResource.account, utils.flowdockHost, path, {}, function(err, statuscode, data) {
 					if (err) return next(err);
 					res.send(data);
 				});
@@ -156,7 +157,8 @@ module.exports = function(db) {
 				if (err) return next(err);
 				var token = flowdockResource.account.access_token;
 				var path = '/flows/' + flowdockResource.organization + '/' + flowdockResource.flow + '/messages';
-				utils.fetchJSON('api.flowdock.com', path, {Authorization: 'Bearer ' + token}, function(err, data) {
+				utils.OAuthRequest(db, {clientId: config.auth.flowdockAuth.clientID, clientSecret: config.auth.flowdockAuth.clientSecret}, 
+				req.user, flowdockResource.account, utils.flowdockHost, path, {}, function(err, statuscode, data) {
 					if (err) return next(err);
 					res.send(data);
 				});
@@ -171,7 +173,8 @@ module.exports = function(db) {
 				if (err) return next(err);
 				var token = flowdockResource.account.access_token;
 				var path = '/flows/' + flowdockResource.organization + '/' + flowdockResource.flow + '/users';
-				utils.fetchJSON('api.flowdock.com', path, {Authorization: 'Bearer ' + token}, function(err, data) {
+				utils.OAuthRequest(db, {clientId: config.auth.flowdockAuth.clientID, clientSecret: config.auth.flowdockAuth.clientSecret}, 
+				req.user, flowdockResource.account, utils.flowdockHost, path, {}, function(err, statuscode, data) {
 					if (err) return next(err);
 					res.send(data);
 				});
@@ -215,7 +218,7 @@ module.exports = function(db) {
 		function(err, project, token, projectId) {
 			if (err) return next(err);
 			var path = utils.pivotalServicePath + "/projects/" + projectId;
-			utils.fetchJSON(utils.pivotalHost, path, {"X-TrackerToken": token}, function(err, pivotalProject) {
+			utils.fetchJSON(utils.pivotalHost, path, {"X-TrackerToken": token}, function(err, status, pivotalProject) {
 				if (err) return next(err);
 				res.send(pivotalProject);
 			});
@@ -228,7 +231,7 @@ module.exports = function(db) {
 			if (err) return next(err);
 			var path = utils.pivotalServicePath + "/projects/" + projectId + "/stories";
 			var query = typeof req.query.with_state !== "undefined" ? "?with_state=" + req.query.with_state : "";
-			utils.fetchJSON(utils.pivotalHost, path + query, {"X-TrackerToken": token}, function(err, stories) {
+			utils.fetchJSON(utils.pivotalHost, path + query, {"X-TrackerToken": token}, function(err, status, stories) {
 				if (err) return next(err);
 				res.send(stories);
 			});
@@ -242,7 +245,7 @@ module.exports = function(db) {
 		function(err, project, token, projectId) {
 			if (err) return next(err);
 			var path = utils.pivotalServicePath + "/projects/" + projectId + "/stories/" + storyId;
-			utils.fetchJSON(utils.pivotalHost, path, {"X-TrackerToken": token}, function(err, story) {
+			utils.fetchJSON(utils.pivotalHost, path, {"X-TrackerToken": token}, function(err, status, story) {
 				if (err) return next(err);
 				res.send(story);
 			});
@@ -255,7 +258,7 @@ module.exports = function(db) {
 			if (err) return next(err);
 			var path = utils.pivotalServicePath + "/projects/" + projectId + "/iterations";
 			var query = typeof req.query.scope !== "undefined" ? "/?scope=" + req.query.scope : "";
-			utils.fetchJSON(utils.pivotalHost, path + query, {"X-TrackerToken": token}, function(err, iterations) {
+			utils.fetchJSON(utils.pivotalHost, path + query, {"X-TrackerToken": token}, function(err, status, iterations) {
 				if (err) return next(err);
 				res.send(iterations);
 			});
@@ -268,7 +271,7 @@ module.exports = function(db) {
 			if (err) return next(err);
 			//TODO memberships
 			var path = utils.pivotalServicePath + "/projects/" + projectId + "/memberships";
-			utils.fetchJSON(utils.pivotalHost, path, {"X-TrackerToken": token}, function(err, memberships) {
+			utils.fetchJSON(utils.pivotalHost, path, {"X-TrackerToken": token}, function(err, status, memberships) {
 				if (err) return next(err);
 				res.send(memberships);
 			});
