@@ -61,14 +61,20 @@ module.exports = function(passport, db) {
 				if (req.body.trackerToken && typeof req.body.trackerToken === 'string') {
 					var token = req.body.trackerToken;
 					// Test token using /me endpoint
-					utils.fetchJSON("www.pivotaltracker.com", "/services/v5/me", {"X-TrackerToken": token}, function(err, json) {
+					utils.fetchJSON("www.pivotaltracker.com", "/services/v5/me", {"X-TrackerToken": token}, function(err, statusCode, json) {
 						if (err) return next(err);
-						var accountInfo = { account_name: db.utils.projects.appIds.PIVOTAL,
-											access_token: token };
-						db.utils.linkAccount(req.user, accountInfo, function(err) {
-							if (err) return next(err);
-							res.redirect('/');
-						});
+						if (statusCode === 200) {
+							var accountInfo = { account_name: db.utils.projects.appIds.PIVOTAL,
+												access_token: token };
+							db.utils.linkAccount(req.user, accountInfo, function(err) {
+								if (err) return next(err);
+								res.redirect('/');
+							});
+						} else {
+							var error = new Error('Invalid pivotal token');
+							error.code = 'BADAUTH';
+							next(error);
+						}
 					});
 				} else {
 					passport.authorize('pivotal', { successRedirect : '/', failureRedirect: '/' })(req, res, next);

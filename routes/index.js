@@ -72,6 +72,9 @@ module.exports = function(app, config, passport, db) {
 		if (typeof err.code != "undefined" && err.code === 'EBADCSRFTOKEN') {
 			res.status(403);
 			res.send('invalid csrf token');
+		} else if (typeof err.code != "undefined" && err.code === 'BADAUTH') {
+			res.status(403);
+			res.send("Bad auth");
 		} else {
 			if (!config.debug)
 				console.error(err.stack);
