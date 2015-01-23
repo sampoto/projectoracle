@@ -198,6 +198,8 @@ module.exports = function(db, config) {
 					res.status(400).send("Invalid organization or flow");
 				}
 			});
+		} else {
+			res.status(403).send("No admin rights");
 		}
 	}
 	
@@ -210,6 +212,8 @@ module.exports = function(db, config) {
 					res.send("Flowdock application deleted");
 				});
 			});
+		} else {
+			res.status(403).send("No admin rights");
 		}
 	}
 
