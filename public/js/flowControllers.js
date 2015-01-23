@@ -24,7 +24,7 @@ angular.module('ProjectOracle')
             return $sce.trustAsHtml(htmlText);
         };
 
-        $http.get('/api/dapi/flow/red-wedding/messages').
+        $http.get('/api/v1/projects/'+$scope.projectId+'/flow/messages').
         success(function(data){
 
             $scope.flowChat = [];
@@ -90,3 +90,43 @@ angular.module('ProjectOracle')
             templateUrl: '/partials/teaminbox.html'
         };
     });
+
+function flows($scope, $http, $stateParams, $rootScope) {
+	var now = Date.now() +"000";
+	console.log("time now: "+ now);
+	$scope.showModal = false;
+	var online = [];
+	var offline = [];
+	$rootScope.projectId = $stateParams.projectId;
+	console.log($rootScope.projectId);
+	$http.get('/api/dapi/flows').
+		success(function(data){
+			$scope.flows = data;
+		});
+	$http.get('/api/v1/projects/'+$scope.projectId+'/flow').
+		success(function(data){
+			$scope.flow = data;
+			var lookup = {};
+			for (var i = 0, len = $scope.flow.users.length; i < len; i++) {
+				lookup[$scope.flow.users[i].id] = $scope.flow.users[i];
+			}
+			$scope.userLookup = lookup;
+
+			for(var i = 0; i < data.users.length; i++)
+			{
+				if(data.users[i].last_ping > now )
+				{
+					online.push(data.users[i]);
+					console.log("user online: "+ data.users[i].nick +" with timestamp: " + data.users[i].last_ping);
+				}
+				else
+				{
+					offline.push(data.users[i]);
+					console.log("user offline: "+ data.users[i].nick +" with timestamp: " + data.users[i].last_ping);
+				}
+			}
+		});
+	$scope.offline = offline;
+	$scope.online = online;
+
+}

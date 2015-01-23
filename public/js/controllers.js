@@ -222,6 +222,8 @@ angular.module('ProjectOracle')
 		}
 	}]);
 
+
+
 // Thanks to Mathew Byrne
 // https://github.com/mathewbyrne
 function slugify(text) {
