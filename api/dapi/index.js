@@ -736,7 +736,7 @@ var dummyPivotalMemberships =
             "person": {
                 "kind": "person",
                 "id": 1439072,
-                "name": "Atte Perämäki",
+                "name": "Atte Perï¿½mï¿½ki",
                 "email": "atte.90@gmail.com",
                 "initials": "AP",
                 "username": "attep"
@@ -754,7 +754,7 @@ var dummyPivotalMemberships =
             "person": {
                 "kind": "person",
                 "id": 1439074,
-                "name": "Eliisa Väkevä",
+                "name": "Eliisa Vï¿½kevï¿½",
                 "email": "eliisa.vakeva@gmail.com",
                 "initials": "EV",
                 "username": "eliisav"
@@ -884,7 +884,7 @@ var dummyPivotalMemberships2 =
                 "person": {
                     "kind": "person",
                     "id": 1439072,
-                    "name": "Atte Perämäki",
+                    "name": "Atte Perï¿½mï¿½ki",
                     "email": "atte.90@gmail.com",
                     "initials": "AP",
                     "username": "attep"
@@ -902,7 +902,7 @@ var dummyPivotalMemberships2 =
                 "person": {
                     "kind": "person",
                     "id": 1439074,
-                    "name": "Eliisa Väkevä",
+                    "name": "Eliisa Vï¿½kevï¿½",
                     "email": "eliisa.vakeva@gmail.com",
                     "initials": "EV",
                     "username": "eliisav"

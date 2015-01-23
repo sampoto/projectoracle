@@ -152,3 +152,83 @@ body {
 	text-align: center;
 	border: 1px solid #ccc;
 }
+
+.loading {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+}
+.loading-sm {
+    position: absolute;
+    bottom: calc(50% + 14px);
+    left: calc(50% + 14px);
+}
+.loading-xs {
+    position: absolute;
+    bottom: calc(50% + 21px);
+    left: calc(50% + 21px);
+}
+
+
+/*
+ * Placeholder dashboard ideas
+ */
+
+.placeholders {
+  margin-bottom: 30px;
+  text-align: center;
+}
+.placeholders h4 {
+  margin-bottom: 0;
+}
+.placeholder {
+  margin-bottom: 20px;
+}
+.placeholder img {
+  display: inline-block;
+  border-radius: 50%;
+}
+a.navbar-brand{
+    padding-top: 5px;
+}
+
+
+/* counterwise spin */
+.fa-counter-spin {
+  -webkit-animation: spin-counter 2s infinite linear;
+  -moz-animation: spin-counter 2s infinite linear;
+  -o-animation: spin-counter 2s infinite linear;
+  animation: spin-counter 2s infinite linear;
+}
+@-moz-keyframes spin-counter {
+  0% {
+    -moz-transform: rotate(359deg);
+  }
+  100% {
+    -moz-transform: rotate(0deg);
+  }
+}
+@-webkit-keyframes spin-counter {
+  0% {
+    -webkit-transform: rotate(359deg);
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+  }
+}
+@-o-keyframes spin-counter {
+  0% {
+    -o-transform: rotate(359deg);
+  }
+  100% {
+    -o-transform: rotate(0deg);
+  }
+}
+@keyframes spin-counter {
+  0% {
+    transform: rotate(359deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}

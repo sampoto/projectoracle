@@ -139,6 +139,7 @@ module.exports = function(db, config) {
 			if (err) return next(err);
 			db.utils.projects.getFlowdockAppInfo(req.user, project, function(err, flowdockResource) {
 				if (err) return next(err);
+				var token = flowdockResource.account.access_token;
 				var path = '/flows/' + flowdockResource.organization + '/' + flowdockResource.flow;
 				utils.OAuthRequest(db, {clientId: config.auth.flowdockAuth.clientID, clientSecret: config.auth.flowdockAuth.clientSecret}, 
 				req.user, flowdockResource.account, utils.flowdockHost, path, {}, function(err, statuscode, data) {
