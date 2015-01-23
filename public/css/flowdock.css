@@ -22,8 +22,9 @@
     padding-left:40px;
 }
 
-.p-cmt-content{
+.p-cmt-content, .p-msg-content{
     position:relative;
+	padding-left: 50px;
 }
 .well:hover{
     background-color:#A9E2F3;
