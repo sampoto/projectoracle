@@ -34,6 +34,7 @@ module.exports = function(db, config) {
 	router.get('/projects/:projectId/flow/users', requests.getFlowUsers);
 	router.post('/projects/:projectId/applications/flowdock', requests.setFlowdockApp);
 	router.delete('/projects/:projectId/applications/flowdock', requests.deleteFlowdockApp);
+	router.get('/flowdock/user', requests.getFlowdockUser);
 	
 	router.get('/projects/:projectId/pivotal', requests.getPivotalProject); //All data from one project
 	router.get('/projects/:projectId/pivotal/stories', requests.getPivotalStories); //get all stories from project

@@ -139,7 +139,6 @@ module.exports = function(db, config) {
 			if (err) return next(err);
 			db.utils.projects.getFlowdockAppInfo(req.user, project, function(err, flowdockResource) {
 				if (err) return next(err);
-				var token = flowdockResource.account.access_token;
 				var path = '/flows/' + flowdockResource.organization + '/' + flowdockResource.flow;
 				utils.OAuthRequest(db, {clientId: config.auth.flowdockAuth.clientID, clientSecret: config.auth.flowdockAuth.clientSecret}, 
 				req.user, flowdockResource.account, utils.flowdockHost, path, {}, function(err, statuscode, data) {
@@ -155,7 +154,6 @@ module.exports = function(db, config) {
 			if (err) return next(err);
 			db.utils.projects.getFlowdockAppInfo(req.user, project, function(err, flowdockResource) {
 				if (err) return next(err);
-				var token = flowdockResource.account.access_token;
 				var path = '/flows/' + flowdockResource.organization + '/' + flowdockResource.flow + '/messages';
 				utils.OAuthRequest(db, {clientId: config.auth.flowdockAuth.clientID, clientSecret: config.auth.flowdockAuth.clientSecret}, 
 				req.user, flowdockResource.account, utils.flowdockHost, path, {}, function(err, statuscode, data) {
@@ -165,6 +163,17 @@ module.exports = function(db, config) {
 			});
 		});
 	}
+
+	requests.getFlowdockUser = function(req, res, next) {
+		db.utils.getAccountInfo(req.user, db.utils.projects.appIds.FLOWDOCK, function (err, account) {
+			var path = '/user';
+			utils.OAuthRequest(db, {clientId: config.auth.flowdockAuth.clientID, clientSecret: config.auth.flowdockAuth.clientSecret}, 
+			req.user, account, utils.flowdockHost, path, {}, function(err, statuscode, data) {
+				if (err) return next(err);
+				res.send(data);
+			});
+		});
+	}	
 
 	requests.getFlowUsers = function(req, res, next) {
 		db.utils.projects.getUserProjectById(req.user, req.params.projectId, function(err, project) {
