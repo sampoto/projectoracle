@@ -63,16 +63,26 @@
             </div>
         </span>
     
-        <span ng-if="msg.event=='file'">
-            <div class="flow-msg flow-msg-comment">
-                <i ng-if="msg.tags.indexOf(':thread') ==-1" class="fa fa-comments"></i>
-                <i ng-if="msg.tags.indexOf(':thread')!==-1" class="fa fa-comment"></i>
+        <span ng-if="msg.event=='file'" ng-click="filterByThread(msg.id)">
+            <div ng-if="msg.tags.indexOf(':thread') ==-1" class="flow-msg flow-msg-message">
+                <i  class="fa fa-comments"></i>
+
 
                 <img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}/>
 
                 <b>{{userLookup[msg.user].nick}}</b>
                 <a href="https://www.flowdock.com/rest{{msg.content.path}}">{{msg.content.file_name}}</a>
             </div>
+
+			<div ng-if="msg.tags.indexOf(':thread')!==-1" class="flow-msg flow-msg-comment">
+
+				<i  class="fa fa-comment"></i>
+
+				<img class="img-circle avatar-small" src={{userLookup[msg.user].avatar}}/>
+
+				<b>{{userLookup[msg.user].nick}}</b>
+				<a href="https://www.flowdock.com/rest{{msg.content.path}}">{{msg.content.file_name}}</a>
+			</div>
         </span>
 
         <p style="padding-left:50px" ng-if="msg.edited !== null">

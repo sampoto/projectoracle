@@ -92,7 +92,7 @@ angular.module('ProjectOracle')
     });
 
 function flows($scope, $http, $stateParams, $rootScope) {
-	var now = Date.now() +"000";
+	var now = Date.now();
 	console.log("time now: "+ now);
 	$scope.showModal = false;
 	var online = [];
@@ -110,7 +110,7 @@ function flows($scope, $http, $stateParams, $rootScope) {
 
 			for(var i = 0; i < data.users.length; i++)
 			{
-				if(data.users[i].last_ping > now )
+				if(data.users[i].last_ping + 600000 > now )
 				{
 					online.push(data.users[i]);
 					console.log("user online: "+ data.users[i].nick +" with timestamp: " + data.users[i].last_ping);
