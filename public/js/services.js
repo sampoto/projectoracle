@@ -3,11 +3,16 @@ angular.module('ProjectOracle')
 
 	var authService = {};
 	authService.isLoggedIn = false;
+	authService.profile = {};
 
-	$http.get('/loggedin').
+	$http.get('/profile').
         success(function(data){
-            authService.setLoginState(data != "" ? true : false);
-        });
+            authService.setLoginState(true);
+			authService.profile = data;
+        }).error(function(data, status, headers, config) {
+			authService.setLoginState(false);
+			authService.profile = {};
+		});
 
 	authService.setLoginState = function(state) {
 		authService.isLoggedIn = state;
@@ -31,7 +36,7 @@ angular.module('ProjectOracle')
 .factory('DataFactory', ['$http', '$state', function($http, $state) {
 
 	var dataFactory = {};
-	var baseURL = "/api/dapi";
+	var baseURL = "/api/v1";
 
 	dataFactory.getProjects = function() {
 		return $http.get(baseURL + '/projects');
@@ -40,15 +45,48 @@ angular.module('ProjectOracle')
 	dataFactory.getApplications = function(projectId) {
 		return $http.get(baseURL + '/projects/' + projectId + '/applications');
 	}
+
+	dataFactory.getAccounts = function() {
+		return $http.get(baseURL + '/accounts');
+	}
 	
+	dataFactory.deleteAccount = function(appId) {
+		return $http.delete(baseURL + '/accounts/' + appId);
+	}
+	
+	dataFactory.getGoogleDocs = function(projectId) {
+		return $http.get(baseURL + '/projects/' + projectId + '/docs');
+	}
+
+	dataFactory.getPivotalProject = function(projectId) {
+		return $http.get(baseURL + '/projects/' + projectId + '/pivotal');
+	}
+
+	dataFactory.getPivotalStories = function(projectId, state) {
+		var stateQuery = state ? '/?with_state=' + state : '';
+		return $http.get(baseURL + '/projects/' + projectId + '/pivotal/stories' + stateQuery);
+	}
+	
+	dataFactory.getPivotalIterations = function(projectId, scope) {
+		var scopeQuery = scope ? '/?scope=' + scope : '';
+		return $http.get(baseURL + '/projects/' + projectId + '/pivotal/iterations' + scopeQuery);
+	}
+	
+	dataFactory.getPivotalMemberships = function(projectId) {
+		return $http.get(baseURL + '/projects/' + projectId + '/pivotal/memberships');
+	}
+
+	dataFactory.pivotalAuth = function(trackerToken) {
+		return $http.post('/auth/pivotal', { trackerToken: trackerToken } );
+	}
+
 	return dataFactory;
 	
 }])
-.factory('ProjectLibrary', ['$state', 'DataFactory', function($state, DataFactory) {
+.factory('ProjectLibrary', ['$state', '$q', 'DataFactory', function($state, $q, DataFactory) {
 	var sdo = {
-		getApplications: function() {
-			var projectId = $state.params.projectId;
-			return DataFactory.getApplications(projectId);
+		getProjectData: function() {
+			return $q.all([DataFactory.getProjects(), DataFactory.getAccounts()]);
 		}
 	};
 	return sdo;

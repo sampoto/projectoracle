@@ -1,18 +1,17 @@
-function pivotal($scope, $state, $http) {
-	$scope.projectId = $state.params.projectId;
-	$http.get('/api/dapi/pivotal/project').
+function pivotal($scope, $state, $http, DataFactory) {
+	DataFactory.getPivotalProject($scope.projectId).
 		success(function(data){
 			$scope.pivotalProject = data;
 		});
 
 	// Get all the icebox stories (current_state: 'unscheduled')
-	$http.get('/api/dapi/pivotal/stories/unscheduled').
+	DataFactory.getPivotalStories($scope.projectId, 'unscheduled').
 		success(function(data){
 			$scope.iceboxStories = data;
 		});
 
 	// Current iterations
-	$http.get('/api/dapi/pivotal/iterations/current').
+	DataFactory.getPivotalIterations($scope.projectId, 'current').
 		success(function(data){
 			// Calculate total estimates for all iterations
 			for(var iterationKey in data) {
@@ -37,7 +36,7 @@ function pivotal($scope, $state, $http) {
 		});
 
 	// Backlog iterations
-	$http.get('/api/dapi/pivotal/iterations/backlog').
+	DataFactory.getPivotalIterations($scope.projectId, 'backlog').
 		success(function(data){
 			for(var iterationKey in data) {
 				var totalPoints = 0;
@@ -52,7 +51,7 @@ function pivotal($scope, $state, $http) {
 		});
 
 	// Get memberships for owner information
-	$http.get('/api/dapi/pivotal/memberships').
+	DataFactory.getPivotalMemberships($scope.projectId).
 		success(function(data){
 			// We don't need actual membership data, only the person resources inside
 			var persons = [];
@@ -65,50 +64,6 @@ function pivotal($scope, $state, $http) {
 
 			$scope.persons = persons;
 		});
-}
-
-function flows($scope, $http, $stateParams, $rootScope) {
-    var now = Date.now() +"000";
-    console.log("time now: "+ now);
-    $scope.showModal = false;
-    var online = [];
-    var offline = [];
-    $rootScope.projectId = $stateParams.projectId;
-    console.log($rootScope.projectId);
-    $http.get('/api/dapi/flows').
-        success(function(data){
-            $scope.flows = data;
-        });
-    $http.get('/api/dapi/name').
-        success(function(data){
-            $scope.user = data;
-        });
-    $http.get('/api/dapi/flow/12345').
-        success(function(data){
-            $scope.flow = data;
-            var lookup = {};
-            for (var i = 0, len = $scope.flow.users.length; i < len; i++) {
-                lookup[$scope.flow.users[i].id] = $scope.flow.users[i];
-            }
-            $scope.userLookup = lookup;
-            
-            for(var i = 0; i < data.users.length; i++)
-            {
-                if(data.users[i].last_ping > now )
-                {
-                    online.push(data.users[i]);
-                    console.log("user online: "+ data.users[i].nick +" with timestamp: " + data.users[i].last_ping);
-                }
-                else
-                {
-                    offline.push(data.users[i]);
-                    console.log("user offline: "+ data.users[i].nick +" with timestamp: " + data.users[i].last_ping);
-                }
-            }
-        });
-        $scope.offline = offline;
-        $scope.online = online;
-    
 }
 
 angular.module('ProjectOracle')
@@ -135,41 +90,59 @@ angular.module('ProjectOracle')
 				}).length == 1) {
 					$scope.projectId = $state.params.projectId;
 				} else {
-					$state.go('error', {title: 'Error', reason: "Project doesn't exist"});
+					$scope.projectId = "";
 				}
 			}
 		});
-
-		// Checks if any project has been selected
-		$scope.projectSelected = function() {
-			if ($state.params.projectId) {
-				for (var project in $scope.projects) {
-					if ($state.params.projectId == $scope.projects[project].name)
-						return true;
-				}
-			}
-			return false;
-		}
 		
 		// Navigates to given project
 		$scope.selectProject = function(project) {
 			$state.go( "project.index", {projectId: project.name} );
 		}
     }])
-	.controller('projectController', ['$scope', '$state', 'DataFactory', function($scope, $state, DataFactory) {
+	.controller('projectController', ['$scope', '$state', 'DataFactory', 'projectData', function($scope, $state, DataFactory, projectData) {
 		function updateProjectNavigation(projectId) {
 			DataFactory.getApplications(projectId).success(function(pages) {
 				// Map applications to states and names
 				for (page in pages) {
-					pages[page].state = pages[page].app;
-					pages[page].name = pages[page].app;
+					pages[page].state = pages[page].id;
+					pages[page].name = appName(pages[page].id);
 				}
-				pages = [{state: "dashboard", name: "Dashboard"}].concat(pages);
 				$scope.projectNavigation = pages;
 			});
 		}
-		updateProjectNavigation($state.params.projectId);
 
+		// This function is used in child controllers to check if matching application has been linked
+		// Returns true if the application has been linked to user's account
+		$scope.init = function() {
+			var linkedAccounts = projectData[1].data;
+			var page = $state.current.name.substr($state.current.name.lastIndexOf(".")+1);
+			if (linkedAccounts.indexOf(page) == -1) {
+				var errorMessage = "App '" + page + "' needs to be linked.";
+				$state.go("^.error", {title: 'Error', reason: errorMessage}, {location: false});
+				return false;
+			}
+			return true;
+		}
+
+		function appName(appId) {
+			if (appId == "flowdock") return "Flowdock";
+			if (appId == "pivotal") return "Pivotal tracker";
+			if (appId == "googledocs") return "Google spreadsheets";
+		}
+
+		var search = projectData[0].data.filter(function(project) {
+			return $state.params.projectId == slugify(project.name);
+		});
+		if (search.length > 0) {
+			// This id is used in API calls
+			$scope.projectId = search[0].id;
+		} else {
+			$state.go('error', {title: 'Error', reason: "Project doesn't exist"});
+		}
+
+		updateProjectNavigation($scope.projectId);
+		
 		// Checks if given page is selected
 		$scope.isSelected = function(page) {
 			return $state.current.name == "project." + page.state 
@@ -180,20 +153,82 @@ angular.module('ProjectOracle')
 		$scope.title = $state.params.title;
 		$scope.reason = $state.params.reason;
 	}])
-	.controller('docsController', ['$scope', '$state', '$http', '$sce', function($scope, $state, $http, $sce) {
-		$scope.trustSrc = function(src) {
-			return $sce.trustAsResourceUrl(src);
+	.controller('docsController', ['$scope', '$state', '$http', '$sce', 'DataFactory', function($scope, $state, $http, $sce, DataFactory) {
+		$scope.defaultURL = null;
+		$scope.imageUrl = function(src) {
+			if (src) return $sce.trustAsResourceUrl(src);
+			return '';
 		};
-		$scope.projectId = $state.params.projectId;
-		$http.get('/api/dapi/docs').
+		DataFactory.getGoogleDocs($scope.projectId).
 			success(function(data){
 				$scope.docs = data;
-				$scope.defaultURL = data.docs[0].url;
+				if (data.length > 0) {
+					$scope.defaultURL = data[0].url;
+				}
 			});
 	}])
-	.controller('pivotalController', ['$scope', '$state', '$http', function($scope, $state, $http) {
-		pivotal($scope, $state, $http);
+	.controller('pivotalController', ['$scope', '$state', '$http', 'DataFactory', function($scope, $state, $http, DataFactory) {
+		if ($scope.init())
+			pivotal($scope, $state, $http, DataFactory);
 	}])
-	.controller('flows', function ($scope, $http, $stateParams, $rootScope) {
-        flows($scope, $http, $stateParams, $rootScope);
-    });
+	.controller('settingsController', ['$scope', '$http', 'DataFactory', function($scope, $http, DataFactory) {
+		$scope.connected = {};
+	
+		// Get the current states of the connected apps for user
+		DataFactory.getAccounts()
+			.success(function (data) {
+				$scope.connected = {};
+				for (var i=0; i<data.length; i++) {
+					$scope.connected[data[i]] = true;
+				}
+			});
+
+		$scope.pivotalTokenFormVisible = false;
+
+		$scope.togglePivotalTokenForm = function() {
+			if ($scope.pivotalTokenFormVisible) {
+				$("#pivotalTokenForm").slideUp();
+			} else {
+				$("#pivotalTokenForm").slideDown();
+			}
+
+			$scope.pivotalTokenFormVisible = !$scope.pivotalTokenFormVisible;
+		}
+
+		$scope.submitPivotalApiToken = function() {
+			var apiToken = $("#pivotalTokenInput").val();
+			DataFactory.pivotalAuth(apiToken)
+				.success(function (data) {
+					// API token is valid, so let's update the button state and hide the API token form
+					$scope.connected['pivotal'] = true;
+					$("#pivotalTokenForm").slideUp();
+				})
+				.error(function (data) {
+					// API token invalid
+					$scope.connected['pivotal'] = false;
+					alert('API token is invalid, please double-check it.');
+				});
+		}
+
+		$scope.disconnectApplication = function(appId) {
+			if (confirm('Do you really want to disconnect this application?')) {
+				DataFactory.deleteAccount(appId)
+					.success(function (data) {
+						// Update the state of the button
+						$scope.connected[appId] = false;
+					});
+			}
+
+		}
+	}]);
+
+// Thanks to Mathew Byrne
+// https://github.com/mathewbyrne
+function slugify(text) {
+	return text.toString().toLowerCase()
+	.replace(/\s+/g, '-') // Replace spaces with -
+	.replace(/[^\w\-]+/g, '') // Remove all non-word chars
+	.replace(/\-\-+/g, '-') // Replace multiple - with single -
+	.replace(/^-+/, '') // Trim - from start of text
+	.replace(/-+$/, ''); // Trim - from end of text
+}

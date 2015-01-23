@@ -1,27 +1,19 @@
 var express = require('express');
 
-var dFlows = require('./dFlow.js');
-
-var dummyDocs={
-	"docs": [
-		{
-			"type":"slides",
-			"url" :"https://docs.google.com/presentation/d/1HqLpL1lkOrtoxEIFRwu7UbCEUfUvalSEP7GnT5MKvLc/embed?start=false&loop=true&delayms=60000",
-			"name":"requirement"
-		},
-		{
-			"type":"spreadsheet",
-			"url" :"https://docs.google.com/spreadsheets/d/1rFUSxn6kGnBhm7CYHeT8bqf5NxwdwmQy_s8QQ1I3HdA/pubhtml?widget=true&amp;headers=false",
-			"name":"hourlog"
-		},
-		{
-			"type":"spreadsheet",
-			"url" :"https://docs.google.com/spreadsheets/d/1KuzTYVn-pc9PzI387Q7HpbkZGvJ0xfwxq82LzMGt5S0/pubhtml?widget=true&amp;headers=false",
-			"name":"dummy spreadsheet"
-		}
-
-    ]
-}
+var dummyDocs = [
+	{
+		"url" :"https://docs.google.com/presentation/d/1HqLpL1lkOrtoxEIFRwu7UbCEUfUvalSEP7GnT5MKvLc/embed?start=false&loop=true&delayms=60000",
+		"name":"requirement"
+	},
+	{
+		"url" :"https://docs.google.com/spreadsheets/d/1rFUSxn6kGnBhm7CYHeT8bqf5NxwdwmQy_s8QQ1I3HdA/pubhtml?widget=true&amp;headers=false",
+		"name":"hourlog"
+	},
+	{
+		"url" :"https://docs.google.com/spreadsheets/d/1KuzTYVn-pc9PzI387Q7HpbkZGvJ0xfwxq82LzMGt5S0/pubhtml?widget=true&amp;headers=false",
+		"name":"dummy spreadsheet"
+	}
+];
 
 /*
 
@@ -744,7 +736,7 @@ var dummyPivotalMemberships =
             "person": {
                 "kind": "person",
                 "id": 1439072,
-                "name": "Atte Perämäki",
+                "name": "Atte Perï¿½mï¿½ki",
                 "email": "atte.90@gmail.com",
                 "initials": "AP",
                 "username": "attep"
@@ -762,7 +754,7 @@ var dummyPivotalMemberships =
             "person": {
                 "kind": "person",
                 "id": 1439074,
-                "name": "Eliisa Väkevä",
+                "name": "Eliisa Vï¿½kevï¿½",
                 "email": "eliisa.vakeva@gmail.com",
                 "initials": "EV",
                 "username": "eliisav"
@@ -892,7 +884,7 @@ var dummyPivotalMemberships2 =
                 "person": {
                     "kind": "person",
                     "id": 1439072,
-                    "name": "Atte Perämäki",
+                    "name": "Atte Perï¿½mï¿½ki",
                     "email": "atte.90@gmail.com",
                     "initials": "AP",
                     "username": "attep"
@@ -910,7 +902,7 @@ var dummyPivotalMemberships2 =
                 "person": {
                     "kind": "person",
                     "id": 1439074,
-                    "name": "Eliisa Väkevä",
+                    "name": "Eliisa Vï¿½kevï¿½",
                     "email": "eliisa.vakeva@gmail.com",
                     "initials": "EV",
                     "username": "eliisav"
@@ -1012,46 +1004,66 @@ module.exports = (function () {
 	});
 	
     router.get('/projects', function (req, res) {
-        res.send([{name: 'test1'}, {name: 'test2'}]);
+        res.send([{id: '1', name: 'test1'}, {id: '2', name: 'test2'}]);
     });
 
     router.get('/projects/:projectId/applications', function (req, res) {
-        res.send([{app: "flows"},
-            {app: "pivotal"},
-            {app: "docs"}]);
+        res.send([{id: "flowdock"},
+            {id: "pivotal"},
+            {id: "googledocs"}]);
     });
 
-    router.get('/docs', function (req, res) {
+    router.get('/projects/:projectId/docs', function (req, res) {
         res.json(dummyDocs);
     });
 
-    router.get('/pivotal/project', function(req, res) {
+    router.get('/projects/:projectId/pivotal', function(req, res) {
         res.json(dummyPivotalProject);
     });
 
-    router.get('/pivotal/memberships', function(req, res) {
+    router.get('/projects/:projectId/pivotal/memberships', function(req, res) {
         res.json(dummyPivotalMemberships2);
     });
 
-    router.get('/pivotal/stories/unscheduled', function(req, res) {
-        res.json(dummyPivotalUnscheduledStories2);
+    router.get('/projects/:projectId/pivotal/stories', function(req, res, next) {
+		if (req.query.with_state == 'unscheduled') {
+			res.json(dummyPivotalUnscheduledStories2);
+		} else {
+			next();
+		}
     });
 
-    router.get('/pivotal/iterations/current', function(req, res) {
-        res.json(dummyPivotalCurrentIterations2);
+    router.get('/projects/:projectId/pivotal/iterations/', function(req, res, next) {
+		if (req.query.scope == 'current') {
+			res.json(dummyPivotalCurrentIterations2);
+		} else if (req.query.scope == 'backlog') {
+			res.json(dummyPivotalBacklogIterations2);
+		} else {
+			next();
+		}
     });
 
-    router.get('/pivotal/iterations/backlog', function(req, res) {
-        res.json(dummyPivotalBacklogIterations2);
+    router.get('/accounts', function(req, res) {
+        res.json(['pivotal', 'flowdock']);
     });
-	
-	router.get('/name', dFlows.name);
 
-	router.get('/flows', dFlows.flows);
+    router.post('/auth/pivotal', function(req, res) {
+        var token = req.body.trackerToken;
+        if (token == '1337') {
+            res.status(500).send('invalid API token');
+        } else {
+            res.status(200).send('ok');
+        }
+    });
 
-	router.get('/flow/:id', dFlows.flowById);
+    router.delete('/accounts/:appId', function(req, res) {
+        if (req.params.appId == 'pivotal' || req.params.appId == 'flowdock') {
+            res.json('ok');
+        } else {
+            res.status(404).send('App "'+req.params.appId+'" not found');
+        }
 
-	router.get('/flow/:flow/messages', dFlows.listMessages);
+    });
 
     router.get('*', function (req, res) {
         res.status(404).send('Not Found');

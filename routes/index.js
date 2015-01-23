@@ -25,7 +25,7 @@ var partials = function (req, res) {
  */
 module.exports = function(app, config, passport, db) {
 	
-	var apiv1 = Apiv1(db);
+	var apiv1 = Apiv1(db, config);
 	
 	app.use("/", express.static(path.join(__dirname + "/../", 'public')));
 	app.use(function(req, res, next) {
@@ -56,11 +56,16 @@ module.exports = function(app, config, passport, db) {
 	app.get('/auth/google/callback', auth.googleAuthCallback);
 	app.get('/auth/flowdock', auth.flowdockAuth);
 	app.get('/auth/flowdock/callback', auth.flowdockAuthCallback, auth.flowdockAuthLink);
+	
+	//Expect POST: {"username":"foo","password":"bar"}
+	app.post('/auth/pivotal', auth.pivotalAuth, auth.pivotalAuthLink);
 
-	app.get('/loggedin', auth.loggedIn);
+	app.get('/profile', auth.profile);
 	app.post('/logout', auth.logout);
 
 	app.use(function(err, req, res, next) {
+		// In debug mode, all errors are logged
+		// Internal server errors are always logged
 		if (config.debug) {
 			console.error(err.stack);
 		}
@@ -68,6 +73,8 @@ module.exports = function(app, config, passport, db) {
 			res.status(403);
 			res.send('invalid csrf token');
 		} else {
+			if (!config.debug)
+				console.error(err.stack);
 			res.status(500);
 			res.send('Internal server error');
 		}

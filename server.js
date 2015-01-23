@@ -82,11 +82,18 @@ module.exports = function() {
 		app.use(bodyParser.urlencoded({
 		  extended: true
 		}))
+		app.use(bodyParser.json());
 		app.use(cookieParser());
 		app.use(session({ resave: true, saveUninitialized: true, secret: config.sessionSecret }));
 		app.use(passport.initialize());
 		app.use(passport.session());
 		app.use(conditionalCSRF);
+
+		if (config.trustProxy) {
+			app.enable('trust proxy');
+		} else {
+			app.disable('trust proxy');
+		}
 
 		routes(app, config, passport, db);
 		auth(passport, config.auth, db);

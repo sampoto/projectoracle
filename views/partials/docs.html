@@ -1,20 +1,18 @@
 <link rel="stylesheet" href="/css/docs.css" type="text/css"/>
 <script src="/js/docs.js"/>
-<div class="container-fluid">
+<div class="container-fluid ng-cloak" ng-cloak>
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar " >
-                <li class="docsLinkRow" ng-repeat="doc in docs.docs">
+                <li class="docsLinkRow" ng-repeat="doc in docs">
                     <a href="{{doc.url}}" target="content">
-                        <span class="google_icon doc_icon" ng-if="doc.type == 'doc'"></span>
-                        <span class="google_icon spreadsheet_icon" ng-if="doc.type == 'spreadsheet'"></span>
                         {{doc.name}}
                     </a>
                 </li>
             </ul>
         </div>
         <div>
-            <iframe name="content" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main " ng-src="{{trustSrc(defaultURL)}}"></iframe>
+            <iframe name="content" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main " ng-src="{{imageUrl(defaultURL)}}"></iframe>
         </div>
     </div>
 </div>

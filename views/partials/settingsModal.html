@@ -1,0 +1,44 @@
+<div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="settingsController">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="myModalLabel">Settings</h4>
+			</div>
+			<div class="modal-body row" style="padding: 30px">
+				<div class="form-group">
+					<label>Flowdock</label>
+					<a ng-if="connected['flowdock']" ng-click="disconnectApplication('flowdock');" target="_self" class="btn btn-success form-control" role="button">
+						<span class="glyphicon glyphicon-ok"></span> Connected
+					</a>
+					<a ng-if="!connected['flowdock']" href="/auth/flowdock" target="_self" class="btn btn-danger form-control" role="button">
+						<span class="glyphicon glyphicon-remove"></span> Disconnected
+					</a>
+				</div>
+				<div class="form-group">
+					<label>Pivotal Tracker</label>
+					<a ng-if="connected['pivotal']" ng-click="disconnectApplication('pivotal');" class="btn btn-success form-control" role="button">
+						<span class="glyphicon glyphicon-ok"></span> Connected
+					</a>
+					<a ng-if="!connected['pivotal']" ng-click="togglePivotalTokenForm();" class="btn btn-danger form-control" role="button">
+						<span class="glyphicon glyphicon-remove"></span> Disconnected
+					</a>
+
+					<div id="pivotalTokenForm" style="padding: 10px; display: none">
+						<label>API token:</label>
+						<input type="text" class="form-control" id="pivotalTokenInput">
+						<a ng-click="submitPivotalApiToken();" class="btn btn-primary" role="button">
+							Submit
+						</a>
+						<a ng-click="togglePivotalTokenForm();" class="btn btn-default" role="button">
+							Cancel
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

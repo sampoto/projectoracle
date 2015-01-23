@@ -1,6 +1,31 @@
 /*
  * Base structure
  */
+h1.welcomeTitle {
+	text-align: center;
+}
+ 
+.loginButton {
+	margin: 0 auto;
+	width: 123px;
+    height: 42px;
+}
+
+.loginButton a {
+	background: url('/img/Red-signin_Medium_base_32dp.png');
+	width: 123px;
+    height: 42px;
+	display: block;
+}
+ 
+.loginButton a:hover {
+	background: url('/img/Red-signin_Medium_hover_32dp.png');
+}
+ 
+.loginButton a:active {
+	background: url('/img/Red-signin_Medium_press_32dp.png');
+}
+ 
 h4:hover{
     color: #111;
 }

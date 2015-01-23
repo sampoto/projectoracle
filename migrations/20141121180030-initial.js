@@ -1,121 +1,108 @@
 "use strict";
 
-var async = require('async');
+var utils = require('../libs/db/modelUtils.js');
+var Bluebird = require('bluebird');
+var Sequelize = require('Sequelize');
 
 module.exports = {
-	up: function(migration, DataTypes, done) {
-		async.series([
-		function(cb) {
-			migration.createTable('users',
+	up: function(QueryInterface, tablePrefix) {
+		return new Bluebird(function(resolve, reject) {
+			QueryInterface.createTable(utils.tableName('users', tablePrefix),
 			{
 				id: {
-					type: DataTypes.INTEGER,
+					type: Sequelize.INTEGER,
 					primaryKey: true,
 					autoIncrement: true
 				},
-				createdAt: DataTypes.DATE,
-				updatedAt: DataTypes.DATE,
-				email: DataTypes.STRING
-			}, 
-			{}).complete(cb);
-		},
-		function(cb) {
-			migration.createTable('projects',
-			{
-				id: {
-					type: DataTypes.INTEGER,
-					primaryKey: true,
-					autoIncrement: true
-				},
-				createdAt: DataTypes.DATE,
-				updatedAt: DataTypes.DATE,
-				project_name: DataTypes.STRING,
-				pivotal_ref: DataTypes.INTEGER,
-				flowdock_ref: DataTypes.STRING
-			}, 
-			{}).complete(cb);
-		},
-		function(cb) {
-			async.parallel([
-			function(inner_cb) {
-				migration.createTable('projectsusers',
-				{
-					createdAt: DataTypes.DATE,
-					updatedAt: DataTypes.DATE,
-					ProjectId: {
-						type: DataTypes.INTEGER,
-						references: 'projects',
-						referencesKey: 'id',
-						onUpdate: 'CASCADE',
-						onDelete: 'CASCADE'
-					},
-					UserId: {
-						type: DataTypes.INTEGER,
-						references: 'users',
-						referencesKey: 'id',
-						onUpdate: 'CASCADE',
-						onDelete: 'CASCADE'
-					}
-				}, 
-				{}).complete(inner_cb);
-			},
-			function(inner_cb) {
-				migration.createTable('googledocs',
+				createdAt: Sequelize.DATE,
+				updatedAt: Sequelize.DATE,
+				email: Sequelize.STRING,
+				userlevel: {type: dataTypes.INTEGER, defaultValue: 0}
+			})
+			.then(function() {
+				return QueryInterface.createTable(utils.tableName('projects', tablePrefix),
 				{
 					id: {
-						type: DataTypes.INTEGER,
+						type: Sequelize.INTEGER,
 						primaryKey: true,
 						autoIncrement: true
 					},
-					createdAt: DataTypes.DATE,
-					updatedAt: DataTypes.DATE,
-					doc_name: DataTypes.STRING,
-					doc_url: DataTypes.STRING,
-					ProjectId: {
-						type: DataTypes.INTEGER,
-						references: 'projects',
-						referencesKey: 'id',
-						onUpdate: 'CASCADE',
-						onDelete: 'SET NULL'
+					createdAt: Sequelize.DATE,
+					updatedAt: Sequelize.DATE,
+					project_name: Sequelize.STRING,
+					pivotal_ref: Sequelize.INTEGER,
+					flowdock_ref: Sequelize.STRING
+				});
+			})
+			.then(function() {
+				Bluebird.join(
+				QueryInterface.createTable(utils.tableName('projectsusers', tablePrefix),
+					{
+						createdAt: Sequelize.DATE,
+						updatedAt: Sequelize.DATE,
+						ProjectId: {
+							type: Sequelize.INTEGER,
+							references: utils.tableName('projects', tablePrefix),
+							referencesKey: 'id',
+							onUpdate: 'CASCADE',
+							onDelete: 'CASCADE'
+						},
+						UserId: {
+							type: Sequelize.INTEGER,
+							references: utils.tableName('users', tablePrefix),
+							referencesKey: 'id',
+							onUpdate: 'CASCADE',
+							onDelete: 'CASCADE'
+						}
+					}, {}),
+					QueryInterface.createTable(utils.tableName('googledocs', tablePrefix),
+					{
+						id: {
+							type: Sequelize.INTEGER,
+							primaryKey: true,
+							autoIncrement: true
+						},
+						createdAt: Sequelize.DATE,
+						updatedAt: Sequelize.DATE,
+						doc_name: Sequelize.STRING,
+						doc_url: Sequelize.STRING,
+						ProjectId: {
+							type: Sequelize.INTEGER,
+							references: utils.tableName('projects', tablePrefix),
+							referencesKey: 'id',
+							onUpdate: 'CASCADE',
+							onDelete: 'SET NULL'
+						}
+					}, {}),
+					QueryInterface.createTable(utils.tableName('accounts', tablePrefix),
+					{
+						id: {
+							type: Sequelize.INTEGER,
+							primaryKey: true,
+							autoIncrement: true
+						},
+						createdAt: Sequelize.DATE,
+						updatedAt: Sequelize.DATE,
+						account_name: Sequelize.STRING,
+						access_token: Sequelize.STRING,
+						refresh_token: Sequelize.STRING,
+						UserId: {
+							type: Sequelize.INTEGER,
+							references: utils.tableName('users', tablePrefix),
+							referencesKey: 'id',
+							onUpdate: 'CASCADE',
+							onDelete: 'SET NULL'
+						}
+					}, {}),
+					function() {
+						resolve();
 					}
-				}, 
-				{}).complete(inner_cb);
-			},
-			function(inner_cb) {
-				migration.createTable('accounts',
-				{
-					id: {
-						type: DataTypes.INTEGER,
-						primaryKey: true,
-						autoIncrement: true
-					},
-					createdAt: DataTypes.DATE,
-					updatedAt: DataTypes.DATE,
-					account_name: DataTypes.STRING,
-					access_token: DataTypes.STRING,
-					refresh_token: DataTypes.STRING,
-					UserId: {
-						type: DataTypes.INTEGER,
-						references: 'users',
-						referencesKey: 'id',
-						onUpdate: 'CASCADE',
-						onDelete: 'SET NULL'
-					}
-				}, 
-				{}).complete(inner_cb);
-			}],
-			function(err) {
-				cb(err);
+				);
 			});
-		}],
-		function() {
-			done();
 		});
 	},
 
-	down: function(migration, DataTypes, done) {
-		migration.dropAllTables().complete(function(err) {
-			done();
-		});
+	down: function(QueryInterface, tablePrefix) {
+		return QueryInterface.dropAllTables();
 	}
 };

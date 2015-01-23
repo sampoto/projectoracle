@@ -4,6 +4,7 @@
  * Module for configuring auth
  */
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 var OAuth2Strategy = require('passport-oauth2');
 
 /**
@@ -28,6 +29,7 @@ module.exports = function(passport, authConfig, db) {
 	if (authConfig) {
 		configureGoogleAuth(passport, db, authConfig);
 		configureFlowdockAuth(passport, authConfig);
+		configurePivotalAuth(passport);
 	} else {
 		throw new Error("Authentication options are not defined.");
 	}
@@ -57,7 +59,8 @@ function configureGoogleAuth(passport, db, authConfig) {
 					if (!err) {
 						return done(null, user);
 					} else {
-						return done(new Error('Account creation failed'), null);
+						err.code = 'accountcreationfailed';
+						return done(err, null);
 					}
 				});
 			} else {
@@ -86,4 +89,20 @@ function configureFlowdockAuth(passport, authConfig) {
 	function(token, refreshToken, profile, done) {
 		return done(null, {access_token: token, refresh_token: refreshToken});
     }));
+}
+
+function configurePivotalAuth(passport) {
+	passport.use('pivotal', new LocalStrategy(
+		function(username, password, done) {
+			var path = utils.pivotalServicePath + "/me";
+			var auth = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
+			utils.fetchJSON(utils.pivotalHost, path, {Authorization: auth}, function(err, profile) {
+				if (!err) {
+					done(null, {trackerToken: profile.api_token});
+				} else {
+					done(err, null);
+				}
+			});
+		})
+	);
 }

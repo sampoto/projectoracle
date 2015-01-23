@@ -13,7 +13,10 @@ config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
 		abstract: true,
 		controller: 'projectController',
 		url: '/p/:projectId',
-		templateUrl: '/partials/project.html'
+		templateUrl: '/partials/project.html',
+		resolve: {
+			projectData: function(ProjectLibrary) { return ProjectLibrary.getProjectData(); }
+		}
 	}).state('project.index', {
 		url: '',
 		templateUrl: '/partials/dashboard.html'
@@ -24,14 +27,21 @@ config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
 		url: '/flows',
 		controller: 'flows',
 		templateUrl: '/partials/flows.html'
+	}).state('project.flowdock', {
+		url: '/flowdock',
+		templateUrl: '/partials/flows.html'
 	}).state('project.pivotal', {
 		url: '/pivotal',
 		controller: 'pivotalController',
 		templateUrl: '/partials/pivotal.html'
-	}).state('project.docs', {
-		url: '/docs',
+	}).state('project.googledocs', {
+		url: '/googledocs',
 		controller: 'docsController',
 		templateUrl: '/partials/docs.html'
+	}).state('project.error', {
+		templateUrl: '/partials/error.html',
+		controller: 'errorController',
+		params: {projectId:{}, title:{}, reason:{}}
 	}).state('error', {
 		templateUrl: '/partials/error.html',
 		controller: 'errorController',
