@@ -12,20 +12,16 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand">Red-Wedding</a>
+            <a class="navbar-brand">{{flow.name}}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
 
-
-                    
-                
                 <li class="navbar-left user-popover">
                     <img class="img-circle" src="{{user.avatar}}"><span style="display: inline">{{user.nick}}</span>
                 </li>
-
 
                 <li class="navbar-left">
                     <button class="btn btn-default" data-toggle="modal" data-target="#userList">Online: {{online.length}}/{{flow.users.length}}</button>
@@ -44,12 +40,7 @@
         </div><!-- /.navbar-collapse -->
     </div>    
 </nav>
-<!--
-<div class="flowheader col-xs-12">
-    <h3 class="flowheader-h">Red Wedding</h3>
-    <span class="flowheader-h" ><img class="img-circle" src="{{dummyUser.avatar}}"><h4 style="display: inline">{{dummyUser.nick}}</h4></img> </span>
-    <h4 class="flowheader-h online-count"><i class="fa fa-users"></i>Online: 2/8</h4>
-</div> -->
+
 
 <div>
     <div class="col-xs-12 flow" ng-controller="messages">

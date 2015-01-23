@@ -99,10 +99,6 @@ function flows($scope, $http, $stateParams, $rootScope) {
 	var offline = [];
 	$rootScope.projectId = $stateParams.projectId;
 	console.log($rootScope.projectId);
-	$http.get('/api/dapi/flows').
-		success(function(data){
-			$scope.flows = data;
-		});
 	$http.get('/api/v1/projects/'+$scope.projectId+'/flow').
 		success(function(data){
 			$scope.flow = data;
