@@ -41,7 +41,14 @@ angular.module('ProjectOracle')
 
         });
             
-            
+
+        $scope.toggleNews = function(newsId) {
+            console.log(newsId);
+            $("#"+newsId).toggle("slow", function () {
+
+            });
+        }
+
         $scope.resetFilter = function()
         {
             $scope.filter = "";

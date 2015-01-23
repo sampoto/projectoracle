@@ -1,19 +1,41 @@
 <link rel="stylesheet" href="/css/teaminbox.css" type="text/css"/>
 
-<ul>
-    <li ng-repeat="message in teamInbox" ng-switch="message.event">
+<!--ul>-->
+    <div class="well" ng-repeat="message in teamInbox" ng-switch="message.event">
 
         <span ng-switch-when="mail">
-            <b>Maili</b>
-            <h4><u><i><b>{{message.content.subject}}</b></i></u></h4>
-            <div ng-bind-html="convertStringToHtml(message.content.content);"></div>
+            <b><i class="fa fa-envelope-square fa-2x"></i><h5 style="display:inline">{{message.content.subject}}</h5></b>
+
+            <div  ng-bind-html="convertStringToHtml(message.content.content);"></div>
         </span>
 
-        <span ng-switch-when="rss">
-            <b>Är-äs-ässä</b>
-            <h4><u><i><b>{{message.content.title}}</b></i></u></h4>
-            <div ng-bind-html="convertStringToHtml(message.content.content);"></div>
+        <span ng-switch-when="rss" ng-click="toggleNews(message.id)">
+
+            <b><i class="fa fa-rss-square fa-2x"></i> <h5 style="display:inline"><b>{{message.content.title}}</b></h5></b>
+
+            <div style="display: none" ng-bind-html="convertStringToHtml(message.content.content);" id={{message.id}}></div>
+
         </span>
 
-    </li>
-</ul>
+        <span ng-switch-when="twitter">
+            <b><i class="fa fa-twitter-square fa-2x"></i> <h5 style="display:inline"><b>{{message.content.user.name}} <span class="text-muted">@{{message.content.user.screen_name}}</span></b></h5></b>
+
+            <div ng-bind-html="convertStringToHtml(message.content.text);"></div>
+        </span>
+
+        <!-- There seems to be many programs with "activity".
+             Define inside -->
+        <span ng-switch-when="activity">
+            <b ng-if="message.thread.source.application.name=='GitHub'">
+                <i class="fa fa-github-square fa-2x"></i>
+                {{message.thread.title}}
+            </b>
+            <div ng-if="message.thread.source.application.name=='GitHub'" ng-bind-html="convertStringToHtml(message.title);"></div>
+        </span>
+
+        <span ng-switch-default>
+            <b>Defaultti</b>
+        </span>
+
+    </div>
+<!--</ul>-->
