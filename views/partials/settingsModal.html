@@ -24,16 +24,23 @@
 						<span class="glyphicon glyphicon-remove"></span> Disconnected
 					</a>
 
+
 					<div id="pivotalTokenForm" style="padding: 10px; display: none">
+						<row>
 						<label>API token:</label>
 						<input type="text" class="form-control" id="pivotalTokenInput">
-						<a ng-click="submitPivotalApiToken();" class="btn btn-primary" role="button">
+						<a ng-click="submitPivotalApiToken();" class="btn btn-primary col-xs-6" role="button">
 							Submit
 						</a>
-						<a ng-click="togglePivotalTokenForm();" class="btn btn-default" role="button">
+						<a ng-click="togglePivotalTokenForm();" class="btn btn-default col-xs-6" role="button">
 							Cancel
 						</a>
+						</row>
+						You can find api token <a href="https://www.pivotaltracker.com/profile#api" target="_blank">here.</a>
 					</div>
+
+
+
 				</div>
 			</div>
 			<div class="modal-footer">
