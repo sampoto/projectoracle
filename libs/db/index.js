@@ -212,13 +212,13 @@ module.exports = function(config) {
 		var queryInterface = sequelize.getQueryInterface();
 		async.parallel([
 			function(done) {
-				queryInterface.renameColumn(sequelizeMetaName, 'to', 'name').then(done);
+				queryInterface.renameColumn(sequelizeMetaName, 'to', 'name').complete(done);
 			},
 			function(done) {
-				queryInterface.removeColumn(sequelizeMetaName, 'from');
+				queryInterface.removeColumn(sequelizeMetaName, 'from').complete(done);
 			},
 			function(done) {
-				queryInterface.removeColumn(sequelizeMetaName, 'id');
+				queryInterface.removeColumn(sequelizeMetaName, 'id').complete(done);
 			}
 		],
 		function(err) {
