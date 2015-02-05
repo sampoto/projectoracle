@@ -85,10 +85,12 @@ angular.module('ProjectOracle')
 		$scope.$on('$stateChangeSuccess', function() {
 			// When project is changed, update project applications
 			if ($state.params.projectId && $scope.projectId != $state.params.projectId) {
-				if ($scope.projects.filter(function(project) {
-					return project.name == $state.params.projectId;
-				}).length == 1) {
-					$scope.projectId = $state.params.projectId;
+				
+				var projectSearch = $scope.projects.filter(function(project) {
+					return slugify(project.name) == slugify($state.params.projectId);
+				});
+				if (projectSearch.length == 1) {
+					$scope.projectId = projectSearch[0].name;
 				} else {
 					$scope.projectId = "";
 				}
@@ -97,7 +99,7 @@ angular.module('ProjectOracle')
 		
 		// Navigates to given project
 		$scope.selectProject = function(project) {
-			$state.go( "project.index", {projectId: project.name} );
+			$state.go( "project.index", {projectId: slugify(project.name)} );
 		}
     }])
 	.controller('projectController', ['$scope', '$state', 'DataFactory', 'projectData', function($scope, $state, DataFactory, projectData) {
@@ -132,7 +134,7 @@ angular.module('ProjectOracle')
 		}
 
 		var search = projectData[0].data.filter(function(project) {
-			return $state.params.projectId == slugify(project.name);
+			return slugify($state.params.projectId) == slugify(project.name);
 		});
 		if (search.length > 0) {
 			// This id is used in API calls
