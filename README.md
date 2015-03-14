@@ -78,4 +78,10 @@ Alternatively you can deploy the application elsewhere.
 
 Set NODE_ENV environment variable to "heroku" and configure the rest of the environment variables to deploy to Heroku.
 
+If you want to use Docker, install Docker and Fig and run `fig up`. Remember to generate your SSL key without a passphrase, with e.g.
+
+```
+openssl req -nodes -new -x509 -keyout key.pem -out cert.pem
+```
+
 [ ![Codeship Status for sampoto/projectoracle](https://www.codeship.io/projects/fc206f70-1ee3-0132-e461-5e9ca203bed1/status)](https://www.codeship.io/projects/35583)
