@@ -1,6 +1,6 @@
 {
   "name": "ProjectOracle",
-  "description": "",
+  "description": "Mashup application that integrates Flowdock, Google spreadsheets and Pivotal Tracker",
   "private": true,
   "repository": {
     "type": "git",
@@ -9,6 +9,7 @@
   "contributors": [
     "Sampo Tolvanen",
     "Atte Perämäki",
+    "Joona Laamanen",
     "Jouni Mikkola",
     "Eliisa Väkevä",
     "Jingui Li"
